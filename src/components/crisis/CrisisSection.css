@@ -10,11 +10,6 @@
   color: var(--red-500);
 }
 
-.crisis-header .section-title,
-.crisis-header .section-subtitle {
-  color: var(--text-inverse-primary);
-}
-
 .crisis-header .section-subtitle {
   color: var(--text-inverse-secondary);
 }
@@ -22,7 +17,9 @@
 .crisis-interactive {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: var(--spacing-gap-lg);
+  max-width: 1000px;
+  margin: 0 auto;
   background-color: var(--navy-900);
   border-radius: 12px;
   padding: 40px;

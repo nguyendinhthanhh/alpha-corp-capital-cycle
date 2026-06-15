@@ -1,21 +1,24 @@
 .impact-section {
-  background-color: var(--surface-primary);
+  background-color: var(--page-background);
   border-bottom: 1px solid var(--border-light);
 }
 
 .impact-map-container {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 48px;
-  align-items: center;
+  gap: var(--spacing-gap-lg);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 @media (min-width: 992px) {
   .impact-map-container {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
   }
 }
 
+/* Map Visual */
 .map-visual {
   position: relative;
   height: 400px;
@@ -29,158 +32,206 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 10;
-}
-
-.center-node {
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
+  background-color: var(--surface-primary);
+  border: 2px solid var(--navy-800);
   border-radius: 50%;
-  background-color: var(--red-600);
-  color: white;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-heading);
-  font-weight: 800;
-  font-size: 1.25rem;
-  box-shadow: 0 0 0 8px rgba(224, 79, 79, 0.15);
+  z-index: 10;
+  box-shadow: 0 0 20px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.map-center.pulsing-danger {
+  border-color: var(--red-600);
+  box-shadow: 0 0 0 0 rgba(224, 79, 79, 0.4);
   animation: pulse-danger 2s infinite;
 }
 
-.center-node span {
-  font-size: 0.75rem;
-  font-family: var(--font-body);
-  font-weight: 500;
-  margin-top: 4px;
-  opacity: 0.9;
+@keyframes pulse-danger {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(224, 79, 79, 0.4); }
+  70% { transform: translate(-50%, -50%) scale(1.05); box-shadow: 0 0 0 15px rgba(224, 79, 79, 0); }
+  100% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 0 0 rgba(224, 79, 79, 0); }
 }
 
-@keyframes pulse-danger {
-  0% { box-shadow: 0 0 0 0 rgba(224, 79, 79, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(224, 79, 79, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(224, 79, 79, 0); }
+.center-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--navy-950);
+  font-size: 1.125rem;
+}
+
+.pulsing-danger .center-node {
+  color: var(--red-600);
+}
+
+.center-node span {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-top: 4px;
 }
 
 .map-nodes {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .actor-node-wrapper {
   position: absolute;
-  width: 0;
-  height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 5;
+  top: 50%;
+  left: 50%;
+  width: 1px;
+  height: 1px;
 }
 
 .actor-btn {
   position: absolute;
-  transform: translate(-50%, -50%);
+  top: -24px;
+  left: -60px;
+  width: 120px;
+  height: 48px;
   background-color: var(--surface-primary);
-  border: 2px solid var(--border-light);
-  padding: 8px 16px;
+  border: 1px solid var(--border-light);
   border-radius: 24px;
-  font-family: var(--font-heading);
-  font-weight: 600;
   font-size: 0.875rem;
-  color: var(--navy-950);
+  font-weight: 600;
+  color: var(--navy-800);
   cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-  z-index: 6;
+  z-index: 5;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .actor-btn:hover {
-  border-color: var(--teal-600);
-  color: var(--teal-700);
-  transform: translate(-50%, -50%) scale(1.05);
+  border-color: var(--teal-500);
+  color: var(--teal-600);
+  transform: scale(1.05);
 }
 
 .actor-btn.active {
-  background-color: var(--navy-950);
+  background-color: var(--teal-600);
+  border-color: var(--teal-600);
   color: white;
-  border-color: var(--navy-950);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(20, 129, 124, 0.2);
+}
+
+.actor-btn.danger.active {
+  background-color: var(--red-600);
+  border-color: var(--red-600);
+  box-shadow: 0 4px 12px rgba(224, 79, 79, 0.2);
 }
 
 .connection-line {
   position: absolute;
   height: 2px;
   background-color: var(--border-light);
-  transform-origin: right center;
-  z-index: 4;
+  transform-origin: left center;
+  z-index: 1;
   transition: background-color 0.3s;
 }
 
 .connection-line.active {
-  background-color: var(--navy-950);
-  height: 3px;
+  background-color: var(--teal-500);
+}
+
+.connection-line.danger.active {
+  background-color: var(--red-500);
+}
+
+/* Map Details */
+.map-details {
+  display: flex;
+  flex-direction: column;
 }
 
 .impact-detail-card {
-  background-color: var(--surface-secondary);
-  border-radius: 12px;
+  background-color: var(--surface-primary);
+  border-radius: 16px;
   padding: 32px;
   border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.impact-detail-card.crisis-mode {
+  border-color: var(--red-300);
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
 .impact-detail-card h3 {
   font-size: 1.5rem;
   color: var(--navy-950);
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
+  margin: 0;
 }
 
 .impact-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .impact-label {
   display: block;
-  font-size: 0.75rem;
-  color: var(--teal-700);
-  text-transform: uppercase;
+  font-size: 0.8125rem;
   font-weight: 600;
-  letter-spacing: 0.05em;
-  margin-bottom: 6px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
-.impact-group p {
+.impact-content {
   margin: 0;
-  font-size: 0.9375rem;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--navy-900);
-  line-height: 1.5;
+}
+
+.crisis-mode .impact-content {
+  color: var(--navy-950);
+  font-weight: 500;
 }
 
 .lesson-box {
-  background-color: var(--surface-primary);
-  padding: 16px;
-  border-radius: 6px;
-  border-left: 3px solid var(--gold-600);
-  margin-top: 24px;
+  background-color: var(--surface-secondary);
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 4px solid var(--teal-600);
+}
+
+.crisis-mode .lesson-box {
+  border-left-color: var(--red-500);
 }
 
 .lesson-label {
   display: block;
-  font-size: 0.75rem;
-  color: var(--gold-600);
-  text-transform: uppercase;
-  font-weight: 700;
-  margin-bottom: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--navy-950);
+  margin-bottom: 8px;
 }
 
 .lesson-box p {
   margin: 0;
   font-size: 0.9375rem;
-  color: var(--navy-950);
-  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-secondary);
 }

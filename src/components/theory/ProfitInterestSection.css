@@ -1,0 +1,237 @@
+.profit-section {
+  background-color: var(--page-background);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.profit-workspace {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-gap-lg);
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+  .profit-workspace {
+    grid-template-columns: 1.2fr 1fr;
+    align-items: center;
+  }
+}
+
+/* Visualizer */
+.profit-visual {
+  background-color: var(--surface-primary);
+  border-radius: 16px;
+  padding: 40px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.total-m {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.block-header {
+  background-color: var(--teal-600);
+  color: white;
+  padding: 16px 32px;
+  border-radius: 12px;
+  text-align: center;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 4px 12px rgba(20, 129, 124, 0.2);
+  position: relative;
+  z-index: 2;
+}
+
+.block-header strong {
+  display: block;
+  font-size: 1.25rem;
+  margin-bottom: 4px;
+}
+
+.block-header span {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.block-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -10px;
+}
+
+.split-arrow {
+  width: 4px;
+  height: 40px;
+  background-color: var(--border-light);
+  position: relative;
+}
+
+.split-branches {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+}
+
+.split-branches::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 20%;
+  right: 20%;
+  height: 4px;
+  background-color: var(--border-light);
+}
+
+.branch {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.branch-line {
+  width: 4px;
+  height: 30px;
+  background-color: var(--border-light);
+}
+
+.value-node {
+  background-color: var(--surface-secondary);
+  border: 2px solid;
+  border-radius: 12px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 240px;
+  transition: transform 0.2s;
+}
+
+.value-node:hover {
+  transform: translateY(-5px);
+}
+
+.node-p {
+  border-color: var(--navy-800);
+}
+
+.node-z {
+  border-color: var(--gold-500);
+}
+
+.node-icon {
+  margin-bottom: 12px;
+}
+
+.node-p .node-icon { color: var(--navy-800); }
+.node-z .node-icon { color: var(--gold-600); }
+
+.value-node h4 {
+  font-size: 1rem;
+  color: var(--navy-950);
+  margin-bottom: 4px;
+}
+
+.symbol {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin-bottom: 12px;
+}
+
+.node-p .symbol { color: var(--navy-800); }
+.node-z .symbol { color: var(--gold-600); }
+
+.value-node p {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Theory */
+.profit-theory {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.theory-card {
+  background-color: var(--surface-primary);
+  border-radius: 12px;
+  padding: 24px;
+  border: 1px solid var(--border-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.theory-card h3 {
+  font-size: 1.25rem;
+  color: var(--navy-950);
+  margin-bottom: 12px;
+}
+
+.theory-card p {
+  font-size: 0.9375rem;
+  color: var(--navy-900);
+  line-height: 1.6;
+}
+
+.equation {
+  background-color: var(--surface-secondary);
+  padding: 16px;
+  border-radius: 8px;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--teal-700);
+  text-align: center;
+  margin-top: 16px;
+  letter-spacing: 0.1em;
+}
+
+.crisis-context {
+  border-color: var(--red-200);
+  background-color: rgba(224, 79, 79, 0.02);
+}
+
+.crisis-context h3 {
+  color: var(--red-700);
+}
+
+.crisis-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.crisis-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.crisis-list strong {
+  display: block;
+  font-size: 0.9375rem;
+  color: var(--navy-950);
+  margin-bottom: 4px;
+}
+
+.crisis-list span {
+  font-size: 0.875rem;
+  color: var(--red-800);
+  line-height: 1.5;
+}

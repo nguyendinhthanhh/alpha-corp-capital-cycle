@@ -1,58 +1,88 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { AlertTriangle, Info, CheckCircle2, RefreshCw, Play } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle, Info, CheckCircle2, RefreshCw, Play, Settings2 } from 'lucide-react';
+import { scenarios } from '../data/simulationScenarios';
+import SectionHeader from '../components/shared/SectionHeader';
 import './Simulators.css';
 
-const presets = [
-  { id: 'defensive', label: 'Phòng thủ an toàn', reserve: 30, production: 50, labor: 20 },
-  { id: 'imbalanced', label: 'Rủi ro tài sản', reserve: 5, production: 80, labor: 15 },
-  { id: 'labor-strain', label: 'Đứt gãy sản xuất', reserve: 20, production: 70, labor: 10 },
-];
-
 const Simulators = () => {
+  // Capital Allocation
   const [reserve, setReserve] = useState(10);
   const [production, setProduction] = useState(70);
   const [labor, setLabor] = useState(20);
+  
+  // Market Environment
+  const [activeScenarioId, setActiveScenarioId] = useState(scenarios[0].id);
+  
+  // Results
   const [result, setResult] = useState(null);
 
   const total = reserve + production + labor;
   const isBalanced = total === 100;
+  const activeScenario = scenarios.find(s => s.id === activeScenarioId);
 
-  const applyPreset = (preset) => {
-    setReserve(preset.reserve);
-    setProduction(preset.production);
-    setLabor(preset.labor);
+  // Clear result when inputs change
+  useEffect(() => {
+    // eslint-disable-next-line
     setResult(null);
-  };
+  }, [reserve, production, labor, activeScenarioId]);
 
   const handleRun = () => {
     if (!isBalanced) return;
 
+    let status = 'success';
+    let title = 'Sức chịu đựng tốt';
+    let message = 'Tỷ lệ phân bổ hợp lý giúp doanh nghiệp duy trì được chu kỳ tái sản xuất.';
+    let theoryContext = 'Tổng tư bản được phân chia thỏa mãn Điều kiện Không gian: vừa có tiền mặt, vừa có máy móc, vừa đủ tiền thuê công nhân.';
+
+    // Base checks (Space Condition)
     if (reserve < 15) {
-      setResult({
-        status: 'danger',
-        title: 'Khủng hoảng thanh khoản',
-        message: 'Quỹ dự phòng quá thấp. Khi thời gian lưu thông kéo dài, doanh nghiệp mất khả năng trả lãi vay và đối mặt với rủi ro vỡ nợ ngay lập tức.',
-      });
+      status = 'danger';
+      title = 'Thiếu hụt Tiền tệ (T)';
+      message = 'Quỹ dự phòng quá thấp. Doanh nghiệp mất khả năng thanh toán các khoản chi phí phát sinh hoặc trả lãi vay.';
+      theoryContext = 'Tư bản Tiền tệ (T) không đủ. Điều kiện không gian bị phá vỡ, doanh nghiệp không thể tiếp tục mua H (c+v).';
     } else if (labor < 15) {
-      setResult({
-        status: 'danger',
-        title: 'Đứt gãy sản xuất',
-        message: 'Quỹ lương không đủ. Sức lao động không được tái sản xuất, khiến quá trình tạo ra giá trị mới (SX) bị gián đoạn từ bên trong.',
-      });
-    } else if (reserve > 35) {
-      setResult({
-        status: 'warning',
-        title: 'Hiệu suất vốn thấp',
-        message: 'Dự phòng rất an toàn nhưng quy mô tư bản sản xuất bị thu hẹp. Vốn quay chậm và giới hạn khả năng tạo ra giá trị thặng dư.',
-      });
-    } else {
-      setResult({
-        status: 'success',
-        title: 'Sức chịu đựng tốt',
-        message: 'Tỷ lệ phân bổ hợp lý giúp doanh nghiệp có vùng đệm thanh khoản để sống sót qua giai đoạn thị trường đóng băng tạm thời.',
-      });
+      status = 'danger';
+      title = 'Thiếu hụt Khả biến (v)';
+      message = 'Quỹ lương không đủ. Nợ lương công nhân dẫn đến đình công.';
+      theoryContext = 'Tư bản Khả biến (v) là yếu tố duy nhất tạo ra giá trị thặng dư (m). Thiếu v, quá trình ...SX... bị đình trệ.';
+    } else if (reserve > 40) {
+      status = 'warning';
+      title = 'Hiệu suất vốn thấp';
+      message = 'Dự phòng rất an toàn nhưng quy mô tư bản sản xuất bị thu hẹp. Lợi nhuận thu về sẽ rất ít.';
+      theoryContext = 'Tiền nằm im không phải là tư bản. Tiền phải được ném vào lưu thông (T -> H) để tạo ra thặng dư.';
     }
+
+    // Market Scenario impact (Time Condition)
+    if (status === 'success' || status === 'warning') {
+      if (activeScenarioId === 'credit-tightening') {
+        if (reserve < 25) {
+          status = 'danger';
+          title = 'Gãy dòng tiền do Khách hàng';
+          message = 'Siết tín dụng làm sức mua giảm. Thời gian bán hàng (H\' -> T\') kéo dài. Doanh nghiệp cạn tiền mặt vì dự phòng không đủ bù đắp thời gian chờ đợi.';
+          theoryContext = 'Thời gian lưu thông kéo dài làm giảm tốc độ chu chuyển. Điều kiện Thời gian bị đe dọa.';
+        } else {
+          status = 'warning';
+          title = 'Tồn tại lay lắt';
+          message = 'Dự phòng cao giúp Alpha Corp cầm cự trả lãi ngân hàng, nhưng lợi nhuận bị ăn mòn hoàn toàn.';
+          theoryContext = 'Lợi tức (z) vẫn phải trả trong khi Lợi nhuận (p) chưa thu được. Tích lũy tư bản bằng 0.';
+        }
+      } else if (activeScenarioId === 'crisis') {
+        if (reserve < 40) {
+          status = 'danger';
+          title = 'Phá sản vì Thanh khoản';
+          message = 'Đóng băng thị trường. 3 tòa tháp phần thô không bán được. Ngân hàng đòi nợ gốc và lãi. Alpha Corp hoàn toàn sụp đổ.';
+          theoryContext = 'Khuyết tật của kinh tế thị trường. Hàng hóa (H\') không thể chuyển hóa thành Tiền (T\'). Chu kỳ tư bản bị đứt gãy hoàn toàn.';
+        } else {
+          status = 'warning';
+          title = 'Chờ đợi phép màu';
+          message = 'Sở hữu lượng tiền mặt khổng lồ giúp Alpha Corp sống sót, nhưng bản thân họ không tạo ra thêm lợi nhuận nào.';
+          theoryContext = 'Tư bản rút khỏi lưu thông, trở thành tiền tệ cất trữ. Tuần hoàn tư bản tạm thời dừng lại.';
+        }
+      }
+    }
+
+    setResult({ status, title, message, theoryContext });
   };
 
   const getStatusIcon = () => {
@@ -65,37 +95,38 @@ const Simulators = () => {
   return (
     <div className="simulators-page">
       <div className="container">
-        <header className="page-header text-center">
-          <span className="page-eyebrow">Interactive Model</span>
-          <h1 className="page-title">Mô phỏng Phân bổ Tư bản</h1>
-          <p className="page-subtitle">
-            Khám phá cách tỷ lệ phân bổ vốn tác động đến sức chịu đựng của doanh nghiệp khi chu kỳ bị đứt gãy.
-          </p>
-          <div className="disclaimer-badge">
-            <Info size={16} />
-            <span>Mô hình giáo dục phục vụ học tập lý luận MLN122, không phải công cụ tư vấn tài chính.</span>
-          </div>
-        </header>
+        <SectionHeader
+          eyebrow="Interactive Model"
+          title="Mô phỏng Chịu đựng Rủi ro"
+          subtitle="Nhập vai Giám đốc Tài chính của Alpha Corp: Phân bổ 10.000 tỷ đồng và kiểm tra sức sống của doanh nghiệp dưới các kịch bản thị trường khác nhau."
+        />
 
         <div className="simulator-workspace">
           {/* Controls Panel */}
           <div className="sim-controls">
-            <div className="presets-group">
-              <span className="group-label">Kịch bản có sẵn</span>
-              <div className="preset-buttons">
-                {presets.map((preset) => (
+            
+            {/* Scenario Selector */}
+            <div className="scenario-selector">
+              <div className="group-label flex items-center">
+                <Settings2 size={16} className="mr-2" /> Kịch bản Thị trường
+              </div>
+              <div className="scenario-buttons">
+                {scenarios.map((scen) => (
                   <button 
-                    key={preset.id} 
-                    className="preset-btn"
-                    onClick={() => applyPreset(preset)}
+                    key={scen.id} 
+                    className={`scenario-btn ${activeScenarioId === scen.id ? 'active' : ''}`}
+                    onClick={() => setActiveScenarioId(scen.id)}
                   >
-                    {preset.label}
+                    {scen.name}
                   </button>
                 ))}
               </div>
+              <p className="scenario-desc">{activeScenario?.description}</p>
             </div>
 
-            <div className="sliders-container">
+            <div className="sliders-container mt-6">
+              <div className="group-label mb-4">Phân bổ 10.000 Tỷ đồng</div>
+              
               {/* Reserve Slider */}
               <div className="slider-group">
                 <div className="slider-header">
@@ -109,10 +140,9 @@ const Simulators = () => {
                   type="range" 
                   min="0" max="100" 
                   value={reserve} 
-                  onChange={(e) => { setReserve(Number(e.target.value)); setResult(null); }}
+                  onChange={(e) => setReserve(Number(e.target.value))}
                   className="custom-slider teal-slider"
                 />
-                <p className="slider-desc">Thanh khoản để trả lãi và dự phòng rủi ro.</p>
               </div>
 
               {/* Production Slider */}
@@ -120,7 +150,7 @@ const Simulators = () => {
                 <div className="slider-header">
                   <div className="slider-title">
                     <span className="color-dot bg-navy"></span>
-                    Tư liệu sản xuất (c)
+                    Tư bản Bất biến (c)
                   </div>
                   <span className="slider-value">{production}%</span>
                 </div>
@@ -128,10 +158,9 @@ const Simulators = () => {
                   type="range" 
                   min="0" max="100" 
                   value={production} 
-                  onChange={(e) => { setProduction(Number(e.target.value)); setResult(null); }}
+                  onChange={(e) => setProduction(Number(e.target.value))}
                   className="custom-slider navy-slider"
                 />
-                <p className="slider-desc">Máy móc, vật liệu tạo nên công trình.</p>
               </div>
 
               {/* Labor Slider */}
@@ -139,7 +168,7 @@ const Simulators = () => {
                 <div className="slider-header">
                   <div className="slider-title">
                     <span className="color-dot bg-gold"></span>
-                    Quỹ lương (v)
+                    Tư bản Khả biến (v)
                   </div>
                   <span className="slider-value">{labor}%</span>
                 </div>
@@ -147,10 +176,9 @@ const Simulators = () => {
                   type="range" 
                   min="0" max="100" 
                   value={labor} 
-                  onChange={(e) => { setLabor(Number(e.target.value)); setResult(null); }}
+                  onChange={(e) => setLabor(Number(e.target.value))}
                   className="custom-slider gold-slider"
                 />
-                <p className="slider-desc">Nuôi sống sức lao động để tạo giá trị mới.</p>
               </div>
             </div>
 
@@ -165,7 +193,7 @@ const Simulators = () => {
                 onClick={handleRun} 
                 disabled={!isBalanced}
               >
-                <Play size={18} className="mr-2" /> Chạy kiểm tra
+                <Play size={18} className="mr-2" /> Chạy Mô phỏng
               </button>
             </div>
           </div>
@@ -173,7 +201,7 @@ const Simulators = () => {
           {/* Visualization Panel */}
           <div className="sim-visuals">
             <div className="allocation-visual">
-              <h3 className="panel-title">Tỷ trọng phân bổ (10.000 Tỷ)</h3>
+              <h3 className="panel-title">Tỷ trọng phân bổ</h3>
               <div className="allocation-bar-container">
                 <motion.div 
                   className="alloc-segment bg-teal" 
@@ -191,36 +219,44 @@ const Simulators = () => {
                   transition={{ type: "spring", stiffness: 100 }}
                 />
               </div>
-              <div className="alloc-labels">
-                <span>Dự phòng</span>
-                <span>Sản xuất & Lương</span>
-              </div>
             </div>
 
-            <div className={`sim-result-card ${result ? `status-${result.status}` : 'empty'}`}>
-              <div className="result-icon-wrapper">
-                {getStatusIcon()}
-              </div>
-              <div className="result-content">
-                {result ? (
-                  <>
-                    <h3 className="result-title">{result.title}</h3>
-                    <p className="result-message">{result.message}</p>
-                    <button className="reset-link" onClick={() => setResult(null)}>
-                      <RefreshCw size={14} className="mr-2" /> Thử lại
-                    </button>
-                  </>
-                ) : (
-                  <p className="empty-state-text">
-                    Hãy điều chỉnh thanh trượt để tổng đạt 100%, sau đó nhấn "Chạy kiểm tra" để xem kết quả đánh giá sức chịu đựng của doanh nghiệp.
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="theory-context-box">
-              <span className="box-label">Góc nhìn lý luận</span>
-              <p>Tuần hoàn tư bản luôn đòi hỏi một tỷ lệ phân chia hợp lý giữa <strong>Tư bản bất biến (c)</strong> và <strong>Tư bản khả biến (v)</strong>, đồng thời phải dự trữ đủ <strong>Tư bản tiền tệ (T)</strong> để đối phó với sự gián đoạn của thời gian lưu thông.</p>
+            <div className="sim-results-area">
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={result ? 'result' : 'empty'}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className={`sim-result-card ${result ? `status-${result.status}` : 'empty'}`}
+                >
+                  <div className="result-icon-wrapper">
+                    {getStatusIcon()}
+                  </div>
+                  <div className="result-content">
+                    {result ? (
+                      <>
+                        <h3 className="result-title">{result.title}</h3>
+                        <p className="result-message">{result.message}</p>
+                        
+                        <div className="theory-context-box mt-4">
+                          <span className="box-label">Giải thích bằng Lý luận MLN122</span>
+                          <p>{result.theoryContext}</p>
+                        </div>
+                        
+                        <button className="reset-link mt-4" onClick={() => setResult(null)}>
+                          <RefreshCw size={14} className="mr-2" /> Điều chỉnh lại
+                        </button>
+                      </>
+                    ) : (
+                      <p className="empty-state-text">
+                        Hãy điều chỉnh tỷ lệ vốn và chọn Kịch bản thị trường, sau đó nhấn "Chạy Mô phỏng".
+                      </p>
+                    )}
+                  </div>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>

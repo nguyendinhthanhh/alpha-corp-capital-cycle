@@ -1,18 +1,17 @@
 import { ShieldCheck, FileText, Cpu, Users } from 'lucide-react';
 import { aiUsageRows, appendixSources, groupContributions, promptSamples } from '../data/caseData';
+import SectionHeader from '../components/shared/SectionHeader';
 import './Appendix.css';
 
 const Appendix = () => {
   return (
     <div className="appendix-page">
       <div className="container">
-        <header className="page-header text-center">
-          <span className="page-eyebrow">Minh bạch & Đóng góp</span>
-          <h1 className="page-title">Nguồn học thuật & Sử dụng AI</h1>
-          <p className="page-subtitle">
-            Hồ sơ minh bạch hóa nguồn dữ liệu, phạm vi sử dụng Trí tuệ nhân tạo và đóng góp của các thành viên trong dự án.
-          </p>
-        </header>
+        <SectionHeader
+          eyebrow="Minh bạch & Đóng góp"
+          title="Nguồn học thuật & Sử dụng AI"
+          subtitle="Hồ sơ minh bạch hóa nguồn dữ liệu, phạm vi sử dụng Trí tuệ nhân tạo và đóng góp của các thành viên trong dự án."
+        />
 
         <div className="integrity-banner">
           <ShieldCheck size={32} className="banner-icon" />

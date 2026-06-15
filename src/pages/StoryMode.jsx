@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { storyChapters } from '../data/caseData';
+import SectionHeader from '../components/shared/SectionHeader';
 
 const StoryMode = () => {
   const [activeChapter, setActiveChapter] = useState(storyChapters[0].number);
@@ -31,16 +32,14 @@ const StoryMode = () => {
   const progressValue = storyChapters.findIndex((chapter) => chapter.number === activeChapter) + 1;
 
   return (
-    <div className="route-shell">
+    <div className="route-shell pt-24 pb-20 bg-[var(--page-background)]">
       <div className="container story-layout">
-        <div className="route-hero story-route-hero">
-          <span className="kicker">Vụ việc</span>
-          <h1>Dòng thời gian của một chu kỳ tư bản bị gãy</h1>
-          <p className="hero-intro">
-            Đây là phiên bản kể chuyện tuyến tính để dùng trực tiếp khi thuyết trình. Mỗi chương gắn
-            một bước của vụ việc với một khái niệm MLN122 và một trạng thái của capital flow.
-          </p>
-        </div>
+        <SectionHeader
+          eyebrow="Vụ việc"
+          title="Dòng thời gian của một chu kỳ tư bản bị gãy"
+          subtitle="Đây là phiên bản kể chuyện tuyến tính để dùng trực tiếp khi thuyết trình. Mỗi chương gắn một bước của vụ việc với một khái niệm MLN122 và một trạng thái của capital flow."
+          align="left"
+        />
 
         <aside className="story-sidebar forensic-panel">
           <div className="panel-header">

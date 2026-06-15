@@ -1,0 +1,28 @@
+.section-header {
+  margin-bottom: var(--spacing-gap-lg);
+}
+
+.section-eyebrow {
+  display: block;
+  font-weight: 600;
+  color: var(--teal-600);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--spacing-gap-xs);
+}
+
+.section-title {
+  color: var(--navy-950);
+  margin-bottom: var(--spacing-gap-xs);
+}
+
+.section-subtitle {
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.text-left .section-subtitle {
+  margin-left: 0;
+  margin-right: 0;
+}

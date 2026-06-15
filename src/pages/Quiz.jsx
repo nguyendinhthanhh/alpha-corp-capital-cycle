@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Award, BookOpen } from 'lucide-react';
-import { quizQuestions } from '../data/caseData';
+import { CheckCircle2, XCircle, ArrowRight, RefreshCcw, Award, BookOpen, AlertCircle } from 'lucide-react';
+import { quizQuestions } from '../data/quizQuestions';
+import SectionHeader from '../components/shared/SectionHeader';
 import './Quiz.css';
 
 const Quiz = () => {
@@ -19,6 +20,7 @@ const Quiz = () => {
     setFeedback({
       correct: isCorrect,
       text: quizQuestions[currentQ].explain,
+      lesson: quizQuestions[currentQ].lesson
     });
 
     if (isCorrect) {
@@ -47,13 +49,11 @@ const Quiz = () => {
   return (
     <div className="quiz-page">
       <div className="container">
-        <header className="page-header text-center">
-          <span className="page-eyebrow">Đánh giá kiến thức</span>
-          <h1 className="page-title">Trắc nghiệm tổng hợp</h1>
-          <p className="page-subtitle">
-            Bộ 15 câu hỏi bám sát kiến thức Session 8, 10, 11, 13 và đối chiếu trực tiếp với tình huống thực tế của Alpha Corp.
-          </p>
-        </header>
+        <SectionHeader
+          eyebrow="Đánh giá kiến thức"
+          title="Trắc nghiệm MLN122"
+          subtitle="Bộ 15 câu hỏi phân cấp bám sát kiến thức Session 6-13, đối chiếu trực tiếp với tình huống thực tế của Alpha Corp."
+        />
 
         <div className="quiz-container">
           <AnimatePresence mode="wait">
@@ -68,7 +68,10 @@ const Quiz = () => {
                 {/* Progress Bar */}
                 <div className="quiz-progress">
                   <div className="progress-info">
-                    <span className="question-count">Câu {currentQ + 1} / {quizQuestions.length}</span>
+                    <span className="question-count">
+                      <span className="level-badge">{quizQuestions[currentQ].level}</span> 
+                      Câu {currentQ + 1} / {quizQuestions.length}
+                    </span>
                     <span className="current-score">Điểm: {score}</span>
                   </div>
                   <div className="progress-bar-bg">
@@ -82,7 +85,7 @@ const Quiz = () => {
 
                 {/* Question */}
                 <div className="quiz-question-area">
-                  <h2 className="question-text">{quizQuestions[currentQ].q}</h2>
+                  <h2 className="question-text">{quizQuestions[currentQ].question}</h2>
                 </div>
 
                 {/* Options */}
@@ -130,6 +133,12 @@ const Quiz = () => {
                         )}
                       </div>
                       <p>{feedback.text}</p>
+                      {feedback.lesson && (
+                        <div className="theory-lesson-box mt-4 p-3 bg-white/50 rounded-md border border-black/10 text-sm flex items-start gap-2">
+                          <AlertCircle size={16} className="text-teal-600 mt-0.5 shrink-0" />
+                          <span><strong>Ghi nhớ:</strong> {feedback.lesson}</span>
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -161,22 +170,27 @@ const Quiz = () => {
                     <span className="score-number">{score}</span>
                     <span className="score-total">/ {quizQuestions.length}</span>
                   </div>
+                  <p className="score-message">
+                    {score >= 12 ? "Tuyệt vời! Bạn nắm rất vững lý luận và biết cách áp dụng vào thực tế." : 
+                     score >= 8 ? "Khá tốt! Tuy nhiên, bạn nên ôn tập thêm các câu hỏi phân tích." : 
+                     "Bạn cần ôn tập lại toàn bộ kiến thức về Tuần hoàn tư bản."}
+                  </p>
                 </div>
 
                 <div className="result-analysis">
                   <p className="analysis-intro">
-                    Nếu bạn chưa đạt điểm tối đa, hãy ôn tập lại các khái niệm trọng tâm sau:
+                    Nếu bạn chưa đạt điểm tối đa, hãy ôn tập lại các khái niệm trọng tâm sau trong trang Từ điển Khái niệm:
                   </p>
                   <div className="focus-areas">
                     <div className="focus-card">
                       <BookOpen size={24} className="text-teal mb-3" />
-                      <h4>Bản chất của tư bản</h4>
-                      <p>Không phải mọi tài sản đều là tư bản. Nó phải vận động và tạo ra giá trị thặng dư.</p>
+                      <h4>3 Hình thái & 3 Giai đoạn</h4>
+                      <p>Tư bản không phải là một vật, mà là một sự vận động liên tục qua: Tiền tệ, Sản xuất, Hàng hóa.</p>
                     </div>
                     <div className="focus-card">
                       <BookOpen size={24} className="text-teal mb-3" />
-                      <h4>Điều kiện thời gian</h4>
-                      <p>Thời gian lưu thông kéo dài tại khâu H&apos; &rarr; T&apos; sẽ bóp nghẹt thanh khoản và làm đứt gãy chu kỳ.</p>
+                      <h4>Thời gian Chu chuyển</h4>
+                      <p>Thời gian lưu thông (H&apos; &rarr; T&apos;) quyết định sự sống còn. Bán được nhà mới có tiền để duy trì chu kỳ mới.</p>
                     </div>
                   </div>
                 </div>

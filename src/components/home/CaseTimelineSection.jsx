@@ -2,21 +2,21 @@ import { useState } from 'react';
 import { Banknote, Building, HardHat, Orbit, TrendingDown, Landmark, Ban, OctagonAlert } from 'lucide-react';
 import { timelineSteps } from '../../data/caseData';
 import { FadeIn, StaggerGroup, StaggerItem } from './MotionReveal';
+import Section from '../shared/Section';
+import SectionHeader from '../shared/SectionHeader';
 
 const CaseTimelineSection = () => {
   const [activeStep, setActiveStep] = useState(timelineSteps[2]);
   const timelineIcons = [Banknote, Building, HardHat, Orbit, TrendingDown, Landmark, Ban, OctagonAlert];
 
   return (
-    <section id="case-file" className="content-section section-dark">
-      <FadeIn className="section-heading">
-        <span className="kicker">Section 01</span>
-        <h2>Hồ sơ vụ việc</h2>
-        <p>
-          Timeline này nối từng biến cố của Alpha Corp với trạng thái tương ứng trong công thức tuần
-          hoàn tư bản, để thấy chính xác dòng tiền đã đứt ở đâu.
-        </p>
-      </FadeIn>
+    <Section id="case-file" className="content-section" bgColor="var(--navy-950)">
+        <SectionHeader
+          eyebrow="Section 01"
+          title="Hồ sơ vụ việc"
+          subtitle="Timeline này nối từng biến cố của Alpha Corp với trạng thái tương ứng trong công thức tuần hoàn tư bản, để thấy chính xác dòng tiền đã đứt ở đâu."
+          className="text-inverse"
+        />
 
       <div className="timeline-layout">
         <StaggerGroup className="timeline-grid premium-timeline-grid">
@@ -69,7 +69,7 @@ const CaseTimelineSection = () => {
           </div>
         </FadeIn>
       </div>
-    </section>
+      </Section>
   );
 };
 

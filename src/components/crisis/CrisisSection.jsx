@@ -1,21 +1,20 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, TrendingDown, RefreshCcw } from 'lucide-react';
+import { TrendingDown, RefreshCcw } from 'lucide-react';
+import Section from '../shared/Section';
+import SectionHeader from '../shared/SectionHeader';
 import './CrisisSection.css';
 
 const CrisisSection = () => {
   const [isCrisisActive, setIsCrisisActive] = useState(false);
 
   return (
-    <section id="crisis" className="crisis-section theme-navy section-padding">
-      <div className="container">
-        <div className="crisis-header text-center">
-          <span className="section-eyebrow">Điểm đứt gãy</span>
-          <h2 className="section-title">Điểm đứt gãy không nằm ở việc thiếu tài sản</h2>
-          <p className="section-subtitle">
-            Nó nằm ở việc giá trị hàng hóa không được thực hiện trên thị trường. Thanh khoản là khả năng quay về tiền, không phải quy mô của tài sản.
-          </p>
-        </div>
+    <Section className="crisis-section theme-navy" id="crisis">
+        <SectionHeader
+          eyebrow="Điểm đứt gãy"
+          title="Điểm đứt gãy không nằm ở việc thiếu tài sản"
+          subtitle="Nó nằm ở việc giá trị hàng hóa không được thực hiện trên thị trường. Thanh khoản là khả năng quay về tiền, không phải quy mô của tài sản."
+        />
 
         <div className="crisis-interactive">
           <div className="crisis-visual-area">
@@ -114,8 +113,7 @@ const CrisisSection = () => {
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </Section>
   );
 };
 
