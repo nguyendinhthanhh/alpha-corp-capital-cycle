@@ -1,0 +1,221 @@
+.crisis-section {
+  color: var(--text-inverse-primary);
+}
+
+.crisis-header {
+  margin-bottom: 56px;
+}
+
+.crisis-header .section-eyebrow {
+  color: var(--red-500);
+}
+
+.crisis-header .section-title,
+.crisis-header .section-subtitle {
+  color: var(--text-inverse-primary);
+}
+
+.crisis-header .section-subtitle {
+  color: var(--text-inverse-secondary);
+}
+
+.crisis-interactive {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  background-color: var(--navy-900);
+  border-radius: 12px;
+  padding: 40px;
+  border: 1px solid var(--border-dark);
+}
+
+@media (min-width: 992px) {
+  .crisis-interactive {
+    grid-template-columns: 3fr 2fr;
+    align-items: center;
+  }
+}
+
+/* Visual Area */
+.crisis-visual-area {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+
+.crisis-flow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.c-node {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--navy-800);
+  border: 2px solid var(--teal-600);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 1.25rem;
+  z-index: 2;
+  position: relative;
+}
+
+.hp-node {
+  border-color: var(--gold-500);
+}
+
+.tp-node {
+  border-color: var(--teal-600);
+  transition: all 0.3s ease;
+}
+
+.tp-node.is-locked {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.c-connector {
+  flex-grow: 1;
+  height: 4px;
+  background-color: var(--teal-600);
+  margin: 0 -4px;
+  position: relative;
+  z-index: 1;
+}
+
+.final-connector {
+  background-color: var(--gold-500);
+  overflow: hidden;
+}
+
+.final-connector.is-blocked {
+  background-color: var(--red-600);
+  overflow: visible;
+}
+
+.moving-capital {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+}
+
+.crisis-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--red-500);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 24px;
+  background-color: var(--navy-900);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.crisis-status-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.status-pill {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+
+.status-pill.safe {
+  background-color: rgba(25, 135, 84, 0.2);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.status-pill.danger {
+  background-color: rgba(224, 79, 79, 0.2);
+  color: var(--red-500);
+  border: 1px solid rgba(224, 79, 79, 0.3);
+}
+
+/* Control Area */
+.crisis-control-area {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.btn-danger {
+  background-color: var(--red-600);
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: var(--red-500);
+}
+
+.btn-secondary-inverse {
+  background-color: transparent;
+  border: 1px solid var(--border-dark);
+  color: var(--text-inverse-primary);
+}
+
+.btn-secondary-inverse:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.explanation-panel {
+  background-color: var(--navy-950);
+  border-radius: 8px;
+  padding: 24px;
+  min-height: 200px;
+  border-left: 4px solid var(--teal-600);
+  transition: border-color 0.3s;
+}
+
+.explanation-panel:has(.crisis) {
+  border-left-color: var(--red-500);
+}
+
+.exp-content h4 {
+  margin-bottom: 16px;
+  font-size: 1.125rem;
+}
+
+.exp-content.calm h4 {
+  color: var(--teal-600);
+}
+
+.exp-content.crisis h4 {
+  color: var(--red-500);
+}
+
+.exp-content ul {
+  padding-left: 20px;
+  color: var(--text-inverse-secondary);
+  font-size: 0.9375rem;
+}
+
+.exp-content li {
+  margin-bottom: 8px;
+}
+
+.exp-content li strong {
+  color: var(--text-inverse-primary);
+}

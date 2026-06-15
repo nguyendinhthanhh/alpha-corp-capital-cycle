@@ -3,7 +3,7 @@ export const caseStatus = [
   { label: 'Dự án', value: 'Khu đô thị cao cấp ven biển', tone: 'muted' },
   { label: 'Tiến độ', value: '3 tòa tháp hoàn thành phần thô', tone: 'muted' },
   { label: 'Sức mua thị trường', value: 'Giảm mạnh', tone: 'danger' },
-  { label: 'Tình trạng hàng hóa', value: 'Không tiêu thụ được', tone: 'danger' },
+  { label: 'Tình trạng hàng hóa', value: 'Chưa thực hiện được giá trị', tone: 'danger' },
   { label: 'Thanh khoản', value: 'Nguy cấp', tone: 'danger' },
   { label: 'Điểm tắc nghẽn', value: "H' → T'", tone: 'blue' },
 ];
@@ -11,20 +11,119 @@ export const caseStatus = [
 export const heroFlowStages = [
   { key: 'T', title: 'Tư bản tiền tệ', detail: 'Khoản vay dùng để khởi động dự án.' },
   { key: 'H', title: 'Tư liệu sản xuất và sức lao động', detail: 'Đất, máy móc, vật liệu, nhân công.' },
-  { key: 'SX', title: 'Quá trình sản xuất', detail: 'Công trình thi công ngày đêm để tạo giá trị mới.' },
-  { key: "H'", title: 'Ba tòa tháp và giá trị chưa thực hiện', detail: 'Vốn bị neo trong bất động sản và công trình dở dang.' },
-  { key: "T'", title: 'Tiền thu về sau tiêu thụ', detail: 'Dòng tiền chỉ hình thành khi hàng hóa được bán.' },
+  { key: 'SX', title: 'Quá trình sản xuất', detail: 'Công trình thi công để tạo giá trị mới.' },
+  { key: "H'", title: 'Tư bản hàng hóa', detail: 'Vốn bị neo trong phần thô và công trình dở dang.' },
+  { key: "T'", title: 'Tiền thu về sau tiêu thụ', detail: 'Chỉ hình thành khi hàng hóa được bán.' },
 ];
 
 export const timelineSteps = [
   { order: '01', title: 'Alpha Corp vay 10.000 tỷ đồng', stage: 'T', note: 'Tư bản bắt đầu dưới hình thái tiền tệ.' },
   { order: '02', title: 'Mua đất, máy móc, vật liệu và thuê nhân công', stage: 'T → H', note: 'Tiền chuyển hóa thành đầu vào sản xuất.' },
   { order: '03', title: 'Thi công phần thô ba tòa tháp', stage: 'SX', note: 'Giá trị mới chỉ được tạo ra trong quá trình sản xuất.' },
-  { order: '04', title: 'Tín dụng bị siết chặt', stage: 'Lưu thông', note: 'Điều kiện thị trường bắt đầu gây áp lực lên tiêu thụ.' },
-  { order: '05', title: 'Lãi suất tăng', stage: 'Lưu thông', note: 'Chi phí vay và khả năng tiếp cận tín dụng xấu đi.' },
+  { order: '04', title: 'Tín dụng bị siết chặt', stage: 'Lưu thông', note: 'Điều kiện thị trường gây áp lực lên khâu bán hàng hóa.' },
+  { order: '05', title: 'Lãi suất tăng', stage: 'Lưu thông', note: 'Chi phí vay và khả năng tiếp cận vốn xấu đi.' },
   { order: '06', title: 'Người dân không đủ sức mua', stage: "H'", note: 'Hàng hóa tồn tại nhưng sức mua xã hội suy yếu.' },
   { order: '07', title: 'Bất động sản không bán được', stage: "H' → T'", note: 'Giá trị hàng hóa không được thực hiện trên thị trường.' },
   { order: '08', title: 'Dòng tiền không quay trở lại', stage: "T' bị đình trệ", note: 'Chu kỳ kế tiếp không thể bắt đầu.' },
+];
+
+export const storyChapters = [
+  {
+    number: '01',
+    title: 'Khoản vay 10.000 tỷ đồng',
+    summary: 'Tư bản tiền tệ được ứng ra dưới hình thức vốn vay, không phải tài sản sẵn có của Alpha Corp.',
+    theory: 'T là hình thái mở đầu của tuần hoàn tư bản.',
+    stage: 'T',
+    evidence: 'Hợp đồng tín dụng mở đầu chu kỳ, đồng thời tạo nghĩa vụ trả lãi ngay từ thời điểm giải ngân.',
+  },
+  {
+    number: '02',
+    title: 'Tiền chuyển thành quyền sử dụng đất',
+    summary: 'Một phần vốn được khóa vào đất đai và pháp lý dự án, bắt đầu quá trình chuyển hóa T thành H.',
+    theory: 'Tư bản tiền tệ phải mua đầu vào sản xuất trước khi bước vào SX.',
+    stage: 'T → H',
+    evidence: 'Giá trị chưa biến mất, nhưng đã bị “định cư” trong một hình thái khó quay lại tiền mặt nhanh.',
+  },
+  {
+    number: '03',
+    title: 'Máy móc, vật liệu và sức lao động được huy động',
+    summary: 'Tư bản bất biến (c) và tư bản khả biến (v) được ghép vào cùng một công trường.',
+    theory: 'Chỉ tư bản khả biến mới tạo ra giá trị mới, còn tư bản bất biến chuyển giá trị cũ vào sản phẩm.',
+    stage: 'H',
+    evidence: 'Chi phí vật liệu, máy móc và tiền lương cùng lúc tạo điều kiện cho sản xuất diễn ra.',
+  },
+  {
+    number: '04',
+    title: 'Quá trình xây dựng bắt đầu',
+    summary: 'Vốn đi vào SX, nơi các đầu vào kết hợp để tạo ra giá trị mới và giá trị thặng dư.',
+    theory: 'SX là giai đoạn quyết định trong tuần hoàn tư bản.',
+    stage: 'SX',
+    evidence: 'Nếu lương hay vật liệu đứt đoạn ở đây, chu kỳ gãy từ bên trong chứ chưa cần đến thị trường.',
+  },
+  {
+    number: '05',
+    title: 'Ba tòa tháp phần thô xuất hiện',
+    summary: "Giá trị tích tụ trong công trình dở dang, tạo ra H' nhưng chưa hoàn thành bước thực hiện giá trị.",
+    theory: "H' là tư bản hàng hóa mang giá trị lớn hơn ban đầu nhưng phải được bán mới trở về T'.",
+    stage: "H'",
+    evidence: 'Đây mới là phần thô, không được mô tả như sản phẩm hoàn thiện đã chắc chắn có người mua.',
+  },
+  {
+    number: '06',
+    title: 'Tín dụng bị siết chặt',
+    summary: 'Điều kiện thị trường thay đổi từ bên ngoài, khiến khâu lưu thông bắt đầu chịu áp lực.',
+    theory: 'Tuần hoàn tư bản không chỉ phụ thuộc vào sản xuất mà còn phụ thuộc vào điều kiện lưu thông.',
+    stage: 'Lưu thông',
+    evidence: 'Khi tín dụng co lại, người mua nhà khó tiếp cận vốn vay, làm thị trường hấp thụ kém đi.',
+  },
+  {
+    number: '07',
+    title: 'Lãi suất tăng',
+    summary: 'Áp lực lãi vay và chi phí vốn làm doanh nghiệp ít dư địa chống đỡ hơn trước biến động cầu.',
+    theory: 'Thời gian lưu thông càng dài thì gánh nặng tài chính càng đè nặng lên chu chuyển tư bản.',
+    stage: 'Lưu thông',
+    evidence: 'Chi phí vay không giảm dù hàng hóa chưa bán được, nên nhu cầu tiền mặt tăng lên ngay lập tức.',
+  },
+  {
+    number: '08',
+    title: 'Sức mua xã hội giảm',
+    summary: 'Hàng hóa còn đó nhưng khả năng thực hiện giá trị trên thị trường suy yếu mạnh.',
+    theory: "H' chỉ hoàn tất chức năng khi được tiêu thụ.",
+    stage: "H'",
+    evidence: 'Đây là lúc nhiều tài sản không đồng nghĩa với có thanh khoản.',
+  },
+  {
+    number: '09',
+    title: "H' không chuyển thành T'",
+    summary: 'Điểm nghẽn học thuật xuất hiện: giá trị hàng hóa chưa được thực hiện, tiền không quay về.',
+    theory: "Khâu H' → T' là bước nhảy nguy hiểm nhất của hàng hóa.",
+    stage: "H' ⇢ T'",
+    evidence: 'Không có giao dịch đủ để kéo dòng tiền trở lại, nên chu kỳ đứng im ngay trước cửa T’.',
+  },
+  {
+    number: '10',
+    title: 'Khủng hoảng lan truyền',
+    summary: 'Không thu được tiền kéo theo nợ lãi, nợ lương, gián đoạn mua vật liệu và đứt chuỗi dự án tiếp theo.',
+    theory: 'Một điểm gãy ở lưu thông có thể làm tê liệt toàn bộ quá trình tái sản xuất.',
+    stage: 'Lan truyền hệ quả',
+    evidence: 'Đây là hiệu ứng dây chuyền tác động đồng thời tới ngân hàng, công nhân, nhà cung cấp và thị trường.',
+  },
+  {
+    number: '11',
+    title: 'Chu kỳ tái sản xuất bị gián đoạn',
+    summary: 'Tư bản tiền tệ không quay lại đúng lúc nên chu kỳ mới không thể mở ra.',
+    theory: 'Chu chuyển tư bản đòi hỏi các giai đoạn nối tiếp nhau liên tục về thời gian.',
+    stage: "T' không hình thành",
+    evidence: 'Không có tiền mặt, doanh nghiệp không thể mua đầu vào mới hay duy trì nghĩa vụ hiện tại.',
+  },
+  {
+    number: '12',
+    title: 'Giải mã bằng lý luận MLN122',
+    summary: 'Case Alpha Corp cho thấy tư bản là một vận động, không phải một khối tài sản tĩnh.',
+    theory: 'Hai điều kiện liên tục của tuần hoàn tư bản nằm ở không gian và thời gian.',
+    stage: 'Kết luận',
+    evidence: "Cốt lõi của vụ việc không phải 'thiếu tài sản', mà là H' không thể chuyển thành T'.",
+  },
 ];
 
 export const flowNodes = [
@@ -38,7 +137,7 @@ export const flowNodes = [
   },
   {
     id: 'land',
-    label: 'Đất',
+    label: 'Quyền sử dụng đất',
     capitalForm: 'Một phần của H',
     activity: 'Khóa vốn vào quỹ đất và pháp lý dự án.',
     theory: 'Đầu vào sản xuất phải được gom đủ để quá trình SX diễn ra.',
@@ -61,6 +160,14 @@ export const flowNodes = [
     risk: 'Dở dang kéo dài làm đội chi phí bảo quản và bổ sung vốn.',
   },
   {
+    id: 'build-cost',
+    label: 'Chi phí xây dựng',
+    capitalForm: 'Bộ phận H đi vào SX',
+    activity: 'Kết tinh nhiều khoản ứng trước vào cùng một tiến độ thi công.',
+    theory: 'Tư bản ứng trước phải được phân bố theo tỷ lệ phù hợp để không làm nghẽn SX.',
+    risk: 'Chi phí vượt nhịp làm suy yếu dự phòng và thanh khoản.',
+  },
+  {
     id: 'labor',
     label: 'Sức lao động',
     capitalForm: 'Tư bản khả biến (v)',
@@ -70,34 +177,18 @@ export const flowNodes = [
   },
   {
     id: 'production',
-    label: 'Sản xuất',
+    label: 'Công trình phần thô',
     capitalForm: 'SX',
-    activity: 'Các đầu vào kết hợp để tạo công trình phần thô.',
+    activity: 'Các đầu vào kết hợp để tạo công trình đang hình thành.',
     theory: 'SX là giai đoạn quyết định việc sản xuất ra giá trị và giá trị thặng dư.',
     risk: 'Nếu đầu vào hoặc tiền lương đứt đoạn, SX dừng ngay.',
   },
   {
-    id: 'towers',
-    label: 'Ba tòa tháp phần thô',
-    capitalForm: "H'",
-    activity: 'Giá trị tích tụ trong bất động sản và công trình dở dang.',
-    theory: "H' là tư bản hàng hóa chứa giá trị cần được thực hiện qua lưu thông.",
-    risk: 'Tài sản lớn nhưng chưa thể trở thành tiền nếu không bán được.',
-  },
-  {
-    id: 'market',
-    label: 'Chờ tiêu thụ',
-    capitalForm: "H' trong lưu thông",
-    activity: 'Phụ thuộc vào tín dụng, lãi suất và sức mua xã hội.',
-    theory: 'Thời gian lưu thông càng kéo dài, chu chuyển vốn càng chậm.',
-    risk: 'Thị trường đóng băng làm H’ mắc kẹt trước cửa T’.',
-  },
-  {
     id: 'freeze',
-    label: 'Tắc nghẽn',
-    capitalForm: "H' ⇢ T' thất bại",
-    activity: 'Giá trị hàng hóa không được thực hiện.',
-    theory: 'Điểm nghẽn chính của Alpha Corp nằm ở H’ không chuyển thành T’.',
+    label: 'Giá trị chưa thể thực hiện',
+    capitalForm: "H'",
+    activity: 'Giá trị tích tụ trong phần thô, bất động sản và hàng hóa chưa bán được.',
+    theory: "Điểm nghẽn chính của Alpha Corp nằm ở H' không chuyển thành T'.",
     risk: 'Không có tiền cho lãi vay, vật liệu mới, lương và chu kỳ kế tiếp.',
   },
 ];
@@ -115,31 +206,55 @@ export const cascadeActors = [
   {
     id: 'alpha',
     name: 'Alpha Corp',
+    direct: 'Không thu hồi được tiền và đứt dòng tiền hoạt động.',
+    indirect: 'Không thể mở chu kỳ sản xuất mới, đẩy doanh nghiệp tới khủng hoảng thanh khoản.',
+    relation: 'Là trung tâm kết nối giữa vốn vay, công trường, hàng hóa và thị trường.',
+    lesson: "Nhiều tài sản không đồng nghĩa với có T' trong tay.",
     impact: 'Không thu hồi được tiền, đứt dòng tiền hoạt động, không mở được chu kỳ mới.',
   },
   {
     id: 'bank',
     name: 'Ngân hàng',
+    direct: 'Khoản vay chuyển sang nhóm rủi ro cao và áp lực thu nợ tăng lên.',
+    indirect: 'Tín dụng bị siết hơn nữa làm thị trường đóng băng sâu hơn.',
+    relation: 'Cung cấp T ban đầu nhưng cũng đòi hỏi lợi tức đều đặn.',
+    lesson: 'Lợi tức vẫn đòi hỏi thanh toán dù hàng hóa chưa được tiêu thụ.',
     impact: 'Khoản vay chuyển sang nhóm rủi ro cao, áp lực thu hồi nợ và trích lập tăng lên.',
   },
   {
     id: 'workers',
     name: 'Công nhân',
+    direct: 'Nợ lương kéo dài, sức lao động không được tái sản xuất bình thường.',
+    indirect: 'Đứt gãy lực lượng lao động làm SX khó tiếp tục ngay cả khi thị trường hồi phục.',
+    relation: 'Là bộ phận của tư bản khả biến (v) tạo ra giá trị mới.',
+    lesson: 'Nếu không bảo đảm v, chu kỳ đổ vỡ cả ở khâu sản xuất lẫn lưu thông.',
     impact: 'Nợ lương kéo dài, sức lao động không còn được tái sản xuất bình thường.',
   },
   {
     id: 'suppliers',
     name: 'Nhà cung cấp',
+    direct: 'Không bán được vật liệu cho chu kỳ sau, công nợ bị treo.',
+    indirect: 'Chuỗi cung ứng địa phương chậm lại vì nhiều bên cùng mất khả năng thanh toán.',
+    relation: 'Gắn với bộ phận tư bản bất biến (c) và nhịp bổ sung đầu vào mới.',
+    lesson: 'Một điểm nghẽn ở H’ → T’ có thể quay ngược lại làm tê liệt khâu T → H của chu kỳ sau.',
     impact: 'Không bán được vật liệu cho chu kỳ sau, công nợ bị treo, đứt chuỗi cung ứng.',
   },
   {
     id: 'buyers',
     name: 'Người mua nhà',
+    direct: 'Khó tiếp cận tín dụng và trì hoãn quyết định mua.',
+    indirect: 'Sức mua suy giảm làm kéo dài thời gian lưu thông của toàn bộ phân khúc.',
+    relation: "Là mắt xích quyết định việc H' có trở thành T' hay không.",
+    lesson: 'Giá trị hàng hóa chỉ được thực hiện khi tồn tại sức mua xã hội tương ứng.',
     impact: 'Khó tiếp cận tín dụng, trì hoãn quyết định mua, làm kéo dài thời gian lưu thông.',
   },
   {
     id: 'state',
     name: 'Nhà nước',
+    direct: 'Áp lực ổn định thị trường, việc làm và hệ thống tín dụng tăng lên.',
+    indirect: 'Khủng hoảng cục bộ có thể lan rộng thành căng thẳng kinh tế - xã hội lớn hơn.',
+    relation: 'Liên quan tới chính sách tín dụng, điều tiết thị trường và ổn định vĩ mô.',
+    lesson: 'Tuần hoàn tư bản của từng doanh nghiệp luôn gắn với điều kiện thị trường rộng hơn.',
     impact: 'Áp lực ổn định thị trường, việc làm và hệ thống tín dụng tăng lên cùng lúc.',
   },
 ];
@@ -151,6 +266,7 @@ export const theoryTopics = [
     example: 'Khoản vay 10.000 tỷ đồng của Alpha Corp tồn tại ban đầu dưới dạng T.',
     consequence: 'Nếu T bị phân bổ sai hoặc cạn kiệt sớm, dự án không thể đi vào sản xuất.',
     memory: 'Không có T, chu kỳ không thể khởi động.',
+    source: 'Giáo trình và Session 8 về công thức chung của tư bản.',
   },
   {
     title: 'Tư bản sản xuất là gì?',
@@ -158,6 +274,7 @@ export const theoryTopics = [
     example: 'Công trường thi công phần thô là nơi vốn vay chuyển hóa thành tư bản sản xuất.',
     consequence: 'SX bị gián đoạn sẽ phá hỏng cả giá trị đang hình thành lẫn chu kỳ tái sản xuất.',
     memory: 'Chỉ trong SX mới tạo ra giá trị mới.',
+    source: 'Giáo trình và Session 8 về tuần hoàn tư bản.',
   },
   {
     title: 'Tư bản hàng hóa là gì?',
@@ -165,6 +282,7 @@ export const theoryTopics = [
     example: 'Ba tòa tháp phần thô chứa phần lớn vốn đã ứng ra, nhưng chưa tạo ra tiền thu về.',
     consequence: "Nếu H' không bán được, giá trị bị treo trong hình thái hàng hóa.",
     memory: "Tài sản lớn chưa chắc đã là tiền, nếu nó vẫn còn ở H'.",
+    source: 'Giáo trình và Session 8 về H’.',
   },
   {
     title: "Vì sao điểm tắc nghẽn nằm ở H' → T'?",
@@ -172,6 +290,7 @@ export const theoryTopics = [
     example: 'Alpha Corp có công trình, nhưng không có giao dịch đủ để chuyển hàng hóa thành tiền.',
     consequence: 'Không có T’, doanh nghiệp mất thanh khoản và không tái khởi động được chu kỳ sau.',
     memory: "Khủng hoảng bùng lên khi H' đứng yên trước cửa T'.",
+    source: 'Session 8 và case Alpha Corp.',
   },
   {
     title: 'Điều kiện liên tục về mặt không gian',
@@ -179,6 +298,7 @@ export const theoryTopics = [
     example: 'Một phần vốn còn là tiền dự phòng, một phần đang ở công trường, một phần ở hàng hóa chờ bán.',
     consequence: 'Nếu mọi vốn bị dồn hết vào một khâu, doanh nghiệp dễ mất khả năng xoay xở.',
     memory: 'Tuần hoàn liên tục đòi hỏi vốn phân thân trong không gian.',
+    source: 'Giáo trình và Session 8 về điều kiện liên tục.',
   },
   {
     title: 'Điều kiện liên tục về mặt thời gian',
@@ -186,13 +306,15 @@ export const theoryTopics = [
     example: 'Sau khi bán hàng hóa, tiền phải quay về đủ nhanh để trả nợ và tái đầu tư.',
     consequence: 'Khoảng dừng quá lâu giữa các giai đoạn làm chu chuyển chậm và dễ phát nổ tài chính.',
     memory: 'Chu kỳ không chỉ cần đủ khâu, mà còn cần đúng nhịp.',
+    source: 'Giáo trình và Session 8 về điều kiện liên tục.',
   },
   {
     title: 'Thời gian sản xuất',
-    definition: 'Khoảng thời gian vốn nằm trong SX để tạo ra sản phẩm.',
+    definition: 'Khoảng thời gian vốn nằm trong SX để tạo ra sản phẩm, gồm cả lao động, gián đoạn và dự trữ.',
     example: 'Hai năm thi công phần thô khiến vốn neo lâu trong công trường.',
     consequence: 'Dự án càng dài, nhu cầu vốn lưu động và khả năng chịu biến động càng lớn.',
     memory: 'Thời gian sản xuất dài làm vốn chậm quay.',
+    source: 'Giáo trình và Session 8 về chu chuyển tư bản.',
   },
   {
     title: 'Thời gian lưu thông',
@@ -200,6 +322,7 @@ export const theoryTopics = [
     example: 'Khi thị trường đóng băng, ba tòa tháp phần thô kéo dài thời gian lưu thông.',
     consequence: 'Vốn không quay lại đúng lúc, kéo theo thiếu tiền mặt và đổ vỡ dây chuyền.',
     memory: 'Lưu thông kéo dài là tín hiệu thanh khoản đang xấu đi.',
+    source: 'Giáo trình và Session 8 về chu chuyển tư bản.',
   },
   {
     title: 'Chu chuyển tư bản',
@@ -207,6 +330,15 @@ export const theoryTopics = [
     example: 'Alpha Corp chỉ sống khỏe nếu tiền bán kỳ trước đủ nuôi kỳ tiếp theo.',
     consequence: 'Chu chuyển chậm làm suy yếu khả năng sinh lời và tăng lệ thuộc vào nợ.',
     memory: 'Sinh lời không chỉ cần giá trị thặng dư, mà còn cần tốc độ quay vòng.',
+    source: 'Session 8 về chu chuyển tư bản.',
+  },
+  {
+    title: 'Tuần hoàn tư bản',
+    definition: 'Là sự vận động liên tục của tư bản qua ba giai đoạn, ba hình thái và ba chức năng.',
+    example: 'Case Alpha Corp minh họa rõ việc T đi qua H, SX, H’ rồi bị chặn trước T’.',
+    consequence: 'Mất một mắt xích thì toàn bộ vận động của tư bản bị đình trệ.',
+    memory: 'Tư bản là vận động, không phải đống tài sản đứng yên.',
+    source: 'Session 8 về tuần hoàn tư bản.',
   },
   {
     title: 'Vì sao nhiều tài sản không đồng nghĩa với thanh khoản?',
@@ -214,13 +346,38 @@ export const theoryTopics = [
     example: 'Ba tòa tháp phần thô là tài sản lớn, nhưng không giúp Alpha Corp trả lãi ngay lập tức.',
     consequence: 'Doanh nghiệp có thể giàu tài sản nhưng vẫn vỡ thanh khoản.',
     memory: 'Thanh khoản đo khả năng quay về tiền, không đo kích thước bảng tài sản.',
+    source: 'Case Alpha Corp và giải thích từ Session 8.',
+  },
+  {
+    title: 'Tích lũy tư bản',
+    definition: 'Là biến một phần giá trị thặng dư thành tư bản mới để mở rộng sản xuất.',
+    example: 'Nếu Alpha Corp thực hiện được giá trị hàng hóa và tạo ra phần dôi ra, doanh nghiệp mới có cơ sở mở rộng dự án tiếp theo.',
+    consequence: 'Khi H’ không trở thành T’, tích lũy tư bản bị chặn từ gốc.',
+    memory: 'Không có T’ quay về thì không có gì để tích lũy.',
+    source: 'Session 10 về tích lũy tư bản và tái sản xuất.',
+  },
+  {
+    title: 'Lợi nhuận là gì?',
+    definition: 'Là hình thức biểu hiện bề ngoài của giá trị thặng dư khi so sánh với toàn bộ tư bản ứng trước.',
+    example: 'Alpha Corp chỉ có thể nói tới lợi nhuận khi hàng hóa được tiêu thụ và giá trị quay về dưới dạng tiền.',
+    consequence: 'Hàng hóa mắc kẹt khiến lợi nhuận không thể biểu hiện thành dòng tiền thực.',
+    memory: 'Lợi nhuận là biểu hiện của giá trị thặng dư, không phải khái niệm tách rời lưu thông.',
+    source: 'Session 11 về lợi nhuận.',
+  },
+  {
+    title: 'Lợi tức là gì?',
+    definition: 'Là phần lợi nhuận mà tư bản đi vay phải trả cho tư bản cho vay để được quyền sử dụng vốn.',
+    example: 'Khoản vay 10.000 tỷ đồng khiến Alpha Corp phải trả lợi tức ngay cả khi hàng hóa chưa bán được.',
+    consequence: 'Khi T’ không hình thành, nghĩa vụ lợi tức trở thành gánh nặng trực tiếp lên thanh khoản.',
+    memory: 'Lợi tức không chờ thị trường hồi phục, nó đến hạn theo hợp đồng vay.',
+    source: 'Session 11 về lợi tức.',
   },
 ];
 
 export const quickQuiz = [
   {
     question: 'Alpha Corp bị mắc kẹt chủ yếu ở hình thái nào?',
-    answer: "H' , tức tư bản hàng hóa chưa thể thực hiện giá trị trên thị trường.",
+    answer: "H', tức tư bản hàng hóa chưa thể thực hiện giá trị trên thị trường.",
   },
   {
     question: "Vì sao H' chưa thể trở thành T'?",
@@ -229,5 +386,175 @@ export const quickQuiz = [
   {
     question: 'Điều kiện nào bảo đảm tuần hoàn tư bản diễn ra liên tục?',
     answer: 'Các bộ phận tư bản phải cùng tồn tại về không gian và các giai đoạn phải nối tiếp liên tục về thời gian.',
+  },
+];
+
+export const quizQuestions = [
+  {
+    q: 'Theo C.Mác, công thức chung của tư bản là gì?',
+    options: ['H - T - H', "T - H - T'", "T - T'", "H - H'"],
+    answer: 1,
+    explain: "T - H - T' là công thức chung vì tư bản vận động để quay về hình thái tiền tệ với lượng giá trị lớn hơn ban đầu.",
+  },
+  {
+    q: 'Trong case Alpha Corp, 10.000 tỷ đồng nên được hiểu đúng là gì?',
+    options: ['Tài sản có sẵn của doanh nghiệp', 'Khoản vốn vay ngân hàng', 'Doanh thu đã thu về', 'Giá trị thặng dư tích lũy'],
+    answer: 1,
+    explain: 'Alpha Corp vay 10.000 tỷ đồng từ ngân hàng, đây là tư bản tiền tệ ứng trước dưới dạng vốn vay.',
+  },
+  {
+    q: "Điểm tắc nghẽn trung tâm của Alpha Corp nằm ở khâu nào?",
+    options: ['T → H', 'SX', "H' → T'", "T' → H"],
+    answer: 2,
+    explain: "Điểm nghẽn chính là H' không chuyển thành T', tức hàng hóa không được thực hiện giá trị trên thị trường.",
+  },
+  {
+    q: "Ba tòa tháp phần thô của Alpha Corp tương ứng gần nhất với hình thái nào?",
+    options: ['Tư bản tiền tệ', 'Tư bản hàng hóa H’', 'Lợi tức', 'Tư bản khả biến'],
+    answer: 1,
+    explain: "Ba tòa tháp phần thô là H', tức tư bản hàng hóa mang giá trị chờ được thực hiện qua lưu thông.",
+  },
+  {
+    q: 'Vì sao nhiều tài sản không đồng nghĩa với thanh khoản?',
+    options: [
+      'Vì tài sản luôn tạo ra tiền ngay',
+      'Vì tài sản có thể đang bị đóng băng, chưa bán được hoặc khó chuyển thành tiền nhanh',
+      'Vì mọi tài sản đều là chi phí chìm',
+      'Vì chỉ ngân hàng mới có thanh khoản',
+    ],
+    answer: 1,
+    explain: 'Alpha Corp có nhiều tài sản dạng công trình dở dang nhưng vẫn thiếu tiền mặt vì giá trị chưa quay về dạng tiền.',
+  },
+  {
+    q: 'Điều kiện liên tục về mặt không gian của tuần hoàn tư bản là gì?',
+    options: [
+      'Mọi vốn phải tập trung hết vào sản xuất',
+      'Các bộ phận tư bản phải đồng thời tồn tại dưới các hình thái khác nhau',
+      'Chỉ cần duy trì một lượng hàng hóa lớn',
+      'Luôn giữ tiền mặt ở mức tối đa',
+    ],
+    answer: 1,
+    explain: 'Về không gian, tổng tư bản phải được phân chia để đồng thời tồn tại ở các hình thái tiền tệ, sản xuất và hàng hóa.',
+  },
+  {
+    q: 'Điều kiện liên tục về mặt thời gian nhấn mạnh điều gì?',
+    options: [
+      'Các giai đoạn phải nối tiếp nhau chuyển hóa không đứt quãng',
+      'Doanh nghiệp phải liên tục mở rộng quy mô',
+      'Chỉ cần bán hàng vào đúng một thời điểm',
+      'Tiền mặt phải luôn lớn hơn hàng hóa',
+    ],
+    answer: 0,
+    explain: 'Về thời gian, các khâu của tuần hoàn phải nối tiếp nhau liên tục, nếu chậm ở một khâu sẽ kéo chậm cả chu chuyển.',
+  },
+  {
+    q: 'Bộ phận tư bản nào tạo ra giá trị mới và giá trị thặng dư?',
+    options: ['Tư bản bất biến (c)', 'Tư bản khả biến (v)', 'Máy móc', 'Tư bản hàng hóa'],
+    answer: 1,
+    explain: 'Chỉ tư bản khả biến, tức phần chi cho sức lao động, mới tạo ra lượng giá trị mới lớn hơn giá trị bản thân nó.',
+  },
+  {
+    q: 'Thời gian lưu thông là gì?',
+    options: [
+      'Thời gian vốn nằm trong lĩnh vực sản xuất',
+      'Thời gian hàng hóa và tiền nằm ngoài sản xuất để mua hoặc bán',
+      'Thời gian thi công phần thô',
+      'Thời gian một khoản vay đáo hạn',
+    ],
+    answer: 1,
+    explain: 'Thời gian lưu thông gồm thời gian mua và thời gian bán, tức vốn nằm ngoài sản xuất để chuyển hóa hình thái.',
+  },
+  {
+    q: 'Hậu quả trực tiếp khi thời gian lưu thông bị kéo dài là gì?',
+    options: ['Giá trị thặng dư tăng nhanh', 'Chu chuyển tư bản nhanh hơn', 'Tiền quay về chậm, gây áp lực thanh khoản', 'Tư bản bất biến chuyển thành khả biến'],
+    answer: 2,
+    explain: 'Khi lưu thông kéo dài, tiền không quay về đúng lúc nên nghĩa vụ lãi vay, lương và đầu vào mới đều chịu áp lực.',
+  },
+  {
+    q: 'Chu chuyển tư bản được hiểu là gì?',
+    options: ['Một lần bán hàng hóa thành công', 'Tuần hoàn tư bản được lặp đi lặp lại nhiều lần', 'Quy trình vay vốn một lần', 'Quá trình tăng giá tài sản'],
+    answer: 1,
+    explain: 'Chu chuyển tư bản là tuần hoàn tư bản được nhìn như một quá trình định kỳ, liên tục lặp lại.',
+  },
+  {
+    q: 'Trong case Alpha Corp, tín dụng bị siết và lãi suất tăng tác động trực tiếp nhất lên khâu nào?',
+    options: ['Khâu thực hiện giá trị trên thị trường', 'Khâu tạo giá trị mới trong sản xuất', 'Khâu phân phối giá trị thặng dư', 'Khâu tích lũy trong công nhân'],
+    answer: 0,
+    explain: 'Các biến động này làm giảm khả năng hấp thụ hàng hóa và tăng áp lực tài chính, trực tiếp làm H’ khó chuyển thành T’.',
+  },
+  {
+    q: 'Tích lũy tư bản sẽ bị cản trở khi nào?',
+    options: ['Khi doanh nghiệp giảm máy móc', "Khi H' không thể trở thành T' và tiền không quay về", 'Khi công nhân được trả lương đúng hạn', 'Khi sức mua tăng'],
+    answer: 1,
+    explain: 'Không có T’ quay về thì không có cơ sở biến một phần giá trị thặng dư thành tư bản mới để mở rộng sản xuất.',
+  },
+  {
+    q: 'Lợi tức trong tình huống Alpha Corp được hiểu đúng là gì?',
+    options: ['Toàn bộ doanh thu bán nhà', 'Phần lợi nhuận giữ lại để mở rộng sản xuất', 'Khoản phải trả cho tư bản cho vay để được dùng vốn', 'Chi phí nguyên vật liệu'],
+    answer: 2,
+    explain: 'Lợi tức là khoản Alpha Corp phải trả cho ngân hàng để được sử dụng vốn vay, và nghĩa vụ này vẫn tồn tại dù hàng hóa chưa bán được.',
+  },
+  {
+    q: 'Kết luận học thuật đúng nhất từ Alpha Corp là gì?',
+    options: [
+      'Có nhiều bất động sản thì doanh nghiệp luôn an toàn',
+      'Khủng hoảng chỉ do sản xuất chậm',
+      'Tư bản là sự vận động, và đứt ở H’ → T’ có thể làm tê liệt toàn bộ tái sản xuất',
+      'Chỉ cần tăng vay là có thể giải quyết ngay mọi vấn đề',
+    ],
+    answer: 2,
+    explain: "Case Alpha Corp cho thấy tư bản không phải tài sản tĩnh; khi H' không trở thành T', cả chu kỳ tái sản xuất bị gián đoạn.",
+  },
+];
+
+export const aiUsageRows = [
+  {
+    date: '15/06/2026',
+    tool: 'ChatGPT',
+    purpose: 'Đề xuất cấu trúc storytelling và cách trực quan hóa tuần hoàn tư bản.',
+    prompt: 'Thiết kế lại website Alpha Corp thành trải nghiệm điều tra dòng vốn tương tác.',
+    output: 'Đề xuất layout, motion, component và hướng kể chuyện.',
+    revision: 'Nhóm chỉnh lại toàn bộ thuật ngữ học thuật, loại bỏ chỗ diễn đạt dễ sai về MLN122.',
+    source: 'Đối chiếu với giáo trình và Session 8, 10, 11, 13.',
+    owner: 'Nhóm frontend',
+  },
+  {
+    date: '15/06/2026',
+    tool: 'GitHub Copilot / Codex',
+    purpose: 'Triển khai component React, CSS và interaction frontend.',
+    prompt: 'Refactor homepage, story page, quiz và appendix theo docs nội bộ.',
+    output: 'Code UI, structure, motion helpers và data files.',
+    revision: 'Nhóm rà lại logic quiz, simulator và nội dung học thuật trước khi dùng.',
+    source: 'Tài liệu docs nội bộ của project.',
+    owner: 'Nhóm frontend',
+  },
+];
+
+export const appendixSources = [
+  'Giáo trình Kinh tế chính trị Mác - Lênin dành cho sinh viên đại học.',
+  'Session 8: Công thức chung của tư bản, tuần hoàn và chu chuyển tư bản.',
+  'Session 10: Tích lũy tư bản và tái sản xuất.',
+  'Session 11: Lợi nhuận, lợi tức và các hình thức biểu hiện của giá trị thặng dư.',
+  'Session 13: Tài liệu hợp lệ được nhóm sử dụng theo source of truth của dự án.',
+];
+
+export const promptSamples = [
+  'Tạo kiến trúc nội dung cho website MLN122 xoay quanh case Alpha Corp nhưng giữ đúng công thức T – H … SX … H’ – T’.',
+  'Đề xuất cách trực quan hóa điểm nghẽn H’ → T’ mà không biến dự án thành dashboard fintech.',
+  'Refactor quiz thành trải nghiệm đủ 15 câu, có giải thích ngay sau mỗi đáp án và giữ đúng phạm vi Session 8, 10, 11, 13.',
+];
+
+export const groupContributions = [
+  {
+    role: 'Nhóm nội dung học thuật',
+    detail: 'Đối chiếu khái niệm, kiểm tra source of truth và rà lỗi diễn đạt MLN122.',
+  },
+  {
+    role: 'Nhóm thiết kế trải nghiệm',
+    detail: 'Định hình visual direction, motion, trình tự thuyết trình và cách trình chiếu trên lớp.',
+  },
+  {
+    role: 'Nhóm frontend',
+    detail: 'Xây dựng React UI, interaction, simulator, quiz và responsive presentation flow.',
   },
 ];

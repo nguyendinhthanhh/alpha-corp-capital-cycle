@@ -1,5 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout';
+import Layout from './components/layout/Layout';
 import LandingPage from './pages/LandingPage';
 import StoryMode from './pages/StoryMode';
 import Simulators from './pages/Simulators';
