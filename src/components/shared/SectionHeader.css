@@ -1,28 +1,45 @@
 .section-header {
-  margin-bottom: var(--spacing-gap-lg);
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .section-eyebrow {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: fit-content;
+  padding: 0.45rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(104, 205, 216, 0.18);
+  background: rgba(104, 205, 216, 0.06);
+  font-family: var(--font-mono);
   font-weight: 600;
-  color: var(--teal-600);
+  color: var(--teal-300);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: var(--spacing-gap-xs);
 }
 
 .section-title {
-  color: var(--navy-950);
-  margin-bottom: var(--spacing-gap-xs);
+  max-width: 14ch;
+  color: var(--text-primary);
 }
 
 .section-subtitle {
+  max-width: 64ch;
   color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
 }
 
+.text-center .section-eyebrow {
+  justify-self: center;
+}
+
+.text-center .section-title,
+.text-center .section-subtitle {
+  margin-inline: auto;
+}
+
+.text-left .section-title,
 .text-left .section-subtitle {
-  margin-left: 0;
-  margin-right: 0;
+  margin-inline: 0;
 }

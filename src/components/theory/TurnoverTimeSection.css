@@ -1,133 +1,76 @@
-.turnover-section {
-  background-color: var(--surface-secondary);
-  border-bottom: 1px solid var(--border-light);
-}
-
 .turnover-workspace {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-gap-lg);
-  max-width: 1000px;
-  margin: 0 auto;
+  gap: 1.25rem;
 }
 
-@media (min-width: 992px) {
-  .turnover-workspace {
-    grid-template-columns: 1fr 1fr;
-  }
+.turnover-controls,
+.turnover-results {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 1.6rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .turnover-controls {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  display: grid;
+  gap: 1rem;
 }
 
 .control-card {
-  background-color: var(--surface-primary);
-  border-radius: 12px;
-  padding: 24px;
+  padding: 1rem 1.05rem;
+  border-radius: 1.1rem;
   border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  transition: all 0.3s;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .control-card.crisis-highlight {
-  border-color: var(--red-300);
-  background-color: rgba(224, 79, 79, 0.05);
+  border-color: rgba(255, 110, 92, 0.18);
+  background: rgba(255, 110, 92, 0.08);
 }
 
 .control-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-.control-header h3 {
-  font-size: 1.125rem;
-  color: var(--navy-950);
-  margin: 0;
-}
-
-.control-header span {
-  font-family: var(--font-mono);
-  font-weight: 600;
-  color: var(--navy-800);
+  gap: 1rem;
+  margin-bottom: 0.55rem;
 }
 
 .control-desc {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  margin-bottom: 20px;
-}
-
-.slider-red::-webkit-slider-thumb {
-  background: var(--red-600);
-}
-
-.text-red { color: var(--red-600); }
-.text-teal { color: var(--teal-600); }
-
-/* Results Area */
-.turnover-results {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+  margin-bottom: 0.8rem;
+  font-size: 0.94rem;
 }
 
 .result-metrics {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 }
 
 .metric-box {
-  background-color: var(--surface-primary);
-  border-radius: 12px;
-  padding: 20px;
+  padding: 1rem;
+  border-radius: 1.1rem;
   border: 1px solid var(--border-light);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
+  background: rgba(255, 255, 255, 0.025);
 }
 
-.metric-box .metric-label {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  font-weight: 600;
-  margin-bottom: 8px;
+.metric-box strong {
+  display: block;
 }
 
-.metric-box .metric-value {
-  font-family: var(--font-mono);
-  font-size: 2rem;
-  color: var(--navy-950);
+.metric-label {
+  display: inline-block;
+  margin-bottom: 0.35rem;
 }
 
-.metric-box small {
-  font-size: 1rem;
-  color: var(--text-muted);
-}
-
-/* Visualizer */
-.turnover-visual {
-  background-color: var(--surface-primary);
-  border-radius: 12px;
-  padding: 32px;
-  border: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  gap: 32px;
+.metric-value {
+  font-size: clamp(1.4rem, 3vw, 2rem);
 }
 
 .cycle-ring-container {
   position: relative;
-  width: 120px;
-  height: 120px;
-  flex-shrink: 0;
+  width: min(16rem, 100%);
+  aspect-ratio: 1;
+  margin-inline: auto;
 }
 
 .cycle-ring {
@@ -137,33 +80,28 @@
 
 .ring-center {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  inset: 0;
+  display: grid;
+  place-items: center;
+}
+
+.turnover-visual {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .theory-insight {
+  padding: 1rem 1.05rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.03);
   display: flex;
-  align-items: flex-start;
-  font-size: 0.9375rem;
-  line-height: 1.6;
-  color: var(--navy-900);
+  gap: 0.8rem;
 }
 
-.theory-insight p {
-  margin: 0;
-}
-
-@media (max-width: 768px) {
-  .turnover-visual {
-    flex-direction: column;
-    text-align: center;
-  }
-  .theory-insight {
-    flex-direction: column;
-    align-items: center;
+@media (min-width: 1040px) {
+  .turnover-workspace {
+    grid-template-columns: minmax(20rem, 24rem) minmax(0, 1fr);
   }
 }

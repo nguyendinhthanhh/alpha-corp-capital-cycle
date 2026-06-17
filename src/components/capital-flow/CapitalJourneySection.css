@@ -1,44 +1,37 @@
-.journey-section {
-  border-bottom: 1px solid var(--border-light);
-}
-
 .journey-workspace {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--spacing-gap-lg);
-  max-width: 1000px;
-  margin: 0 auto;
+  gap: 1.4rem;
 }
 
-@media (min-width: 768px) {
-  .journey-workspace {
-    grid-template-columns: 300px 1fr;
-  }
+.journey-visualizer,
+.journey-details {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  border-radius: 1.8rem;
+  border: 1px solid var(--border-light);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
 }
 
-/* Visualizer (Left side) */
 .journey-visualizer {
   position: relative;
-  min-height: 600px;
-  padding: 20px 0;
+  min-height: 40rem;
 }
 
 .journey-svg-path {
   position: absolute;
-  top: 0;
-  left: 20px;
-  width: 100px;
-  height: 100%;
-  z-index: 1;
+  inset: 1.5rem auto 1.5rem 1.6rem;
+  width: 3rem;
+  height: calc(100% - 3rem);
+}
+
+.path-bg {
+  stroke: rgba(255, 255, 255, 0.08);
 }
 
 .journey-nodes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 2;
+  position: relative;
+  min-height: 37rem;
 }
 
 .node-btn {
@@ -47,248 +40,177 @@
   transform: translateY(-50%);
   display: flex;
   align-items: center;
-  background: none;
-  border: none;
-  padding: 0;
+  gap: 1rem;
   width: 100%;
+  border: 0;
+  background: transparent;
   text-align: left;
-  cursor: pointer;
-  transition: all 0.2s;
-  opacity: 0.6;
-}
-
-.node-btn:hover {
-  opacity: 0.8;
-}
-
-.node-btn.active {
-  opacity: 1;
-}
-
-.node-btn.completed {
-  opacity: 1;
 }
 
 .node-dot {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--surface-primary);
-  border: 2px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 16px;
-  color: var(--teal-600);
-  transition: all 0.3s;
+  width: 2.4rem;
+  height: 2.4rem;
   flex-shrink: 0;
+  border-radius: 50%;
+  border: 1px solid var(--border-light);
+  background: var(--surface-primary);
+  display: grid;
+  place-items: center;
+  color: var(--text-primary);
   z-index: 2;
 }
 
 .inner-dot {
-  width: 8px;
-  height: 8px;
+  width: 0.75rem;
+  height: 0.75rem;
   border-radius: 50%;
-  background-color: var(--border-light);
+  background: var(--text-muted);
 }
 
 .node-btn.active .node-dot {
-  border-color: var(--teal-600);
-  border-width: 3px;
-  box-shadow: 0 0 0 4px rgba(20, 129, 124, 0.1);
+  border-color: rgba(104, 205, 216, 0.35);
+  box-shadow: 0 0 0 0.55rem rgba(104, 205, 216, 0.08);
 }
 
 .node-btn.completed .node-dot {
-  background-color: var(--teal-50);
-  border-color: var(--teal-500);
+  color: var(--teal-500);
 }
 
-.node-btn.danger.active .node-dot {
-  border-color: var(--red-600);
-  color: var(--red-600);
-  box-shadow: 0 0 0 4px rgba(224, 79, 79, 0.1);
+.node-btn.danger .node-dot {
+  border-color: rgba(255, 110, 92, 0.24);
+  box-shadow: 0 0 0 0.55rem rgba(255, 110, 92, 0.08);
 }
 
 .node-label-wrap {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.node-btn.active .node-label-wrap {
+  border-color: rgba(104, 205, 216, 0.22);
+  background: rgba(104, 205, 216, 0.08);
+}
+
+.node-btn.danger.active .node-label-wrap {
+  border-color: rgba(255, 110, 92, 0.2);
+  background: rgba(255, 110, 92, 0.09);
 }
 
 .node-label-title {
-  font-family: var(--font-heading);
-  font-weight: 600;
-  color: var(--navy-950);
-  font-size: 0.9375rem;
-  margin-bottom: 4px;
+  color: var(--text-primary);
+  font-weight: 700;
 }
 
 .node-label-concept {
-  font-size: 0.75rem;
   color: var(--text-muted);
-}
-
-.node-btn.active .node-label-title {
-  color: var(--teal-700);
-}
-
-.node-btn.danger.active .node-label-title {
-  color: var(--red-700);
-}
-
-/* Details Panel (Right side) */
-.journey-details {
-  display: flex;
-  flex-direction: column;
+  font-size: 0.88rem;
 }
 
 .journey-progress-bar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-light);
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .progress-text {
-  font-family: var(--font-mono);
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font: 600 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.16em;
+  color: var(--gold-400);
+  text-transform: uppercase;
 }
 
 .nav-buttons {
   display: flex;
-  gap: 8px;
+  gap: 0.5rem;
 }
 
 .nav-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  background-color: var(--surface-secondary);
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 999px;
   border: 1px solid var(--border-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--navy-900);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.nav-btn:hover:not(:disabled) {
-  background-color: var(--surface-primary);
-  border-color: var(--teal-500);
-  color: var(--teal-600);
+  background: rgba(255, 255, 255, 0.04);
+  display: grid;
+  place-items: center;
 }
 
 .nav-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  opacity: 0.3;
 }
 
 .active-detail-card {
-  background-color: var(--surface-primary);
-  border-radius: 12px;
-  border: 1px solid var(--border-light);
-  box-shadow: var(--shadow-sm);
-  padding: 32px;
-  transition: all 0.3s;
-}
-
-.active-detail-card.crisis-mode {
-  border-color: var(--red-300);
-  box-shadow: 0 4px 20px rgba(224, 79, 79, 0.1);
+  display: grid;
+  gap: 1.25rem;
 }
 
 .card-header {
-  margin-bottom: 24px;
+  display: grid;
+  gap: 0.6rem;
 }
 
 .concept-badge {
-  display: inline-block;
-  background-color: var(--surface-secondary);
-  color: var(--navy-900);
-  padding: 4px 12px;
-  border-radius: 16px;
-  font-size: 0.75rem;
-  font-weight: 600;
+  width: fit-content;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(227, 187, 102, 0.18);
+  background: rgba(227, 187, 102, 0.08);
+  color: var(--gold-400);
+  font: 600 0.74rem/1 var(--font-mono);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
-}
-
-.crisis-mode .concept-badge {
-  background-color: rgba(224, 79, 79, 0.1);
-  color: var(--red-700);
-}
-
-.card-header h3 {
-  font-size: 1.5rem;
-  color: var(--navy-950);
-  margin: 0;
 }
 
 .card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 32px;
+  display: grid;
+  gap: 1rem;
 }
 
 .info-block {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  padding: 1rem 1.05rem;
+  border-radius: 1.1rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .block-label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-muted);
+  display: inline-block;
+  margin-bottom: 0.5rem;
+  font: 600 0.72rem/1 var(--font-mono);
+  letter-spacing: 0.14em;
   text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .block-content {
   margin: 0;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--navy-900);
 }
 
 .block-content.highlight {
-  font-size: 1.125rem;
-  color: var(--navy-950);
+  color: var(--text-primary);
+  font-size: 1.08rem;
 }
 
-.theory-block {
-  background-color: var(--surface-secondary);
-  padding: 20px;
-  border-radius: 8px;
-  border-left: 3px solid var(--teal-600);
-}
-
-.crisis-mode .theory-block {
-  border-left-color: var(--red-500);
-  background-color: rgba(224, 79, 79, 0.02);
-}
-
-.card-footer {
-  padding-top: 24px;
-  border-top: 1px solid var(--border-light);
+.active-detail-card.crisis-mode .info-block {
+  border-color: rgba(255, 110, 92, 0.14);
+  background: rgba(255, 110, 92, 0.05);
 }
 
 .learn-link {
   display: inline-flex;
   align-items: center;
-  color: var(--teal-600);
-  font-weight: 600;
-  font-size: 0.9375rem;
-  text-decoration: none;
-  transition: color 0.2s;
+  gap: 0.4rem;
+  color: var(--teal-300);
 }
 
-.learn-link:hover {
-  color: var(--teal-700);
-  text-decoration: underline;
+@media (min-width: 1120px) {
+  .journey-workspace {
+    grid-template-columns: minmax(22rem, 30rem) minmax(0, 1fr);
+    align-items: start;
+  }
 }

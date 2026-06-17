@@ -14,7 +14,7 @@ const TurnoverTimeSection = ({ isCrisis }) => {
       // eslint-disable-next-line
       setCirculationTime(90); // Khủng hoảng làm tăng đột biến thời gian lưu thông
     } else {
-      // eslint-disable-next-line
+       
       setCirculationTime(20);
     }
   }, [isCrisis]);

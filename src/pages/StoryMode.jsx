@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { storyChapters } from '../data/caseData';
 import SectionHeader from '../components/shared/SectionHeader';
+import { getScrollBehavior } from '../utils/motion';
+import './StoryMode.css';
 
 const StoryMode = () => {
   const [activeChapter, setActiveChapter] = useState(storyChapters[0].number);
@@ -32,7 +34,7 @@ const StoryMode = () => {
   const progressValue = storyChapters.findIndex((chapter) => chapter.number === activeChapter) + 1;
 
   return (
-    <div className="route-shell pt-24 pb-20 bg-[var(--page-background)]">
+    <div className="route-shell story-page">
       <div className="container story-layout">
         <SectionHeader
           eyebrow="Vụ việc"
@@ -61,7 +63,7 @@ const StoryMode = () => {
                 className={`story-nav-item ${activeChapter === chapter.number ? 'is-active' : ''}`}
                 onClick={() =>
                   document.getElementById(`chapter-${chapter.number}`)?.scrollIntoView({
-                    behavior: reduceMotion ? 'auto' : 'smooth',
+                    behavior: reduceMotion ? 'auto' : getScrollBehavior(),
                     block: 'start',
                   })
                 }

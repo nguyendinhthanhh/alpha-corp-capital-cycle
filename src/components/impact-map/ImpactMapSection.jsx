@@ -9,6 +9,7 @@ import './ImpactMapSection.css';
 const ImpactMapSection = ({ isCrisis }) => {
   const [activeActorId, setActiveActorId] = useState(stakeholders[0].id);
   const activeActor = stakeholders.find(a => a.id === activeActorId);
+  const orbitRadius = 190;
 
   // Auto-select based on crisis
   useEffect(() => {
@@ -39,9 +40,8 @@ const ImpactMapSection = ({ isCrisis }) => {
               {stakeholders.map((actor, index) => {
                 const isActive = actor.id === activeActorId;
                 const angle = (index * 360) / stakeholders.length;
-                // Position nodes in a circle
-                const x = Math.cos((angle - 90) * (Math.PI / 180)) * 160;
-                const y = Math.sin((angle - 90) * (Math.PI / 180)) * 160;
+                const x = Math.cos((angle - 90) * (Math.PI / 180)) * orbitRadius;
+                const y = Math.sin((angle - 90) * (Math.PI / 180)) * orbitRadius;
 
                 return (
                   <div key={actor.id}>
@@ -51,7 +51,7 @@ const ImpactMapSection = ({ isCrisis }) => {
                         position: 'absolute',
                         top: '50%',
                         left: '50%',
-                        width: '160px',
+                        width: `${orbitRadius}px`,
                         transformOrigin: 'left center',
                         transform: `rotate(${angle - 90}deg)`
                       }} 

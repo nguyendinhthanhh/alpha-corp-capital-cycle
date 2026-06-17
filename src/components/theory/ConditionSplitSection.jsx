@@ -22,7 +22,7 @@ const ConditionSplitSection = ({ isCrisis }) => {
       // eslint-disable-next-line
       setBlockedStageId('consume');
     } else {
-      // eslint-disable-next-line
+       
       setBlockedStageId(null);
     }
   }, [isCrisis]);

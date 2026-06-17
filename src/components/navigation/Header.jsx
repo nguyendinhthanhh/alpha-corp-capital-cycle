@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { scrollToSectionById } from '../../utils/motion';
 import './Header.css';
 
 const navItems = [
@@ -13,57 +14,91 @@ const navItems = [
   { id: 'appendix', label: 'Nguồn & AI', path: '/appendix' },
 ];
 
+const homeSectionNavMap = [
+  { id: 'hero', nav: 'hero' },
+  { id: 'capital-journey', nav: 'capital-journey' },
+  { id: 'crisis', nav: 'crisis' },
+  { id: 'three-forms', nav: 'crisis' },
+  { id: 'conditions', nav: 'crisis' },
+  { id: 'turnover', nav: 'crisis' },
+  { id: 'impact', nav: 'crisis' },
+  { id: 'accumulation', nav: 'crisis' },
+  { id: 'profit', nav: 'crisis' },
+  { id: 'faq', nav: 'crisis' },
+];
+
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [activeSection, setActiveSection] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
 
-      // Calculate progress
-      const totalScroll = document.documentElement.scrollTop;
+      const totalScroll = window.scrollY;
       const windowHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      const scroll = `${totalScroll / windowHeight}`;
-      setProgress(totalScroll === 0 ? 0 : Number(scroll));
+      const scroll = windowHeight > 0 ? totalScroll / windowHeight : 0;
+      setProgress(Math.min(1, Math.max(0, scroll)));
+
+      if (location.pathname === '/') {
+        const probe = totalScroll + window.innerHeight * 0.35;
+        const sections = homeSectionNavMap
+          .map(({ id, nav }) => {
+            const element = document.getElementById(id);
+            return element ? { element, nav } : null;
+          })
+          .filter(Boolean)
+          .sort((a, b) => a.element.offsetTop - b.element.offsetTop);
+
+        let nextActive = 'hero';
+        sections.forEach(({ element, nav }) => {
+          if (probe >= element.offsetTop - 24) {
+            nextActive = nav;
+          }
+        });
+
+        setActiveSection((current) => (current === nextActive ? current : nextActive));
+      }
     };
 
+    handleScroll();
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  useEffect(() => {
-    // eslint-disable-next-line
-    setIsMobileMenuOpen(false);
-  }, [location]);
+  }, [location.pathname]);
 
   const handleNavClick = (path) => {
     setIsMobileMenuOpen(false);
+
     if (path.startsWith('/#')) {
       const id = path.replace('/#', '');
       if (location.pathname !== '/') {
         navigate(path);
-      } else {
-        const element = document.getElementById(id);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
+        return;
       }
-    } else {
-      navigate(path);
+
+      const element = document.getElementById(id);
+      if (element) {
+        scrollToSectionById(id);
+      }
+      return;
     }
+
+    navigate(path);
   };
 
   const checkIsActive = (path) => {
-    if (path === '/') {
-      return location.pathname === '/' && !location.hash;
+    if (path === '/' || path === '/#hero') {
+      return location.pathname === '/' && activeSection === 'hero';
     }
+
     if (path.startsWith('/#')) {
-      return location.pathname === '/' && location.hash === path.replace('/', '');
+      return location.pathname === '/' && activeSection === path.replace('/#', '');
     }
+
     return location.pathname.startsWith(path);
   };
 
@@ -71,7 +106,7 @@ const Header = () => {
     <>
       <header className={`app-header ${isScrolled ? 'scrolled' : ''}`}>
         <div className="header-progress-bar" style={{ transform: `scaleX(${progress})` }} />
-        
+
         <div className="container header-container">
           <Link to="/" className="brand-logo">
             <span className="brand-name">AlphaCorp</span>
@@ -90,7 +125,7 @@ const Header = () => {
             ))}
           </nav>
 
-          <button 
+          <button
             className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Menu"
@@ -100,7 +135,6 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile Menu Drawer */}
       <div className={`mobile-drawer ${isMobileMenuOpen ? 'open' : ''}`}>
         <nav className="mobile-nav">
           {navItems.map((item) => (
@@ -114,9 +148,8 @@ const Header = () => {
           ))}
         </nav>
       </div>
-      {isMobileMenuOpen && (
-        <div className="mobile-overlay" onClick={() => setIsMobileMenuOpen(false)} />
-      )}
+
+      {isMobileMenuOpen && <div className="mobile-overlay" onClick={() => setIsMobileMenuOpen(false)} />}
     </>
   );
 };

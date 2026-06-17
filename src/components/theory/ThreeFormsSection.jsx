@@ -23,7 +23,7 @@ const ThreeFormsSection = ({ isCrisis }) => {
         commodity: 90
       });
     } else {
-      // eslint-disable-next-line
+       
       setAllocation({
         money: 20,
         production: 70,
