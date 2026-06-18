@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { PauseCircle, PlayCircle, Clock, Map, AlertTriangle } from 'lucide-react';
 import Section from '../shared/Section';
+import Atmosphere from '../shared/Atmosphere';
 import SectionHeader from '../shared/SectionHeader';
 import './ConditionSplitSection.css';
 
@@ -16,16 +17,16 @@ const timeStages = [
 const ConditionSplitSection = ({ isCrisis }) => {
   const [blockedStageId, setBlockedStageId] = useState(null);
 
-  // Sync with global crisis state
-  useEffect(() => {
+  const [prevCrisis, setPrevCrisis] = useState(isCrisis);
+
+  if (isCrisis !== prevCrisis) {
+    setPrevCrisis(isCrisis);
     if (isCrisis) {
-      // eslint-disable-next-line
       setBlockedStageId('consume');
     } else {
-       
       setBlockedStageId(null);
     }
-  }, [isCrisis]);
+  }
 
   const handleToggleBlock = (stageId) => {
     if (isCrisis) return; // Prevent unlocking if in global crisis
@@ -38,7 +39,8 @@ const ConditionSplitSection = ({ isCrisis }) => {
   };
 
   return (
-    <Section className="condition-section" id="conditions" bgColor="var(--surface-secondary)">
+    <Section className="condition-section" id="conditions" bgColor="transparent">
+        <Atmosphere variant="production" isCrisis={isCrisis} />
         <SectionHeader
           eyebrow="Cơ sở lý luận 02"
           title="Không gian và Thời gian"

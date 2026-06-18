@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, TrendingUp, ArrowDownCircle, AlertCircle } from 'lucide-react';
 import Section from '../shared/Section';
+import Atmosphere from '../shared/Atmosphere';
 import SectionHeader from '../shared/SectionHeader';
 import './MarketContextSection.css';
 
@@ -57,7 +58,8 @@ const MarketContextSection = ({ isCrisis, onSetCrisis }) => {
   };
 
   return (
-    <Section className="market-context-section" id="crisis" bgColor="var(--surface-primary)">
+    <Section className="market-context-section" id="crisis" bgColor="transparent">
+      <Atmosphere variant="market" isCrisis={isCrisis} />
       <SectionHeader
         eyebrow="Bối cảnh Vĩ mô"
         title="Nguyên nhân đóng băng thị trường"

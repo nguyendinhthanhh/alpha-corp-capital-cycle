@@ -1,6 +1,7 @@
 .journey-workspace {
   display: grid;
-  gap: 1.4rem;
+  gap: 1.6rem;
+  align-items: start;
 }
 
 .journey-visualizer,
@@ -15,7 +16,7 @@
 
 .journey-visualizer {
   position: relative;
-  min-height: 40rem;
+  min-height: 37rem;
 }
 
 .journey-svg-path {
@@ -85,7 +86,8 @@
   display: grid;
   gap: 0.25rem;
   padding: 0.95rem 1rem;
-  border-radius: 1rem;
+  width: min(100%, 16rem);
+  border-radius: 1.1rem;
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.02);
 }
@@ -110,19 +112,52 @@
   font-size: 0.88rem;
 }
 
+.detail-card-wrapper {
+  padding: 2rem;
+  border-radius: 1.4rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.02);
+  transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.5s ease;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.detail-card-wrapper.active-step {
+  opacity: 1;
+  transform: translateY(0);
+  border-color: rgba(104, 205, 216, 0.35);
+  background: rgba(104, 205, 216, 0.04);
+}
+
+.detail-card-wrapper.crisis-mode.active-step {
+  border-color: rgba(255, 110, 92, 0.35);
+  background: rgba(255, 110, 92, 0.04);
+}
+
+.journey-details {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  padding: clamp(1.35rem, 3vw, 2rem);
+  border-radius: 1.8rem;
+  border: 1px solid var(--border-light);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
+}
+
 .journey-progress-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 
 .progress-text {
   font: 600 0.72rem/1 var(--font-mono);
-  letter-spacing: 0.16em;
-  color: var(--gold-400);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
+  color: var(--gold-400);
 }
 
 .nav-buttons {
@@ -141,12 +176,7 @@
 }
 
 .nav-btn:disabled {
-  opacity: 0.3;
-}
-
-.active-detail-card {
-  display: grid;
-  gap: 1.25rem;
+  opacity: 0.35;
 }
 
 .card-header {
@@ -157,7 +187,7 @@
 .concept-badge {
   width: fit-content;
   padding: 0.4rem 0.7rem;
-  border-radius: 999px;
+  border-radius: 4px;
   border: 1px solid rgba(227, 187, 102, 0.18);
   background: rgba(227, 187, 102, 0.08);
   color: var(--gold-400);
@@ -172,8 +202,8 @@
 }
 
 .info-block {
-  padding: 1rem 1.05rem;
-  border-radius: 1.1rem;
+  padding: 1.25rem;
+  border-radius: 4px;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.03);
 }
@@ -196,21 +226,36 @@
   font-size: 1.08rem;
 }
 
-.active-detail-card.crisis-mode .info-block {
-  border-color: rgba(255, 110, 92, 0.14);
-  background: rgba(255, 110, 92, 0.05);
-}
-
 .learn-link {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
   color: var(--teal-300);
+  transition: color 0.2s ease;
+}
+
+.learn-link:hover {
+  color: var(--teal-200);
 }
 
 @media (min-width: 1120px) {
   .journey-workspace {
     grid-template-columns: minmax(22rem, 30rem) minmax(0, 1fr);
     align-items: start;
+  }
+}
+
+@media (max-width: 767px) {
+  .journey-visualizer {
+    min-height: 36rem;
+  }
+
+  .journey-nodes {
+    min-height: 33rem;
+  }
+
+  .node-label-wrap {
+    width: min(100%, 13rem);
+    padding: 0.8rem 0.85rem;
   }
 }

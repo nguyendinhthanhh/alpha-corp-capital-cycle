@@ -1,12 +1,14 @@
 import { motion } from 'framer-motion';
 import { Landmark, Briefcase } from 'lucide-react';
 import Section from '../shared/Section';
+import Atmosphere from '../shared/Atmosphere';
 import SectionHeader from '../shared/SectionHeader';
 import './ProfitInterestSection.css';
 
 const ProfitInterestSection = () => {
   return (
     <Section className="profit-section" id="profit" bgColor="var(--surface-secondary)">
+      <Atmosphere variant="theory" />
       <SectionHeader
         eyebrow="Phân chia Giá trị thặng dư"
         title="Lợi nhuận (p) & Lợi tức (z)"

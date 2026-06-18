@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { RefreshCcw, TrendingUp, AlertTriangle } from 'lucide-react';
 import Section from '../shared/Section';
+import Atmosphere from '../shared/Atmosphere';
 import SectionHeader from '../shared/SectionHeader';
 import './AccumulationSection.css';
 
@@ -28,7 +29,8 @@ const AccumulationSection = ({ isCrisis }) => {
   }, [isCrisis]);
 
   return (
-    <Section className="accumulation-section" id="accumulation" bgColor="var(--page-background)">
+    <Section className="accumulation-section" id="accumulation" bgColor="transparent">
+        <Atmosphere variant="theory" isCrisis={isCrisis} />
         <SectionHeader
           eyebrow="Quy mô sản xuất"
           title="Tái sản xuất & Tích lũy Tư bản"

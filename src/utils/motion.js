@@ -1,4 +1,16 @@
-// Shared Framer Motion Variants
+// Shared Motion Tokens and Variants
+
+export const motionTokens = {
+  micro: 0.18,
+  fast: 0.28,
+  normal: 0.42,
+  section: 0.62,
+  story: 0.85,
+  easing: {
+    out: [0.22, 1, 0.36, 1],
+    inOut: [0.65, 0, 0.35, 1],
+  },
+};
 
 export const revealVariants = {
   container: {
@@ -6,7 +18,7 @@ export const revealVariants = {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
+        staggerChildren: motionTokens.micro,
         delayChildren: 0.1
       }
     }
@@ -17,8 +29,8 @@ export const revealVariants = {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        ease: [0.4, 0, 0.2, 1] // motion-ease-in-out
+        duration: motionTokens.normal,
+        ease: motionTokens.easing.out
       }
     }
   },
@@ -27,18 +39,29 @@ export const revealVariants = {
     visible: {
       opacity: 1,
       transition: {
-        duration: 0.3,
+        duration: motionTokens.fast,
         ease: "linear"
+      }
+    }
+  },
+  maskItem: {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: motionTokens.section,
+        ease: motionTokens.easing.out
       }
     }
   }
 };
 
 export const transitionDefaults = {
-  micro: { duration: 0.15, ease: [0, 0, 0.2, 1] },
-  ui: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
-  section: { duration: 0.5, ease: [0.4, 0, 0.2, 1] },
-  story: { duration: 0.8, ease: [0.4, 0, 0.2, 1] }
+  micro: { duration: motionTokens.micro, ease: motionTokens.easing.out },
+  ui: { duration: motionTokens.fast, ease: motionTokens.easing.out },
+  section: { duration: motionTokens.section, ease: motionTokens.easing.out },
+  story: { duration: motionTokens.story, ease: motionTokens.easing.out }
 };
 
 export const prefersReducedMotion = () =>
@@ -55,7 +78,7 @@ const getHeaderOffset = () => {
 
   const rootStyles = window.getComputedStyle(document.documentElement);
   const cssHeaderHeight = parseFloat(rootStyles.getPropertyValue('--header-height'));
-  return Number.isFinite(cssHeaderHeight) ? cssHeaderHeight + 24 : 104;
+  return Number.isFinite(cssHeaderHeight) ? cssHeaderHeight + 56 : 136;
 };
 
 export const scrollToSectionById = (id) => {

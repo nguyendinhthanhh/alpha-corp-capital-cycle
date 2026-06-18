@@ -1,29 +1,37 @@
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, AlertTriangle, Building, Wallet, TrendingDown } from 'lucide-react';
 import Section from '../shared/Section';
-import { scrollToSectionById } from '../../utils/motion';
+import Atmosphere from '../shared/Atmosphere';
+import { scrollToSectionById, motionTokens, prefersReducedMotion } from '../../utils/motion';
 import './HeroSection.css';
 
 const HeroSection = ({ isCrisis, onToggleCrisis }) => {
-  const reduceMotion = useReducedMotion();
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.14,
-        delayChildren: 0.12,
+        staggerChildren: motionTokens.micro,
+        delayChildren: 0.1,
       },
     },
   };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+  const maskItemVariants = {
+    hidden: { y: 60, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: motionTokens.section, ease: motionTokens.easing.out },
+    },
+  };
+
+  const fadeItemVariants = {
+    hidden: { opacity: 0, y: 15 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
+      transition: { duration: motionTokens.normal, ease: motionTokens.easing.out },
     },
   };
 
@@ -32,34 +40,39 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
       id="hero"
       className="hero-section"
       containerClass="container hero-grid-2col"
-      bgColor="var(--page-background)"
+      bgColor="transparent"
     >
+      <Atmosphere variant="hero" isCrisis={isCrisis} />
       <motion.div
         className="hero-content"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        <motion.div className="hero-eyebrow text-small" variants={itemVariants}>
-          NGHIÊN CỨU TÌNH HUỐNG MLN122
-        </motion.div>
+        <div style={{ overflow: 'hidden' }}>
+          <motion.div className="hero-eyebrow text-small" variants={maskItemVariants}>
+            NGHIÊN CỨU TÌNH HUỐNG MLN122
+          </motion.div>
+        </div>
 
-        <motion.h1 className="hero-heading text-display" variants={itemVariants}>
-          Khi 10.000 tỷ đồng không thể quay trở lại
-        </motion.h1>
+        <div style={{ overflow: 'hidden', paddingBottom: '0.2em' }}>
+          <motion.h1 className="hero-heading text-display" variants={maskItemVariants}>
+            Khi 10.000 tỷ đồng không thể quay trở lại
+          </motion.h1>
+        </div>
 
-        <motion.p className="hero-intro text-body-large text-secondary" variants={itemVariants}>
+        <motion.p className="hero-intro text-body-large text-secondary" variants={fadeItemVariants}>
           Theo dấu quá trình chuyển hóa của tư bản trong dự án Alpha Corp và khám phá vì sao
           một doanh nghiệp sở hữu khối tài sản lớn nhưng vẫn rơi vào khủng hoảng thanh khoản
           trầm trọng.
         </motion.p>
 
-        <motion.div className="hero-actions" variants={itemVariants}>
+        <motion.div className="hero-actions" variants={fadeItemVariants}>
           <button
-            className="btn btn-primary"
+            className="btn btn-primary btn-magnetic"
             onClick={() => scrollToSectionById('capital-journey')}
           >
-            Theo dõi hành trình vốn <ArrowRight size={18} className="ml-2" />
+            <span>Theo dõi hành trình vốn</span> <ArrowRight size={18} className="ml-2 btn-arrow" />
           </button>
           <button className={`btn btn-crisis-toggle ${isCrisis ? 'active' : ''}`} onClick={onToggleCrisis}>
             <AlertTriangle size={18} className="mr-2" />
@@ -67,7 +80,7 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
           </button>
         </motion.div>
 
-        <motion.div className="hero-metrics" variants={itemVariants}>
+        <motion.div className="hero-metrics" variants={fadeItemVariants}>
           <div className="metric-item">
             <Wallet size={20} className="metric-icon gold" />
             <div>
@@ -96,72 +109,38 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
         <div className="visual-container">
           <motion.div
             className={`visual-buildings ${isCrisis ? 'in-crisis' : ''}`}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={reduceMotion ? { duration: 0.01 } : { duration: 0.8, ease: 'easeOut' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="building-silhouette b1" />
-            <div className="building-silhouette b2" />
-            <div className="building-silhouette b3" />
+            {/* Signature Effect 2: Blueprint to Building */}
+            <BlueprintBuilding width={80} height={180} delay={0.2} />
+            <BlueprintBuilding width={100} height={230} delay={0.4} />
+            <BlueprintBuilding width={85} height={160} delay={0.6} />
           </motion.div>
 
           <div className={`capital-flow-track ${isCrisis ? 'crisis-active' : ''}`}>
-            <div className="flow-node node-t active">
-              <span className="node-label tooltip-trigger" data-tooltip="Tư bản tiền tệ (vốn vay)">
-                T
-              </span>
-            </div>
-            <div className="flow-node node-h active">
-              <span className="node-label tooltip-trigger" data-tooltip="Tư liệu sản xuất và sức lao động">
-                H
-              </span>
-            </div>
-            <div className="flow-node node-sx active">
-              <span className="node-label tooltip-trigger" data-tooltip="Quá trình sản xuất (thi công)">
-                SX
-              </span>
-            </div>
-            <div className="flow-node node-hp active">
-              <span className="node-label tooltip-trigger" data-tooltip="Tư bản hàng hóa (tháp phần thô)">
-                H&apos;
-              </span>
-            </div>
-            <div className={`flow-node node-tp ${isCrisis ? 'disabled' : 'active'}`}>
-              <span className="node-label tooltip-trigger" data-tooltip="Tiền thu về (bán hàng)">
-                T&apos;
-              </span>
-            </div>
+            <div className="flow-node node-t active">T</div>
+            <div className="flow-node node-h active">H</div>
+            <div className="flow-node node-sx active">SX</div>
+            <div className="flow-node node-hp active">H&apos;</div>
+            <div className={`flow-node node-tp ${isCrisis ? 'disabled' : 'active'}`}>T&apos;</div>
 
             <div className="flow-path path-1">
-              <motion.div
-                className="path-fill"
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.6, delay: 0.18 }}
-              />
+              <motion.div className="path-fill" initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 0.6, delay: 0.8 }} />
             </div>
             <div className="flow-path path-2">
-              <motion.div
-                className="path-fill"
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.6, delay: 0.38 }}
-              />
+              <motion.div className="path-fill" initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 0.6, delay: 1.0 }} />
             </div>
             <div className="flow-path path-3">
-              <motion.div
-                className="path-fill"
-                initial={{ width: '0%' }}
-                animate={{ width: '100%' }}
-                transition={{ duration: 0.6, delay: 0.58 }}
-              />
+              <motion.div className="path-fill" initial={{ width: '0%' }} animate={{ width: '100%' }} transition={{ duration: 0.6, delay: 1.2 }} />
             </div>
             <div className={`flow-path path-4 ${isCrisis ? 'blocked' : ''}`}>
               <motion.div
                 className={`path-fill ${isCrisis ? 'error' : ''}`}
                 initial={{ width: '0%' }}
                 animate={{ width: isCrisis ? '42%' : '100%' }}
-                transition={{ duration: 0.42, delay: isCrisis ? 0 : 0.78 }}
+                transition={{ duration: 0.42, delay: isCrisis ? 0 : 1.4 }}
               />
 
               <AnimatePresence>
@@ -171,7 +150,7 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
                     initial={{ opacity: 0, scale: 0 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0 }}
-                    transition={reduceMotion ? { duration: 0.01 } : { duration: 0.32, type: 'spring' }}
+                    transition={{ duration: 0.32, type: 'spring' }}
                   >
                     <AlertTriangle size={24} color="var(--red-500)" />
                   </motion.div>
@@ -180,49 +159,59 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
             </div>
           </div>
 
-          <motion.div
-            className="layer-card layer-money"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.18 }}
-          >
-            10.000 tỷ đồng
-          </motion.div>
+          <motion.div className="layer-card layer-money" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.8 }}>10.000 tỷ đồng</motion.div>
+          <motion.div className="layer-card layer-assets" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 1.0 }}>Vật liệu, máy móc, nhân công</motion.div>
+          <motion.div className="layer-card layer-goods" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 1.2 }}>3 tòa tháp dở dang</motion.div>
 
-          <motion.div
-            className="layer-card layer-assets"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.38 }}
-          >
-            Vật liệu, máy móc, nhân công
-          </motion.div>
-
-          <motion.div
-            className="layer-card layer-goods"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35, delay: 0.58 }}
-          >
-            3 tòa tháp dở dang
-          </motion.div>
-
+          {/* Signature Effect 3: Market Shock Transition Sequence */}
           <AnimatePresence>
             {isCrisis && (
               <motion.div
-                className="layer-card layer-crisis-alert"
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.28 }}
+                className="crisis-sequence"
+                initial="hidden" animate="visible" exit="hidden"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.25 } }
+                }}
               >
-                <AlertTriangle size={16} className="mr-2" /> Thanh khoản đóng băng
+                <motion.div variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0 } }} className="layer-crisis-alert"><AlertTriangle size={14} className="mr-2"/> Tín dụng bị siết</motion.div>
+                <motion.div variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0 } }} className="layer-crisis-alert"><AlertTriangle size={14} className="mr-2"/> Lãi suất tăng</motion.div>
+                <motion.div variants={{ hidden: { opacity: 0, x: 20 }, visible: { opacity: 1, x: 0 } }} className="layer-crisis-alert"><AlertTriangle size={14} className="mr-2"/> Sức mua giảm</motion.div>
               </motion.div>
             )}
           </AnimatePresence>
         </div>
       </div>
     </Section>
+  );
+};
+
+const BlueprintBuilding = ({ width, height, delay }) => {
+  const isReduced = prefersReducedMotion();
+  return (
+    <motion.svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible', margin: '0 0.5rem' }}>
+      <motion.path
+        d={`M 0 ${height} L 0 20 L ${width/2} 0 L ${width} 20 L ${width} ${height} Z`}
+        fill="rgba(255,255,255,0.06)"
+        stroke="var(--border-strong)"
+        strokeWidth="2"
+        initial={isReduced ? { pathLength: 1, fillOpacity: 1 } : { pathLength: 0, fillOpacity: 0 }}
+        animate={{ pathLength: 1, fillOpacity: 1 }}
+        transition={{
+          pathLength: { duration: 1.2, delay, ease: 'easeOut' },
+          fillOpacity: { duration: 0.8, delay: delay + 0.8 }
+        }}
+      />
+      <motion.path
+        d={`M 10 ${height} L 10 30 M ${width/2} 10 L ${width/2} ${height} M ${width-10} ${height} L ${width-10} 30`}
+        stroke="var(--teal-700)"
+        strokeWidth="1"
+        strokeDasharray="4 4"
+        initial={isReduced ? { pathLength: 1, opacity: 0.5 } : { pathLength: 0, opacity: 0 }}
+        animate={{ pathLength: 1, opacity: 0.5 }}
+        transition={{ duration: 1, delay: delay + 0.4 }}
+      />
+    </motion.svg>
   );
 };
 

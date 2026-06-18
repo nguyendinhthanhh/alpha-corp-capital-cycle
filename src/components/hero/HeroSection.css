@@ -10,32 +10,35 @@
 
 .hero-content {
   display: grid;
-  gap: 1.35rem;
+  gap: 1.5rem;
 }
 
 .hero-eyebrow {
   display: inline-flex;
   width: fit-content;
-  padding: 0.55rem 0.9rem;
+  padding: 0.5rem 0.95rem;
   border-radius: 999px;
   border: 1px solid rgba(227, 187, 102, 0.28);
   background: rgba(227, 187, 102, 0.12);
   color: var(--gold-300);
   font-family: var(--font-mono);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 .hero-heading {
   max-width: 10ch;
-  font-size: clamp(3.5rem, 6.2vw, 5.25rem);
-  line-height: 0.92;
+  font-size: clamp(3.2rem, 6vw, 5.35rem);
+  line-height: 0.94;
+  letter-spacing: -0.045em;
   text-wrap: balance;
 }
 
 .hero-intro {
   max-width: 48ch;
   color: var(--navy-100);
+  font-size: 1.08rem;
+  line-height: 1.62;
 }
 
 .hero-actions {
@@ -59,21 +62,24 @@
 .hero-metrics {
   display: grid;
   gap: 0.85rem;
-  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
 }
 
 .metric-item {
   min-height: 7rem;
-  padding: 1.1rem 1rem;
+  padding: 1.15rem 1.1rem;
   border-radius: 1.25rem;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.045);
   display: flex;
-  gap: 0.8rem;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 0.6rem;
 }
 
 .metric-icon {
-  margin-top: 0.15rem;
+  margin-top: 0;
 }
 
 .metric-icon.gold {
@@ -95,8 +101,8 @@
 .metric-label {
   display: block;
   margin-bottom: 0.45rem;
-  font: 600 0.7rem/1.2 var(--font-mono);
-  letter-spacing: 0.15em;
+  font: 600 0.68rem/1.2 var(--font-mono);
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--navy-300);
 }
@@ -122,6 +128,7 @@
     var(--surface-primary);
   overflow: hidden;
   box-shadow: var(--shadow-lg);
+  isolation: isolate;
 }
 
 .visual-container {
@@ -174,7 +181,7 @@
 
 .capital-flow-track {
   position: absolute;
-  inset: 12% 6% auto;
+  inset: 12% 16% auto 8%;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -193,6 +200,7 @@
   position: relative;
   z-index: 2;
   box-shadow: 0 0 0 0.6rem rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
 }
 
 .flow-node.active {
@@ -279,22 +287,25 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   background: rgba(10, 14, 22, 0.92);
   color: var(--navy-50);
-  font-size: 0.82rem;
+  font-size: 0.88rem;
+  line-height: 1.2;
   box-shadow: var(--shadow-sm);
+  white-space: nowrap;
 }
 
 .layer-money {
-  top: 30%;
-  left: 6%;
+  top: 28%;
+  left: 8%;
 }
 
 .layer-assets {
-  top: 47%;
-  left: 14%;
+  top: 45%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .layer-goods {
-  top: 61%;
+  top: 58%;
   right: 8%;
 }
 
@@ -308,21 +319,54 @@
   align-items: center;
 }
 
+.crisis-sequence {
+  position: absolute;
+  top: calc(12% + 5.2rem);
+  right: 1rem;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.32rem;
+  width: min(8.6rem, 26%);
+}
+
+.crisis-sequence .layer-crisis-alert {
+  position: static;
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.42rem 0.58rem;
+  font-size: 0.68rem;
+  line-height: 1.2;
+  backdrop-filter: blur(8px);
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.crisis-sequence .layer-crisis-alert svg {
+  flex-shrink: 0;
+}
+
 @media (min-width: 1080px) {
   .hero-grid-2col {
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
   }
 
   .layer-assets {
-    left: 20%;
+    left: 50%;
+  }
+
+  .crisis-sequence {
+    right: 1rem;
   }
 }
 
 @media (max-width: 767px) {
   .hero-heading {
     max-width: 12ch;
-    font-size: clamp(2.9rem, 13vw, 4.4rem);
-    line-height: 0.98;
+    font-size: clamp(2.4rem, 11vw, 3.8rem);
+    line-height: 1;
   }
 
   .hero-intro {
@@ -346,7 +390,7 @@
   }
 
   .capital-flow-track {
-    inset: 8% 4% auto;
+    inset: 8% 10% auto 4%;
   }
 
   .layer-money {
@@ -355,7 +399,7 @@
 
   .layer-assets {
     top: 44%;
-    left: 10%;
+    left: 50%;
   }
 
   .layer-goods {
@@ -365,7 +409,14 @@
 
   .layer-card {
     font-size: 0.75rem;
-    max-width: min(12rem, 42vw);
+    max-width: min(15rem, 50vw);
     white-space: normal;
+    overflow-wrap: break-word;
+  }
+
+  .crisis-sequence {
+    top: calc(8% + 4rem);
+    right: 0.7rem;
+    width: min(7.5rem, 34%);
   }
 }

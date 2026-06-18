@@ -5,22 +5,26 @@
 
 .turnover-controls,
 .turnover-results {
-  padding: clamp(1.25rem, 3vw, 2rem);
+  padding: 2.5rem;
   border-radius: 1.6rem;
   border: 1px solid var(--border-light);
-  background: rgba(255, 255, 255, 0.03);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .turnover-controls {
   display: grid;
   gap: 1rem;
+  align-content: start;
 }
 
 .control-card {
-  padding: 1rem 1.05rem;
-  border-radius: 1.1rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.02);
+  display: grid;
+  align-content: start;
+  min-height: 15rem;
 }
 
 .control-card.crisis-highlight {
@@ -47,10 +51,11 @@
 }
 
 .metric-box {
-  padding: 1rem;
-  border-radius: 1.1rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.025);
+  min-height: 6.5rem;
 }
 
 .metric-box strong {
@@ -68,7 +73,7 @@
 
 .cycle-ring-container {
   position: relative;
-  width: min(16rem, 100%);
+  width: min(12.75rem, 100%);
   aspect-ratio: 1;
   margin-inline: auto;
 }
@@ -89,11 +94,12 @@
   display: grid;
   gap: 1rem;
   margin-top: 1rem;
+  align-content: start;
 }
 
 .theory-insight {
-  padding: 1rem 1.05rem;
-  border-radius: 1.1rem;
+  padding: 1.25rem;
+  border-radius: 1.25rem;
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.03);
   display: flex;

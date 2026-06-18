@@ -1,6 +1,7 @@
 .section-header {
   display: grid;
   gap: 0.85rem;
+  padding-top: 0.85rem;
   margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
@@ -9,24 +10,25 @@
   align-items: center;
   gap: 0.45rem;
   width: fit-content;
-  padding: 0.45rem 0.75rem;
+  padding: 0.38rem 0.7rem;
   border-radius: 999px;
   border: 1px solid rgba(104, 205, 216, 0.18);
   background: rgba(104, 205, 216, 0.06);
   font-family: var(--font-mono);
   font-weight: 600;
   color: var(--teal-300);
-  letter-spacing: 0.18em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
 .section-title {
   max-width: 14ch;
   color: var(--text-primary);
+  letter-spacing: -0.05em;
 }
 
 .section-subtitle {
-  max-width: 64ch;
+  max-width: 60ch;
   color: var(--text-secondary);
 }
 

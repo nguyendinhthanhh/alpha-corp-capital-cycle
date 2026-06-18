@@ -10,7 +10,6 @@ import AccumulationSection from '../components/theory/AccumulationSection';
 import ProfitInterestSection from '../components/theory/ProfitInterestSection';
 import CriticalQuestionsSection from '../components/theory/CriticalQuestionsSection';
 import { scrollToSectionById } from '../utils/motion';
-
 const LandingPage = () => {
   const [isCrisis, setIsCrisis] = useState(false);
 
@@ -24,7 +23,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="landing-page">
+    <div className="landing-page" style={{ position: 'relative' }}>
       <HeroSection isCrisis={isCrisis} onToggleCrisis={() => setIsCrisis((current) => !current)} />
       <MarketContextSection isCrisis={isCrisis} onSetCrisis={setIsCrisis} />
       <CapitalJourneySection isCrisis={isCrisis} />

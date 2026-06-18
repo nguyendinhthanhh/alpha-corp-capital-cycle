@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HelpCircle, ChevronDown } from 'lucide-react';
 import Section from '../shared/Section';
+import Atmosphere from '../shared/Atmosphere';
 import SectionHeader from '../shared/SectionHeader';
 import './CriticalQuestionsSection.css';
 
@@ -36,7 +37,8 @@ const CriticalQuestionsSection = () => {
   };
 
   return (
-    <Section className="faq-section" id="faq" bgColor="var(--page-background)">
+    <Section className="critical-questions-section" id="faq" bgColor="transparent">
+        <Atmosphere variant="theory" />
         <SectionHeader
           eyebrow="Chuẩn bị Q&A"
           title="Câu hỏi Phản biện"
