@@ -6,6 +6,7 @@ const Section = ({
   id, 
   className = '', 
   containerClass = 'container',
+  containerProps = {},
   bgColor = 'var(--page-background)',
   ...props 
 }) => {
@@ -20,7 +21,7 @@ const Section = ({
       variants={revealVariants.container}
       {...props}
     >
-      <div className={containerClass}>
+      <div className={containerClass} {...containerProps}>
         {children}
       </div>
     </motion.section>
