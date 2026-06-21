@@ -1,8 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Bot, Menu, Sparkles, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { scrollToSectionById } from "../../utils/motion";
-import { useAI } from "../../ai/useAI";
 import "./Header.css";
 
 const navItems = [
@@ -31,7 +30,6 @@ const homeSectionNavMap = [
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { openTutor, isOpen } = useAI();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -107,11 +105,6 @@ const Header = () => {
     navigate(path);
   };
 
-  const handleTutorClick = () => {
-    setIsMobileMenuOpen(false);
-    openTutor();
-  };
-
   const checkIsActive = (path) => {
     if (path === "/" || path === "/#hero") {
       return location.pathname === "/" && activeSection === "hero";
@@ -153,15 +146,6 @@ const Header = () => {
           </nav>
 
           <button
-            type="button"
-            className={`ai-nav-btn ${isOpen ? 'active' : ''}`}
-            onClick={handleTutorClick}
-          >
-            <Sparkles size={16} />
-            <span>Hỏi AI</span>
-          </button>
-
-          <button
             className="mobile-menu-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle Menu"
@@ -186,11 +170,6 @@ const Header = () => {
               {item.label}
             </button>
           ))}
-
-          <button type="button" className="mobile-nav-item mobile-ai-btn" onClick={handleTutorClick}>
-            <Bot size={18} />
-            <span>Hoi AI Capital Tutor</span>
-          </button>
         </nav>
       </div>
 

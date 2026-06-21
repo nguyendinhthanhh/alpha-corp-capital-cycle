@@ -4,6 +4,7 @@ import Footer from './Footer';
 import GlobalBackground from './GlobalBackground';
 import { AIContextBridge } from '../ai/AIContextBridge';
 import { AITutorDrawer } from '../ai/AITutorDrawer';
+import { AITutorTrigger } from '../ai/AITutorTrigger';
 
 const Layout = () => {
   return (
@@ -15,6 +16,7 @@ const Layout = () => {
         <Outlet />
       </main>
       <Footer />
+      <AITutorTrigger />
       <AITutorDrawer />
     </div>
   );
