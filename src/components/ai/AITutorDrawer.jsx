@@ -6,11 +6,9 @@ import {
   CircleHelp,
   Loader2,
   MessageSquareText,
-  PanelRightClose,
   RotateCcw,
   Send,
   ShieldAlert,
-  Sparkles,
   X,
 } from 'lucide-react';
 import { useAI } from '../../ai/useAI';
@@ -109,7 +107,7 @@ const MessageBubble = ({ message }) => {
     <div className={`ai-message ${isUser ? 'is-user' : 'is-assistant'}`}>
       <div className="ai-message-badge">
         {isUser ? <MessageSquareText size={14} /> : <Bot size={14} />}
-        <span>{isUser ? 'Ban' : 'AI Capital Tutor'}</span>
+        <span>{isUser ? 'Ban' : 'AI chat'}</span>
       </div>
 
       <div className="ai-message-body">
@@ -154,14 +152,12 @@ const MessageBubble = ({ message }) => {
 export function AITutorDrawer() {
   const {
     isOpen,
-    isCollapsed,
     isLoading,
     error,
     messages,
     pageContext,
     viewContext,
     closeTutor,
-    collapseTutor,
     toggleContext,
     resetConversation,
     sendMessage,
@@ -189,6 +185,19 @@ export function AITutorDrawer() {
       inputRef.current?.focus();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        closeTutor();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, closeTutor]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -222,39 +231,35 @@ export function AITutorDrawer() {
           />
 
           <motion.aside
-            className={`ai-tutor-shell ${isCollapsed ? 'is-collapsed' : ''}`}
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', stiffness: 220, damping: 28 }}
+            className="ai-tutor-shell"
+            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 18, scale: 0.96 }}
+            transition={{ type: 'spring', stiffness: 260, damping: 28 }}
             role="dialog"
-            aria-modal="true"
-            aria-label="AI Capital Tutor"
+            aria-modal="false"
+            aria-label="AI chat"
           >
             <div className="ai-tutor-header">
               <div className="ai-tutor-title-block">
                 <div className="ai-tutor-eyebrow">
-                  <Sparkles size={14} />
-                  <span>AI Capital Tutor</span>
+                  <MessageSquareText size={14} />
+                  <span>AI chat</span>
                 </div>
-                <h2>Tro ly phan tich dong von</h2>
-                <p>Context-aware, dua tren du lieu da kiem chung trong du an.</p>
+                <h2>Chat theo context hien tai</h2>
+                <p>Hoi truc tiep ve trang nay, AI se tra loi theo du lieu da kiem chung trong du an.</p>
               </div>
 
               <div className="ai-tutor-header-actions">
                 <button type="button" className="ai-icon-btn" onClick={toggleContext} aria-pressed={viewContext}>
                   <CircleHelp size={18} />
-                  <span>Xem context</span>
+                  <span>Context</span>
                 </button>
                 <button type="button" className="ai-icon-btn" onClick={resetConversation}>
                   <RotateCcw size={18} />
                   <span>Reset</span>
                 </button>
-                <button type="button" className="ai-icon-btn" onClick={collapseTutor}>
-                  <PanelRightClose size={18} />
-                  <span>Dong</span>
-                </button>
-                <button type="button" className="ai-close-btn" onClick={closeTutor} aria-label="Dong AI Tutor">
+                <button type="button" className="ai-close-btn" onClick={closeTutor} aria-label="Dong AI chat">
                   <X size={18} />
                 </button>
               </div>
@@ -277,10 +282,10 @@ export function AITutorDrawer() {
             {viewContext && (
               <div className="ai-context-panel">
                 <div className="ai-context-panel-header">
-                  <strong>Xem context AI dang dung</strong>
+                  <strong>Context AI dang dung</strong>
                   <button type="button" className="ai-icon-btn compact" onClick={toggleContext}>
                     <ChevronUp size={16} />
-                    <span>Dong</span>
+                    <span>An</span>
                   </button>
                 </div>
 
@@ -327,7 +332,7 @@ export function AITutorDrawer() {
             )}
 
             <div className="ai-footer-note">
-              <span>Khong co API key o frontend. Neu chua cau hinh backend, AI se dung fallback rule-based.</span>
+              <span>API key nam o server. Neu proxy chua san sang, AI se dung fallback rule-based.</span>
             </div>
 
             <form className="ai-composer" onSubmit={handleSubmit}>
@@ -336,17 +341,17 @@ export function AITutorDrawer() {
                 value={draft}
                 onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Hoi theo context hien tai..."
+                placeholder="Nhap cau hoi, Enter de gui..."
                 rows={3}
               />
               <div className="ai-composer-actions">
                 <button type="button" className="ai-icon-btn compact" onClick={() => setDraft('')}>
                   <X size={16} />
-                  <span>Xoa</span>
+                  <span>Clear</span>
                 </button>
                 <button type="submit" className="ai-send-btn" disabled={isLoading || !draft.trim()}>
                   <Send size={16} />
-                  <span>Gui</span>
+                  <span>Send</span>
                 </button>
               </div>
             </form>

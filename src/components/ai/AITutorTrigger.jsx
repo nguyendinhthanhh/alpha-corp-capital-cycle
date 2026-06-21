@@ -1,4 +1,4 @@
-import { Sparkles, X } from 'lucide-react';
+import { MessageSquareText, X } from 'lucide-react';
 import { useAI } from '../../ai/useAI';
 import './AITutorTrigger.css';
 
@@ -18,16 +18,18 @@ export function AITutorTrigger() {
       type="button"
       className={`ai-fab ${isOpen ? 'is-open' : ''}`}
       onClick={handleClick}
-      aria-label={isOpen ? 'Đóng AI Capital Tutor' : 'Mở AI Capital Tutor'}
-      title="Hỏi AI Capital Tutor"
+      aria-label={isOpen ? 'Dong AI chat' : 'Mo AI chat'}
+      title="AI chat"
       onContextMenu={(event) => {
         event.preventDefault();
         toggleTutor();
       }}
     >
-      <span className="ai-fab-icon">{isOpen ? <X size={18} /> : <Sparkles size={18} />}</span>
-      <span className="ai-fab-label">{isOpen ? 'Đóng AI' : 'Hỏi AI'}</span>
+      <span className="ai-fab-icon">{isOpen ? <X size={18} /> : <MessageSquareText size={18} />}</span>
+      <span className="ai-fab-copy">
+        <strong>{isOpen ? 'Dong chat' : 'AI chat'}</strong>
+        <span>{isOpen ? 'Tap de dong' : 'Hoi theo trang'}</span>
+      </span>
     </button>
   );
 }
-
