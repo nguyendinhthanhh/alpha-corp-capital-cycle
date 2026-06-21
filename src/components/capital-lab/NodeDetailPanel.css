@@ -1,0 +1,115 @@
+.node-detail-panel {
+  position: fixed;
+  top: var(--header-offset);
+  right: 0;
+  width: min(400px, calc(100% - 2rem));
+  max-height: calc(100vh - var(--header-offset) - 2rem);
+  margin: 1rem;
+  background: rgba(15, 19, 28, 0.95);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1.5rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 50;
+  color: var(--text-primary);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  overflow-y: auto;
+}
+
+.node-detail-panel .panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.node-detail-panel .eyebrow {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.node-detail-panel h3 {
+  font-size: 1.35rem;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.panel-close-btn {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: all var(--motion-duration-ui) var(--motion-ease-out);
+}
+
+.panel-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+}
+
+.panel-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-section .detail-label {
+  display: block;
+}
+
+.detail-section p {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.detail-value {
+  font-size: 1.1rem !important;
+  font-weight: 600;
+  color: var(--teal-300) !important;
+}
+
+.crisis-effect {
+  padding: 1rem;
+  background: rgba(255, 110, 92, 0.08);
+  border: 1px solid rgba(255, 110, 92, 0.2);
+  border-radius: 4px;
+}
+
+.crisis-effect .detail-label {
+  color: var(--red-300);
+}
+
+.crisis-effect p {
+  color: var(--red-200) !important;
+}
+
+@media (max-width: 768px) {
+  .node-detail-panel {
+    width: calc(100% - 2rem);
+    margin: 1rem;
+  }
+}

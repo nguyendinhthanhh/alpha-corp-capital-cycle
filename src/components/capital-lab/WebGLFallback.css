@@ -1,0 +1,109 @@
+.webgl-fallback {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: var(--page-background);
+  z-index: 100;
+  padding: 4rem 1rem;
+  overflow-y: auto;
+}
+
+.fallback-content {
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+}
+
+.fallback-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.fallback-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.fallback-desc {
+  color: var(--text-secondary);
+  margin-bottom: 3rem;
+  font-size: 1.1rem;
+}
+
+.fallback-flow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fallback-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.fallback-node {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid;
+  border-radius: 8px;
+  padding: 1.5rem;
+  width: 100%;
+  text-align: left;
+  position: relative;
+  transition: transform 0.3s ease;
+}
+
+.fallback-node:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.node-key {
+  position: absolute;
+  top: -12px;
+  right: 1.5rem;
+  background: var(--page-background);
+  padding: 0 0.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.node-title {
+  font-size: 1.25rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+}
+
+.node-desc {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+}
+
+.node-detail {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.5;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1rem;
+}
+
+.fallback-arrow {
+  color: rgba(255, 255, 255, 0.2);
+  margin: 1rem 0;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}

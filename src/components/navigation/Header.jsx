@@ -8,6 +8,7 @@ const navItems = [
   { id: "overview", label: "Tổng quan", path: "/" },
   { id: "capital-journey", label: "Hành trình vốn", path: "/#capital-journey" },
   { id: "crisis", label: "Điểm đứt gãy", path: "/#crisis" },
+  { id: "capital-lab", label: "Capital Lab", path: "/capital-lab" },
   { id: "simulators", label: "Mô phỏng", path: "/simulators" },
   { id: "knowledge", label: "Lý luận", path: "/knowledge" },
   { id: "quiz", label: "Kiểm tra", path: "/quiz" },

@@ -11,6 +11,7 @@ const Simulators = lazy(() => import("./pages/Simulators"));
 const KnowledgeHub = lazy(() => import("./pages/KnowledgeHub"));
 const Quiz = lazy(() => import("./pages/Quiz"));
 const Appendix = lazy(() => import("./pages/Appendix"));
+const CapitalLabPage = lazy(() => import("./pages/CapitalLabPage"));
 
 function App() {
   useEffect(() => {
@@ -46,6 +47,14 @@ function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <StoryMode />
+            </Suspense>
+          }
+        />
+        <Route
+          path="capital-lab"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <CapitalLabPage />
             </Suspense>
           }
         />

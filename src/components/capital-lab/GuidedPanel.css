@@ -1,0 +1,109 @@
+.guided-panel {
+  position: fixed;
+  left: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 380px;
+  background: rgba(15, 19, 28, 0.95);
+  border: 1px solid var(--border-light);
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.guided-panel-content {
+  padding: 2rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.guided-panel .eyebrow {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--teal-400);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+.guided-panel h2 {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.guided-panel .chapter-desc {
+  font-size: 1.05rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.theory-note {
+  background: rgba(104, 205, 216, 0.05);
+  border-left: 3px solid var(--teal-500);
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 1rem;
+}
+
+.takeaway-note {
+  background: rgba(255, 184, 77, 0.05);
+  border-left: 3px solid var(--ff-yellow);
+  padding: 1rem;
+  border-radius: 0 8px 8px 0;
+}
+
+.detail-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.theory-note p, .takeaway-note p {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.guided-panel-footer {
+  padding: 1.5rem 2rem;
+  border-top: 1px solid var(--border-light);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.guided-panel-footer button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .guided-panel {
+    left: 1rem;
+    right: 1rem;
+    bottom: 1rem;
+    top: auto;
+    transform: none;
+    width: auto;
+    max-height: 50vh;
+  }
+  .guided-panel-content {
+    padding: 1.5rem;
+  }
+}

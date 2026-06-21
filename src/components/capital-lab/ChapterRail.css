@@ -1,0 +1,123 @@
+.chapter-rail {
+  position: fixed;
+  right: 2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: flex;
+  gap: 1rem;
+}
+
+.chapter-rail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rail-chapter {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(26, 42, 58, 0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(104, 205, 216, 0.2);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 100px;
+}
+
+.rail-chapter:hover {
+  background: rgba(26, 42, 58, 0.8);
+  border-color: rgba(104, 205, 216, 0.4);
+  transform: translateX(-4px);
+}
+
+.rail-chapter-number {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+.rail-chapter-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  transition: color 0.3s ease;
+}
+
+.rail-chapter.completed {
+  background: rgba(104, 205, 216, 0.08);
+  border-color: rgba(104, 205, 216, 0.3);
+}
+
+.rail-chapter.completed .rail-chapter-number,
+.rail-chapter.completed .rail-chapter-label {
+  color: #68cdd8;
+}
+
+.rail-chapter.active {
+  background: rgba(104, 205, 216, 0.15);
+  border-color: #68cdd8;
+  box-shadow: 0 0 0 2px rgba(104, 205, 216, 0.2);
+}
+
+.rail-chapter.active .rail-chapter-number,
+.rail-chapter.active .rail-chapter-label {
+  color: #68cdd8;
+}
+
+.rail-active-indicator {
+  position: absolute;
+  inset: -2px;
+  background: transparent;
+  border: 2px solid #68cdd8;
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.rail-progress-line {
+  width: 3px;
+  background: rgba(104, 205, 216, 0.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rail-progress-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, #68cdd8 0%, #6ecd9a 100%);
+  transition: height 0.5s ease;
+}
+
+@media (max-width: 1280px) {
+  .chapter-rail {
+    right: 1rem;
+  }
+
+  .rail-chapter {
+    min-width: 80px;
+    padding: 0.625rem 0.875rem;
+  }
+
+  .rail-chapter-number {
+    font-size: 0.75rem;
+  }
+
+  .rail-chapter-label {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .chapter-rail {
+    display: none;
+  }
+}
