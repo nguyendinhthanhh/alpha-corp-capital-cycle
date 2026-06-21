@@ -4,13 +4,16 @@ import { BrowserRouter } from 'react-router-dom'
 import { MotionConfig } from 'framer-motion'
 import './index.css'
 import App from './App.jsx'
+import { AIProvider } from './ai/AIProvider'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MotionConfig reducedMotion="user">
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AIProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AIProvider>
     </MotionConfig>
   </StrictMode>,
 )

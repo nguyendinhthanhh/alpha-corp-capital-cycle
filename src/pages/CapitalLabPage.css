@@ -1,14 +1,16 @@
+/* ============================================================
+   CAPITAL LAB PAGE — MISSION: UNLOCK THE CAPITAL FLOW
+   ============================================================ */
+
 .capital-lab-page {
   position: relative;
-  min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    var(--page-background) 0%,
-    #0a0e15 100%
-  );
-  overflow-x: hidden;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: #0a0e15;
 }
 
+/* ── Canvas ── */
 .lab-canvas-container {
   position: fixed;
   top: 0;
@@ -16,135 +18,101 @@
   width: 100%;
   height: 100vh;
   z-index: 1;
+  animation: fadeInCanvas 0.8s ease-out;
 }
 
+@keyframes fadeInCanvas {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 
-/* Loading state */
-.lab-loading {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
+/* ── Crisis / Recovery background tints ── */
+.capital-lab-page.crisis-active {
+  background: #120a0a;
+}
+.capital-lab-page.recovery-active {
+  background: #0a120b;
+}
+
+/* ── 3D HTML Labels (used by EconomicNode & StakeholderOrbit) ── */
+.node-3d-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.node-3d-label.visible { opacity: 1; }
+.node-3d-label.dimmed { opacity: 0.4; }
+.node-3d-label.hidden { opacity: 0; }
+.node-3d-label.active { opacity: 1; z-index: 10; }
+
+.label-connector {
+  width: 1px;
+  height: 30px;
+  background: linear-gradient(to top, transparent, rgba(255,255,255,0.35));
+  margin-bottom: 4px;
+}
+
+.label-content {
+  background: rgba(10, 14, 21, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--page-background);
-  z-index: 100;
+  gap: 8px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.5);
+  white-space: nowrap;
 }
 
-.lab-loading-content {
-  text-align: center;
+.label-key {
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
 }
 
-.lab-loading-progress {
-  width: 200px;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  overflow: hidden;
-  margin: 1.5rem auto 1rem;
+.label-title {
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--text-primary, #e8f0f8);
+  border-left: 1px solid rgba(255,255,255,0.15);
+  padding-left: 8px;
 }
 
-.lab-loading-bar {
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    var(--teal-600),
-    var(--teal-400)
-  );
-  transition: width 0.3s ease-out;
-  border-radius: 2px;
+/* ── Zone labels on ground ── */
+.zone-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.15);
+  white-space: nowrap;
+  pointer-events: none;
 }
 
-/* Entrance animation */
-@keyframes fadeInCanvas {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.lab-canvas-container {
-  animation: fadeInCanvas 1s ease-out;
-}
-
-/* Crisis state visual effects */
-.capital-lab-page.crisis-active {
-  background: linear-gradient(
-    180deg,
-    #150f0f 0%,
-    #0a0606 100%
-  );
-}
-
-/* Recovery state visual effects */
-.capital-lab-page.recovery-active {
-  background: linear-gradient(
-    180deg,
-    #0f1510 0%,
-    #060a06 100%
-  );
-}
-
-
-/* Reduced motion */
+/* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
   .lab-canvas-container {
     animation: none;
   }
 }
 
-/* 3D HTML Labels */
-.node-3d-label {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translate3d(0, -50%, 0);
-  opacity: 0.6;
-}
-
-.node-3d-label.active {
-  opacity: 1;
-  z-index: 10;
-}
-
-.node-3d-label.locked {
-  opacity: 0.3;
-}
-
-.label-connector {
-  width: 1px;
-  height: 40px;
-  background: linear-gradient(to top, rgba(255,255,255,0), rgba(255,255,255,0.4));
-  margin-bottom: 0.5rem;
-}
-
-.label-content {
-  background: rgba(10, 14, 21, 0.85);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-  white-space: nowrap;
-}
-
-.label-key {
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.label-title {
-  font-weight: 500;
-  font-size: 0.9rem;
-  color: var(--text-primary);
-  border-left: 1px solid rgba(255,255,255,0.2);
-  padding-left: 0.5rem;
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .node-3d-label {
+    transform: scale(0.85);
+  }
+  .label-content {
+    padding: 3px 8px;
+    gap: 4px;
+  }
+  .label-key {
+    font-size: 0.85rem;
+  }
+  .label-title {
+    font-size: 0.7rem;
+  }
 }

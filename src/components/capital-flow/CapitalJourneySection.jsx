@@ -251,7 +251,7 @@ const CapitalJourneySection = ({ isCrisis }) => {
             </div>
 
             <div className="card-footer">
-              <Link to="/knowledge" className="learn-link">
+              <Link to="/capital-lab" className="learn-link">
                 {learnMoreLabel} <ExternalLink size={16} className="ml-2" />
               </Link>
             </div>

@@ -39,8 +39,7 @@ const Footer = () => {
             <h3 className="footer-logo">AlphaCorp</h3>
             <p className="footer-course">MLN122 - Kinh tế chính trị Mác - Lênin</p>
             <p className="footer-description">
-              Hồ sơ mô phỏng phục vụ học tập về tuần hoàn và chu chuyển tư bản. Dự án chuyển
-              hóa lý luận thành trải nghiệm học tập trực quan.
+              Hệ sơ mô phỏng phục vụ học tập về tuần hoàn và chu chuyển tư bản. Dự án chuyển hóa lý luận thành trải nghiệm học tập trực quan.
             </p>
           </div>
 
@@ -51,7 +50,6 @@ const Footer = () => {
               <li><button type="button" onClick={() => handleJump('/#capital-journey')}>Hành trình vốn</button></li>
               <li><button type="button" onClick={() => handleJump('/#crisis')}>Khủng hoảng thanh khoản</button></li>
               <li><button type="button" onClick={() => handleJump('/simulators')}>Mô phỏng dòng tiền</button></li>
-              <li><button type="button" onClick={() => handleJump('/knowledge')}>Lý luận cốt lõi</button></li>
             </ul>
           </div>
 
@@ -67,9 +65,7 @@ const Footer = () => {
           <div className="footer-integrity">
             <h4 className="footer-heading">Cam kết học thuật</h4>
             <p className="integrity-text">
-              Sản phẩm tuân thủ liêm chính học thuật. Các chỉ số mô phỏng được dùng cho mục
-              đích giáo dục, minh họa nguyên lý kinh tế học Mác - Lênin, không phải dữ liệu
-              tài chính thực tế hay lời khuyên đầu tư.
+              Sản phẩm tuân thủ liêm chính học tập. Các chỉ số mô phỏng được dùng cho mục đích giáo dục, minh họa nguyên lý kinh tế học Mác - Lênin, không phải dữ liệu tài chính thực tế hay lời khuyên đầu tư.
             </p>
           </div>
         </div>
@@ -83,3 +79,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

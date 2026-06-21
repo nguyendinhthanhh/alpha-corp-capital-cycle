@@ -1,12 +1,12 @@
 import { useState, useCallback } from 'react';
-import { labState, labChapters } from '../data/capitalLabData';
+import { labState, labMissions } from '../data/capitalLabData';
 
 export const useCapitalLabState = () => {
   const [state, setState] = useState(labState.NORMAL);
-  const [activeChapter, setActiveChapter] = useState('hero');
+  const [activeMission, setActiveMission] = useState('source');
   const [selectedNode, setSelectedNode] = useState(null);
-  const [mode, setMode] = useState('guided'); // 'guided' | 'explore'
-  const [hasSeenOnboarding, setHasSeenOnboarding] = useState(false);
+  const [mode, setMode] = useState('guided');
+  const [missionStarted, setMissionStarted] = useState(false);
   const [crisisStep, setCrisisStep] = useState(0);
 
   const [recoveryValues, setRecoveryValues] = useState({
@@ -15,19 +15,25 @@ export const useCapitalLabState = () => {
     marketAbsorption: 30
   });
 
+  // Aliases for backward compatibility
+  const activeChapter = activeMission;
+  const setActiveChapter = setActiveMission;
+  const hasSeenOnboarding = missionStarted;
+  const setHasSeenOnboarding = setMissionStarted;
+
   const nextChapter = useCallback(() => {
-    const currentIndex = labChapters.findIndex(c => c.id === activeChapter);
-    if (currentIndex < labChapters.length - 1) {
-      setActiveChapter(labChapters[currentIndex + 1].id);
+    const currentIndex = labMissions.findIndex(c => c.id === activeMission);
+    if (currentIndex < labMissions.length - 1) {
+      setActiveMission(labMissions[currentIndex + 1].id);
     }
-  }, [activeChapter]);
+  }, [activeMission]);
 
   const prevChapter = useCallback(() => {
-    const currentIndex = labChapters.findIndex(c => c.id === activeChapter);
+    const currentIndex = labMissions.findIndex(c => c.id === activeMission);
     if (currentIndex > 0) {
-      setActiveChapter(labChapters[currentIndex - 1].id);
+      setActiveMission(labMissions[currentIndex - 1].id);
     }
-  }, [activeChapter]);
+  }, [activeMission]);
 
   const triggerCrisis = useCallback(() => {
     if (state !== labState.NORMAL) return;
@@ -42,8 +48,9 @@ export const useCapitalLabState = () => {
 
   const resetState = useCallback(() => {
     setState(labState.NORMAL);
-    setActiveChapter('intro');
+    setActiveMission('source');
     setMode('guided');
+    setMissionStarted(false);
     setCrisisStep(0);
     setRecoveryValues({
       cashReserve: 15,
@@ -62,10 +69,6 @@ export const useCapitalLabState = () => {
   const checkRecoveryCondition = useCallback(() => {
     const { cashReserve, capitalInCommodity, marketAbsorption } = recoveryValues;
     
-    // Điều kiện khôi phục:
-    // - Dự phòng tiền tệ: 20-35%
-    // - Vốn trong hàng hóa: 30-50%
-    // - Khả năng tiêu thụ: 60-85%
     const isCashOptimal = cashReserve >= 20 && cashReserve <= 35;
     const isCommodityOptimal = capitalInCommodity >= 30 && capitalInCommodity <= 50;
     const isAbsorptionOptimal = marketAbsorption >= 60 && marketAbsorption <= 85;
@@ -83,14 +86,17 @@ export const useCapitalLabState = () => {
 
   return {
     state,
+    activeMission,
     activeChapter,
     selectedNode,
     recoveryValues,
     mode,
+    missionStarted,
     hasSeenOnboarding,
     crisisStep,
     triggerCrisis,
     resetState,
+    setActiveMission,
     setActiveChapter,
     setSelectedNode,
     updateRecoveryValue,
@@ -98,6 +104,7 @@ export const useCapitalLabState = () => {
     nextChapter,
     prevChapter,
     setMode,
+    setMissionStarted,
     setHasSeenOnboarding,
     setCrisisStep
   };

@@ -1,65 +1,83 @@
-import { ArrowRight, X } from 'lucide-react';
-import { labChapters, capitalNodes } from '../../data/capitalLabData';
+import { ArrowRight, X, Lock } from 'lucide-react';
+import { labMissions, capitalNodes } from '../../data/capitalLabData';
 import './FormulaNavigation.css';
 
-export const FormulaNavigation = ({ activeChapter, state, onNodeClick }) => {
-  const currentChapterIndex = labChapters.findIndex(c => c.id === activeChapter);
-  
-  // The formula order: T -> H -> SX -> H' -> T'
-  const formulaNodes = capitalNodes.map(node => {
-    // Determine active status based on the current chapter's visible nodes
-    // Actually, let's determine status by comparing chapter progress
-    const chapter = labChapters[currentChapterIndex];
-    const isVisible = chapter?.visibleNodes?.includes(node.id) || false;
-    const isFocus = chapter?.focusNode === node.id;
-    
-    // Check if we are past the point where this node is introduced
-    // T is intro, H is inputs, SX is production, H' is commodity, T' is return
-    const isPast = isVisible && !isFocus;
+export const FormulaNavigation = ({ activeMission, state, onNodeClick }) => {
+  const currentIndex = labMissions.findIndex(m => m.id === activeMission);
+  const currentMission = labMissions[currentIndex];
 
-    return {
-      ...node,
-      isVisible,
-      isFocus,
-      isPast
-    };
+  const formulaNodes = capitalNodes.map(node => {
+    const isVisible = currentMission?.visibleNodes?.includes(node.id) || false;
+    const isFocus = currentMission?.focusNode === node.id;
+    const isPast = isVisible && !isFocus;
+    const isLocked = state === 'crisis' && node.id === 'TP';
+
+    return { ...node, isVisible, isFocus, isPast, isLocked };
   });
 
+  const getNodeStatus = (node) => {
+    if (node.isLocked) return 'locked';
+    if (node.isFocus) return 'focus';
+    if (node.isPast) return 'past';
+    return 'upcoming';
+  };
+
+  const getConnectorStatus = (currentNode, nextNode) => {
+    if (state === 'crisis' && currentNode.id === 'HP') return 'crisis';
+    if (nextNode.isFocus || nextNode.isPast) return 'active';
+    return 'upcoming';
+  };
+
   return (
-    <div className="formula-navigation">
+    <nav className="formula-nav" aria-label="Công thức tuần hoàn tư bản">
       <div className="formula-track">
         {formulaNodes.map((node, index) => {
-          const isLocked = state === 'crisis' && node.id === 'TP';
+          const status = getNodeStatus(node);
+          const missionForNode = labMissions.find(m => m.focusNode === node.id);
 
           return (
-            <div key={node.id} className="formula-step-wrapper">
-              <div 
-                className={`formula-node ${node.isFocus ? 'active' : ''} ${node.isPast ? 'past' : ''} ${!node.isVisible ? 'hidden' : ''} ${isLocked ? 'locked' : ''}`}
-                onClick={() => node.isVisible && onNodeClick(node.id)}
+            <div key={node.id} className="formula-step">
+              {/* Node circle */}
+              <button
+                className={`fn-node fn-node--${status}`}
+                onClick={() => {
+                  if (missionForNode && node.isVisible) {
+                    onNodeClick(missionForNode.id);
+                  }
+                }}
+                disabled={!node.isVisible}
+                aria-label={`${node.key} — ${node.shortTitle}`}
+                aria-current={node.isFocus ? 'step' : undefined}
+                title={node.shortTitle}
               >
-                <div className="formula-symbol" style={{ borderColor: isLocked ? '#ff6e5c' : node.color }}>
-                  {node.key}
-                </div>
-                {node.isFocus && (
-                  <div className="formula-label" style={{ color: node.color }}>
-                    {node.shortTitle}
-                  </div>
+                {node.isLocked ? (
+                  <Lock size={14} aria-hidden="true" />
+                ) : (
+                  <span className="fn-symbol">{node.key}</span>
                 )}
-              </div>
-              
+              </button>
+
+              {/* Label for focused node */}
+              {node.isFocus && (
+                <span className="fn-label" style={{ color: node.color }}>
+                  {node.shortTitle}
+                </span>
+              )}
+
+              {/* Arrow connector */}
               {index < formulaNodes.length - 1 && (
-                <div className={`formula-connector ${formulaNodes[index + 1].isVisible ? 'active' : ''}`}>
+                <span className={`fn-connector fn-connector--${getConnectorStatus(node, formulaNodes[index + 1])}`}>
                   {state === 'crisis' && node.id === 'HP' ? (
-                    <X size={16} className="crisis-x" />
+                    <X size={14} className="fn-crisis-x" aria-label="Đứt gãy" />
                   ) : (
-                    <ArrowRight size={16} />
+                    <ArrowRight size={14} aria-hidden="true" />
                   )}
-                </div>
+                </span>
               )}
             </div>
           );
         })}
       </div>
-    </div>
+    </nav>
   );
 };

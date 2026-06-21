@@ -3,11 +3,39 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { storyModeChapters } from '../data/storyData';
 import SectionHeader from '../components/shared/SectionHeader';
 import { getScrollBehavior } from '../utils/motion';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 import './StoryMode.css';
 
 const StoryMode = () => {
   const [activeChapter, setActiveChapter] = useState(storyModeChapters[0].number);
   const reduceMotion = useReducedMotion();
+  const { setPageContext } = useAI();
+
+  useEffect(() => {
+    const chapter = storyModeChapters.find((item) => item.number === activeChapter) || storyModeChapters[0];
+
+    setPageContext(
+      buildAIContext({
+        route: '/story',
+        appState: {
+          pageName: 'Hanh trinh von',
+          sectionId: `chapter-${chapter.number}`,
+          sectionTitle: chapter.title,
+          chapterTitle: chapter.title,
+          sourceLabels: ['caseData.storyChapters'],
+          relevantConceptIds: ['capital-circuit', 'capital-turnover', 'surplus-value'],
+        },
+        selectedContent: {
+          chapterNumber: chapter.number,
+          chapterTitle: chapter.title,
+          chapterSummary: chapter.summary,
+          chapterTheory: chapter.theory,
+          chapterEvidence: chapter.evidence,
+        },
+      }),
+    );
+  }, [activeChapter, setPageContext]);
 
   useEffect(() => {
     const sections = storyModeChapters

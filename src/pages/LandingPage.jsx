@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import HeroSection from '../components/hero/HeroSection';
 import MarketContextSection from '../components/market/MarketContextSection';
 import CapitalJourneySection from '../components/capital-flow/CapitalJourneySection';
@@ -10,8 +10,67 @@ import AccumulationSection from '../components/theory/AccumulationSection';
 import ProfitInterestSection from '../components/theory/ProfitInterestSection';
 import CriticalQuestionsSection from '../components/theory/CriticalQuestionsSection';
 import { scrollToSectionById } from '../utils/motion';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 const LandingPage = () => {
   const [isCrisis, setIsCrisis] = useState(false);
+  const { setPageContext } = useAI();
+
+  const sectionMap = useMemo(
+    () => ({
+      hero: {
+        sectionId: 'hero',
+        sectionTitle: 'Hero',
+        relevantConceptIds: ['money-capital'],
+      },
+      crisis: {
+        sectionId: 'crisis',
+        sectionTitle: 'Nguyen nhan dong bang thi truong',
+        relevantConceptIds: ['market', 'circulation-time', 'liquidity'],
+      },
+      'capital-journey': {
+        sectionId: 'capital-journey',
+        sectionTitle: 'Hanh trinh von',
+        relevantConceptIds: ['capital-circuit', 'capital-turnover'],
+      },
+      'three-forms': {
+        sectionId: 'three-forms',
+        sectionTitle: 'Ba hinh thai tu ban',
+        relevantConceptIds: ['money-capital', 'productive-capital', 'commodity-capital'],
+      },
+      conditions: {
+        sectionId: 'conditions',
+        sectionTitle: 'Khong gian va thoi gian',
+        relevantConceptIds: ['spatial-condition', 'temporal-condition'],
+      },
+      turnover: {
+        sectionId: 'turnover',
+        sectionTitle: 'Thoi gian chu chuyen',
+        relevantConceptIds: ['production-time', 'circulation-time', 'capital-turnover'],
+      },
+      impact: {
+        sectionId: 'impact',
+        sectionTitle: 'Hieu ung day chuyen',
+        relevantConceptIds: ['stakeholder', 'liquidity', 'market'],
+      },
+      accumulation: {
+        sectionId: 'accumulation',
+        sectionTitle: 'Tai san xuat va tich luy',
+        relevantConceptIds: ['accumulation', 'reproduction', 'surplus-value'],
+      },
+      profit: {
+        sectionId: 'profit',
+        sectionTitle: 'Loi nhuan va loi tuc',
+        relevantConceptIds: ['profit', 'interest', 'surplus-value'],
+      },
+      faq: {
+        sectionId: 'faq',
+        sectionTitle: 'Cau hoi phan bien',
+        relevantConceptIds: ['capital-circuit', 'liquidity', 'market'],
+      },
+    }),
+    [],
+  );
 
   useEffect(() => {
     if (window.location.hash) {
@@ -21,6 +80,75 @@ const LandingPage = () => {
       });
     }
   }, []);
+
+  useEffect(() => {
+    const ids = Object.keys(sectionMap);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
+        if (!visible?.target?.id) {
+          return;
+        }
+
+        const sectionContext = sectionMap[visible.target.id];
+        if (!sectionContext) {
+          return;
+        }
+
+        setPageContext(
+          buildAIContext({
+            route: '/',
+            appState: {
+              pageName: 'Tong quan',
+              crisisMode: isCrisis,
+              relevantConceptIds: ['capital-circuit', 'money-capital'],
+              sourceLabels: ['Case Alpha Corp'],
+            },
+            selectedContent: sectionContext,
+          }),
+        );
+      },
+      { rootMargin: '-20% 0px -55% 0px', threshold: [0.15, 0.35, 0.6] },
+    );
+
+    const observed = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    observed.forEach((element) => observer.observe(element));
+
+    const currentHash = window.location.hash.replace('#', '');
+    const initialSection = sectionMap[currentHash] || sectionMap.hero;
+    setPageContext(
+      buildAIContext({
+        route: '/',
+        appState: {
+          pageName: 'Tong quan',
+          crisisMode: isCrisis,
+          relevantConceptIds: ['capital-circuit', 'money-capital'],
+          sourceLabels: ['Case Alpha Corp'],
+        },
+        selectedContent: initialSection,
+      }),
+    );
+
+    return () => observer.disconnect();
+  }, [isCrisis, sectionMap, setPageContext]);
+
+  useEffect(() => {
+    setPageContext(
+      buildAIContext({
+        route: '/',
+        appState: {
+          pageName: 'Tong quan',
+          crisisMode: isCrisis,
+          relevantConceptIds: ['capital-circuit', 'money-capital'],
+          sourceLabels: ['Case Alpha Corp'],
+        },
+        selectedContent: sectionMap[window.location.hash.replace('#', '')] || sectionMap.hero,
+      }),
+    );
+  }, [isCrisis, sectionMap, setPageContext]);
 
   return (
     <div className="landing-page">

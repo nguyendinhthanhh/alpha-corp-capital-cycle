@@ -1,68 +1,192 @@
+/* ── Onboarding Overlay — Immersive Hero ── */
+
 .onboarding-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: rgba(10, 14, 21, 0.95);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  inset: 0;
   z-index: 200;
+  background: rgba(10, 14, 21, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: 2rem;
 }
 
-.onboarding-content {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 3rem;
-  max-width: 500px;
-  text-align: center;
+/* ── Hero Content — left-aligned ── */
+
+.onboarding-hero {
+  padding-left: 5vw;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
 }
 
-.onboarding-content h2 {
-  font-size: 1.8rem;
-  margin-bottom: 1rem;
-  color: var(--teal-400);
+/* ── Eyebrow ── */
+
+.onboarding-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #68cdd8;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 1.25rem;
 }
 
-.onboarding-intro {
+/* ── Heading ── */
+
+.onboarding-heading {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #e8f0f8;
+  line-height: 1.2;
+  margin: 0 0 1.25rem 0;
+}
+
+/* ── Description ── */
+
+.onboarding-description {
   font-size: 1.1rem;
-  color: var(--text-primary);
-  margin-bottom: 2rem;
-  line-height: 1.6;
-}
-
-.onboarding-instructions {
-  list-style: none;
-  padding: 0;
+  color: #8a9bb5;
+  line-height: 1.7;
   margin: 0 0 2rem 0;
-  text-align: left;
 }
 
-.onboarding-instructions li {
-  margin-bottom: 1rem;
-  padding-left: 2rem;
+/* ── Action Buttons ── */
+
+.onboarding-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.onboarding-cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #0a0e15;
+  background: linear-gradient(135deg, #c2a558 0%, #68cdd8 100%);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  outline: none;
+}
+
+.onboarding-cta-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(104, 205, 216, 0.3);
+}
+
+.onboarding-cta-primary:focus-visible {
+  box-shadow:
+    0 0 0 2px #0a0e15,
+    0 0 0 4px #68cdd8;
+}
+
+.onboarding-cta-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #68cdd8;
+  background: none;
+  border: none;
+  cursor: pointer;
   position: relative;
-  color: var(--text-secondary);
+  transition: color 0.2s ease;
 }
 
-.onboarding-instructions li::before {
+.onboarding-cta-secondary::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #68cdd8;
+  transition: width 0.25s ease;
+}
+
+.onboarding-cta-secondary:hover::after {
+  width: 100%;
+}
+
+.onboarding-cta-secondary:hover {
+  color: #8eeaf4;
+}
+
+/* ── Instruction Guide List ── */
+
+.onboarding-guide-list {
+  list-style: none;
+  padding: 0.75rem 1rem;
+  margin: 0 0 1rem 0;
+  background: rgba(104, 205, 216, 0.06);
+  border-left: 2px solid rgba(104, 205, 216, 0.3);
+  border-radius: 0 8px 8px 0;
+}
+
+.onboarding-guide-list li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #8a9bb5;
+  line-height: 1.5;
+}
+
+.onboarding-guide-list li:last-child {
+  margin-bottom: 0;
+}
+
+.onboarding-guide-list li::before {
   content: '→';
   position: absolute;
   left: 0;
-  color: var(--teal-500);
+  color: #68cdd8;
 }
 
-.btn-large {
-  padding: 1rem 2rem;
-  font-size: 1.1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  width: 100%;
+.onboarding-guide-list li strong {
+  color: #e8f0f8;
+  font-weight: 600;
+}
+
+/* ── Bottom Hint ── */
+
+.onboarding-hint {
+  font-size: 0.8rem;
+  color: rgba(138, 155, 181, 0.5);
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 768px) {
+  .onboarding-hero {
+    padding-left: 0;
+    max-width: 100%;
+  }
+
+  .onboarding-heading {
+    font-size: 1.75rem;
+  }
+
+  .onboarding-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .onboarding-cta-primary {
+    width: 100%;
+    justify-content: center;
+  }
 }

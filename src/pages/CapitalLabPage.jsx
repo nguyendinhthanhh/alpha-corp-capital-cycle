@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import { useCapitalLabState } from '../hooks/useCapitalLabState';
 import { useWebGLSupport } from '../hooks/useWebGLSupport';
@@ -12,11 +12,13 @@ import { WebGLFallback } from '../components/capital-lab/WebGLFallback';
 import { OnboardingOverlay } from '../components/capital-lab/OnboardingOverlay';
 import { CrisisSequence } from '../components/capital-lab/CrisisSequence';
 import PageLoader from '../components/shared/PageLoader';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 import {
   capitalNodes,
   capitalFlowPath,
   stakeholders,
-  labChapters,
+  labMissions,
   recoveryControls
 } from '../data/capitalLabData';
 import './CapitalLabPage.css';
@@ -24,25 +26,26 @@ import './CapitalLabPage.css';
 const CapitalLabPage = () => {
   const { isSupported, isChecking } = useWebGLSupport();
   const [show2D, setShow2D] = useState(false);
+  const { setPageContext } = useAI();
   
   const {
     state,
-    activeChapter,
+    activeMission,
     selectedNode,
     recoveryValues,
     mode,
-    hasSeenOnboarding,
+    missionStarted,
     crisisStep,
     triggerCrisis,
     resetState,
-    setActiveChapter,
+    setActiveMission,
     setSelectedNode,
     updateRecoveryValue,
     checkRecoveryCondition,
     nextChapter,
     prevChapter,
     setMode,
-    setHasSeenOnboarding,
+    setMissionStarted,
     setCrisisStep
   } = useCapitalLabState();
 
@@ -51,21 +54,69 @@ const CapitalLabPage = () => {
   const wheelDeltaRef = useRef(0);
 
   useEffect(() => {
-    if (state === 'crisis' && activeChapter !== 'recovery') {
-      checkRecoveryCondition();
-    }
-  }, [recoveryValues, state, activeChapter, checkRecoveryCondition]);
+    const activeMissionData = labMissions.find((item) => item.id === activeMission);
+    const activeNodeData = selectedNode
+      ? {
+          id: selectedNode.id,
+          title: selectedNode.title,
+          detail: selectedNode.detail,
+          shortTitle: selectedNode.shortTitle,
+        }
+      : null;
+
+    setPageContext(
+      buildAIContext({
+        route: '/capital-lab',
+        appState: {
+          pageName: 'Capital Lab',
+          capitalLab: {
+            chapterId: activeMissionData?.id,
+            chapterTitle: activeMissionData?.title,
+            symbol: activeMissionData?.symbol,
+            state,
+            mode,
+            missionStarted,
+            crisisStep,
+            activeNode: activeNodeData,
+            recoveryValues,
+            selectedStakeholder,
+          },
+          activeMission,
+          selectedNode: activeNodeData,
+          selectedStakeholder,
+          mode,
+          missionStarted,
+          sourceLabels: ['Capital Lab'],
+          relevantConceptIds: ['capital-circuit', 'liquidity', 'capital-turnover'],
+        },
+      }),
+    );
+  }, [
+    activeMission,
+    crisisStep,
+    missionStarted,
+    mode,
+    recoveryValues,
+    selectedNode,
+    selectedStakeholder,
+    setPageContext,
+    state,
+  ]);
 
   useEffect(() => {
-    // Wheel event for Guided Mode chapter progression
-    const handleWheel = (e) => {
-      if (mode !== 'guided' || !hasSeenOnboarding || selectedNode || selectedStakeholder) return;
+    if (state === 'crisis' && activeMission === 'recovery') {
+      checkRecoveryCondition();
+    }
+  }, [recoveryValues, state, activeMission, checkRecoveryCondition]);
 
+  // Wheel-based mission navigation (guided mode only)
+  useEffect(() => {
+    const handleWheel = (e) => {
+      if (mode !== 'guided' || !missionStarted || selectedNode || selectedStakeholder) return;
       if (scrollTimeoutRef.current) return;
 
       wheelDeltaRef.current += e.deltaY;
 
-      // Threshold for switching chapter (higher for trackpads)
       if (wheelDeltaRef.current > 120) {
         nextChapter();
         wheelDeltaRef.current = 0;
@@ -75,8 +126,8 @@ const CapitalLabPage = () => {
         wheelDeltaRef.current = 0;
         scrollTimeoutRef.current = setTimeout(() => { scrollTimeoutRef.current = null; }, 800);
       }
-      
-      // Decay wheel delta over time if it doesn't cross threshold
+
+      // Decay
       setTimeout(() => { wheelDeltaRef.current = 0; }, 500);
     };
 
@@ -85,39 +136,71 @@ const CapitalLabPage = () => {
       window.removeEventListener('wheel', handleWheel);
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     };
-  }, [mode, hasSeenOnboarding, selectedNode, selectedStakeholder, nextChapter, prevChapter]);
+  }, [mode, missionStarted, selectedNode, selectedStakeholder, nextChapter, prevChapter]);
 
-  const handleNodeClick = (node) => {
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!missionStarted) return;
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        nextChapter();
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        prevChapter();
+      } else if (e.key === 'Escape') {
+        setSelectedNode(null);
+        setSelectedStakeholder(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [missionStarted, nextChapter, prevChapter, setSelectedNode]);
+
+  const handleNodeClick = useCallback((node) => {
     setSelectedNode(node);
     setSelectedStakeholder(null);
-  };
+  }, [setSelectedNode]);
 
-  const handleStakeholderClick = (stakeholder) => {
+  const handleStakeholderClick = useCallback((stakeholder) => {
     setSelectedStakeholder(stakeholder);
     setSelectedNode(null);
-  };
+  }, [setSelectedNode]);
 
-  const handleClosePanel = () => {
+  const handleClosePanel = useCallback(() => {
     setSelectedNode(null);
     setSelectedStakeholder(null);
-  };
+  }, [setSelectedNode]);
+
+  const handleStartMission = useCallback(() => {
+    setMissionStarted(true);
+    setActiveMission('source');
+  }, [setMissionStarted, setActiveMission]);
+
+  const handleFormulaClick = useCallback((nodeId) => {
+    const mission = labMissions.find(m => m.focusNode === nodeId);
+    if (mission) setActiveMission(mission.id);
+  }, [setActiveMission]);
 
   if (isChecking) {
     return <PageLoader />;
   }
 
-  // 2D fallback or explicit 2D mode
   if (!isSupported || show2D) {
     return <WebGLFallback onToggle3D={() => setShow2D(false)} isSupported={isSupported} />;
   }
 
   return (
-    <div className="capital-lab-page">
-      {!hasSeenOnboarding && (
-        <OnboardingOverlay onStart={() => setHasSeenOnboarding(true)} />
-      )}
+    <div className={`capital-lab-page ${state === 'crisis' ? 'crisis-active' : ''} ${state === 'recovery' ? 'recovery-active' : ''}`}>
+      {/* Hero / Onboarding */}
+      <AnimatePresence>
+        {!missionStarted && (
+          <OnboardingOverlay onStart={handleStartMission} />
+        )}
+      </AnimatePresence>
 
-      {/* 3D Canvas */}
+      {/* 3D Canvas — always rendered behind everything */}
       <div className="lab-canvas-container">
         <CapitalLabCanvas
           nodes={capitalNodes}
@@ -127,22 +210,23 @@ const CapitalLabPage = () => {
           selectedNode={selectedNode}
           onNodeClick={handleNodeClick}
           onStakeholderClick={handleStakeholderClick}
-          activeChapter={activeChapter}
+          activeMission={activeMission}
           mode={mode}
         />
       </div>
 
+      {/* UI Overlays — only after mission started */}
       <AnimatePresence>
-        {hasSeenOnboarding && (
+        {missionStarted && (
           <>
             <FormulaNavigation 
-              activeChapter={activeChapter} 
+              activeMission={activeMission} 
               state={state} 
-              onNodeClick={(id) => setActiveChapter(labChapters.find(c => c.focusNode === id)?.id || activeChapter)}
+              onNodeClick={handleFormulaClick}
             />
 
             <GuidedPanel 
-              activeChapter={activeChapter} 
+              activeMission={activeMission} 
               prevChapter={prevChapter}
               nextChapter={nextChapter}
               mode={mode}
@@ -152,7 +236,7 @@ const CapitalLabPage = () => {
               mode={mode}
               setMode={setMode}
               state={state}
-              activeChapter={activeChapter}
+              activeMission={activeMission}
               onTriggerCrisis={triggerCrisis}
               onReset={resetState}
               onToggle2D={() => setShow2D(true)}
@@ -180,7 +264,7 @@ const CapitalLabPage = () => {
 
       {/* Recovery Challenge */}
       <AnimatePresence>
-        {activeChapter === 'recovery' && state === 'crisis' && (
+        {activeMission === 'recovery' && state === 'crisis' && (
           <RecoveryChallenge
             controls={recoveryControls}
             values={recoveryValues}

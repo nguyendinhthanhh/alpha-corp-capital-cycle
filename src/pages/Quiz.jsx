@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   CheckCircle2,
@@ -11,6 +12,8 @@ import {
 } from 'lucide-react';
 import { quizQuestions } from '../data/quizQuestions';
 import SectionHeader from '../components/shared/SectionHeader';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 import './Quiz.css';
 
 const Quiz = () => {
@@ -20,6 +23,7 @@ const Quiz = () => {
   const [selected, setSelected] = useState(null);
   const [feedback, setFeedback] = useState(null);
   const [mistakeConcepts, setMistakeConcepts] = useState([]);
+  const { setPageContext } = useAI();
 
   const currentQuestion = quizQuestions[currentQ];
   const questionText = currentQuestion.question ?? currentQuestion.q;
@@ -28,6 +32,50 @@ const Quiz = () => {
   const normalizedOptions = currentQuestion.options.map((option) =>
     option.replace(/^[A-D]\.\s*/, ''),
   );
+
+  useEffect(() => {
+    setPageContext(
+      buildAIContext({
+        route: '/quiz',
+        appState: {
+          pageName: 'Kiem tra',
+          quiz: {
+            question: questionText,
+            options: normalizedOptions,
+            answerIndex: currentQuestion.answer,
+            concept: currentQuestion.concept,
+            lesson: currentQuestion.lesson ?? currentQuestion.concept,
+            currentIndex: currentQ,
+            totalQuestions: quizQuestions.length,
+            score,
+            selected,
+            feedback,
+            mistakeConcepts,
+          },
+          sourceLabels: ['Quiz'],
+          relevantConceptIds: [
+            currentQuestion.concept,
+            ...(currentQuestion.conceptIds || []),
+            'capital-circuit',
+            'surplus-value',
+          ].filter(Boolean),
+        },
+      }),
+    );
+  }, [
+    currentQ,
+    currentQuestion.answer,
+    currentQuestion.concept,
+    currentQuestion.conceptIds,
+    currentQuestion.lesson,
+    feedback,
+    mistakeConcepts,
+    normalizedOptions,
+    questionText,
+    score,
+    selected,
+    setPageContext,
+  ]);
 
   const handleSelect = (idx) => {
     if (selected !== null) return;

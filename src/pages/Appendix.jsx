@@ -1,9 +1,27 @@
 import { ShieldCheck, FileText, Cpu, Users } from 'lucide-react';
+import { useEffect } from 'react';
 import { aiUsageRows, appendixSources, groupContributions, promptSamples } from '../data/caseData';
 import SectionHeader from '../components/shared/SectionHeader';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 import './Appendix.css';
 
 const Appendix = () => {
+  const { setPageContext } = useAI();
+
+  useEffect(() => {
+    setPageContext(
+      buildAIContext({
+        route: '/appendix',
+        appState: {
+          pageName: 'Nguon & AI',
+          sourceLabels: ['AI Capital Tutor'],
+          relevantConceptIds: ['capital-circuit', 'liquidity', 'profit'],
+        },
+      }),
+    );
+  }, [setPageContext]);
+
   return (
     <div className="appendix-page">
       <div className="container">
@@ -20,6 +38,27 @@ const Appendix = () => {
             <p>Trí tuệ nhân tạo được sử dụng với vai trò hỗ trợ tổng hợp thông tin, thiết kế giao diện và lập trình. Toàn bộ nội dung học thuật, kiểm chứng nguồn và quyết định cuối cùng đều do nhóm thực hiện và chịu trách nhiệm 100%.</p>
           </div>
         </div>
+
+        <section className="ai-transparency-card">
+          <div className="section-title-bar">
+            <Cpu size={20} className="text-teal mr-2" />
+            <h2>AI Capital Tutor</h2>
+          </div>
+          <div className="ai-transparency-grid">
+            <div>
+              <h3>Context đi vào AI</h3>
+              <p>Route hiện tại, tên trang, section/chapter đang mở, state mô phỏng, câu hỏi quiz, mission Capital Lab và các nguồn đã kiểm chứng trong dự án.</p>
+            </div>
+            <div>
+              <h3>Context không đi vào AI</h3>
+              <p>Không có API key trong frontend, không có dữ liệu tài chính thật, không có yêu cầu tư vấn đầu tư, và không có lớp chatbot tổng quát vượt ra ngoài phạm vi học thuật.</p>
+            </div>
+            <div>
+              <h3>Fallback</h3>
+              <p>Nếu backend chưa cấu hình, AI sẽ rơi về bộ phân tích rule-based dựa trên case Alpha Corp, `caseData`, `capitalLabData` và các khái niệm đã kiểm chứng.</p>
+            </div>
+          </div>
+        </section>
 
         <div className="appendix-workspace">
           <div className="appendix-main">

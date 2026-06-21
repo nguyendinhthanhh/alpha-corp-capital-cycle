@@ -1,87 +1,106 @@
-import { motion } from 'framer-motion';
-import { RotateCcw, Zap, Play, Compass, Monitor, LayoutDashboard } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Compass,
+  Monitor,
+  LayoutDashboard,
+  RotateCcw,
+  Zap,
+  Play
+} from 'lucide-react';
 import './LabNavigation.css';
 
-export const LabNavigation = ({ 
+export const LabNavigation = ({
   mode,
   setMode,
   state,
-  activeChapter,
+  activeMission,
   onTriggerCrisis,
   onReset,
   onToggle2D
 }) => {
+  const showCrisisBtn = activeMission === 'crisis' && state === 'normal';
+
   return (
-    <div className="lab-navigation">
-      <div className="lab-controls">
-        {/* Mode Toggle */}
-        <div className="mode-toggle">
-          <button 
-            className={`btn btn-icon ${mode === 'guided' ? 'active' : ''}`}
+    <div className="lab-nav" role="toolbar" aria-label="Điều khiển phòng lab">
+      <div className="lab-nav-bar">
+        {/* Mode Toggle Group */}
+        <div className="ln-mode-group" role="radiogroup" aria-label="Chế độ hiển thị">
+          <button
+            className={`ln-mode-btn ${mode === 'guided' ? 'ln-mode-btn--active' : ''}`}
             onClick={() => setMode('guided')}
+            role="radio"
+            aria-checked={mode === 'guided'}
             title="Chế độ Hướng dẫn"
           >
-            <Compass size={18} />
+            <Compass size={16} aria-hidden="true" />
           </button>
-          <button 
-            className={`btn btn-icon ${mode === 'explore' ? 'active' : ''}`}
+          <button
+            className={`ln-mode-btn ${mode === 'explore' ? 'ln-mode-btn--active' : ''}`}
             onClick={() => setMode('explore')}
+            role="radio"
+            aria-checked={mode === 'explore'}
             title="Tự do Khám phá"
           >
-            <Monitor size={18} />
+            <Monitor size={16} aria-hidden="true" />
           </button>
         </div>
 
-        <div className="divider" />
+        {/* Divider */}
+        <div className="ln-divider" aria-hidden="true" />
 
         {/* 2D Toggle */}
-        <button className="btn btn-secondary btn-icon" onClick={onToggle2D} title="Xem sơ đồ 2D">
-          <LayoutDashboard size={18} />
+        <button
+          className="ln-icon-btn"
+          onClick={onToggle2D}
+          title="Xem sơ đồ 2D"
+          aria-label="Chuyển đổi chế độ 2D"
+        >
+          <LayoutDashboard size={16} aria-hidden="true" />
         </button>
 
+        {/* Reset */}
         <button
-          className="btn btn-secondary btn-icon"
+          className="ln-icon-btn"
           onClick={onReset}
           title="Đặt lại từ đầu"
+          aria-label="Đặt lại phòng lab"
         >
-          <RotateCcw size={18} />
+          <RotateCcw size={16} aria-hidden="true" />
         </button>
 
-        {state === 'normal' && ['shock', 'crisis', 'ripple', 'recovery'].includes(activeChapter) && (
-          <motion.button
-            className="btn btn-primary lab-control-btn crisis-btn"
-            onClick={onTriggerCrisis}
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Zap size={18} />
-            <span>Kích hoạt khủng hoảng</span>
-          </motion.button>
-        )}
+        {/* Crisis Trigger */}
+        <AnimatePresence>
+          {showCrisisBtn && (
+            <motion.button
+              className="ln-crisis-btn"
+              onClick={onTriggerCrisis}
+              initial={{ opacity: 0, scale: 0.85, width: 0 }}
+              animate={{ opacity: 1, scale: 1, width: 'auto' }}
+              exit={{ opacity: 0, scale: 0.85, width: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              aria-label="Kích hoạt cú sốc thị trường"
+            >
+              <Zap size={16} aria-hidden="true" />
+              <span>Kích hoạt cú sốc</span>
+            </motion.button>
+          )}
+        </AnimatePresence>
 
+        {/* State Indicators */}
         {state === 'crisis' && (
-          <div className="state-indicator crisis">
-            <div className="state-pulse" />
-            <span>Đứt gãy thanh khoản</span>
+          <div className="ln-state-badge ln-state-badge--crisis" role="status">
+            <span className="ln-pulse" />
+            <span>Đứt gãy</span>
           </div>
         )}
 
         {state === 'recovery' && (
-          <div className="state-indicator recovery">
-            <Play size={16} />
-            <span>Chu kỳ đã khôi phục</span>
+          <div className="ln-state-badge ln-state-badge--recovery" role="status">
+            <Play size={14} aria-hidden="true" />
+            <span>Đã khôi phục</span>
           </div>
         )}
       </div>
-
-      {mode === 'explore' && (
-        <div className="lab-instructions">
-          <span>Kéo để xoay</span>
-          <span>·</span>
-          <span>Nhấn node để phân tích</span>
-        </div>
-      )}
     </div>
   );
 };

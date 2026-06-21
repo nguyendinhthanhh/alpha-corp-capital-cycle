@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AlertTriangle, Info, CheckCircle2, RefreshCw, Play, Settings2 } from 'lucide-react';
 import { scenarios } from '../data/simulationScenarios';
 import SectionHeader from '../components/shared/SectionHeader';
+import { useAI } from '../ai/useAI';
+import { buildAIContext } from '../ai/buildAIContext';
 import './Simulators.css';
 
 const Simulators = () => {
@@ -16,10 +18,36 @@ const Simulators = () => {
   
   // Results
   const [result, setResult] = useState(null);
+  const { setPageContext } = useAI();
 
   const total = reserve + production + labor;
   const isBalanced = total === 100;
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
+
+  useEffect(() => {
+    setPageContext(
+      buildAIContext({
+        route: '/simulators',
+        appState: {
+          pageName: 'Mo phong',
+          simulation: {
+            scenario: activeScenario?.name,
+            scenarioId: activeScenarioId,
+            allocations: {
+              reserve,
+              production,
+              labor,
+            },
+            result,
+            isBalanced,
+            total,
+          },
+          sourceLabels: ['Simulation'],
+          relevantConceptIds: ['spatial-condition', 'temporal-condition', 'liquidity'],
+        },
+      }),
+    );
+  }, [activeScenario?.name, activeScenarioId, isBalanced, labor, production, reserve, result, setPageContext, total]);
 
   // Clear result when inputs change
   useEffect(() => {
