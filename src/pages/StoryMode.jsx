@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { storyChapters } from '../data/caseData';
+import { storyModeChapters } from '../data/storyData';
 import SectionHeader from '../components/shared/SectionHeader';
 import { getScrollBehavior } from '../utils/motion';
 import './StoryMode.css';
 
 const StoryMode = () => {
-  const [activeChapter, setActiveChapter] = useState(storyChapters[0].number);
+  const [activeChapter, setActiveChapter] = useState(storyModeChapters[0].number);
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    const sections = storyChapters
+    const sections = storyModeChapters
       .map((chapter) => document.getElementById(`chapter-${chapter.number}`))
       .filter(Boolean);
 
@@ -31,7 +31,7 @@ const StoryMode = () => {
     return () => observer.disconnect();
   }, []);
 
-  const progressValue = storyChapters.findIndex((chapter) => chapter.number === activeChapter) + 1;
+  const progressValue = storyModeChapters.findIndex((chapter) => chapter.number === activeChapter) + 1;
 
   return (
     <div className="route-shell story-page">
@@ -47,16 +47,16 @@ const StoryMode = () => {
           <div className="panel-header">
             <span className="eyebrow">Chapter Navigation</span>
             <strong>
-              {progressValue} / {storyChapters.length}
+              {progressValue} / {storyModeChapters.length}
             </strong>
           </div>
 
           <div className="story-progress-track" aria-hidden="true">
-            <span style={{ transform: `scaleY(${progressValue / storyChapters.length})` }} />
+            <span style={{ transform: `scaleY(${progressValue / storyModeChapters.length})` }} />
           </div>
 
           <nav className="story-nav" aria-label="Điều hướng chương">
-            {storyChapters.map((chapter) => (
+            {storyModeChapters.map((chapter) => (
               <button
                 key={chapter.number}
                 type="button"
@@ -76,7 +76,7 @@ const StoryMode = () => {
         </aside>
 
         <div className="story-chapter-list">
-          {storyChapters.map((chapter, index) => (
+          {storyModeChapters.map((chapter, index) => (
             <motion.section
               id={`chapter-${chapter.number}`}
               data-chapter={chapter.number}

@@ -8,12 +8,12 @@ import SectionHeader from '../shared/SectionHeader';
 import './ImpactMapSection.css';
 
 const networkNodes = [
-  { id: 'gov', angle: 248 },
-  { id: 'alpha', angle: 308 },
-  { id: 'bank', angle: 0 },
-  { id: 'worker', angle: 32 },
-  { id: 'supplier', angle: 132 },
-  { id: 'buyer', angle: 188 },
+  { id: 'alpha', angle: 330 },
+  { id: 'supplier', angle: 30 },
+  { id: 'worker', angle: 90 },
+  { id: 'bank', angle: 150 },
+  { id: 'buyer', angle: 210 },
+  { id: 'gov', angle: 270 },
 ];
 
 const ImpactMapSection = ({ isCrisis }) => {
@@ -115,33 +115,56 @@ const ImpactMapSection = ({ isCrisis }) => {
 
     const centerX = mapBox.width / 2;
     const centerY = mapBox.height / 2;
-    const radiusX = mapBox.width * 0.245;
-    const radiusY = mapBox.height * 0.21;
+    const radiusX = mapBox.width * 0.32;
+    const radiusY = mapBox.height * 0.32;
 
     const nodes = networkNodes.map((node) => {
       const rad = (node.angle * Math.PI) / 180;
       const x = centerX + Math.cos(rad) * radiusX;
       const y = centerY + Math.sin(rad) * radiusY;
-      const quadrantRight = Math.cos(rad) >= 0;
-      const quadrantBelow = Math.sin(rad) >= 0;
+      
+      const dx = x - centerX;
+      const dy = y - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      
+      // Center node is a circle with radius ~68px. Start line a bit outside it.
+      const centerRetreat = 80; 
+      
+      // Label is a rounded rectangle roughly 132px wide and 48px high.
+      // Half-width W = 66, Half-height H = 24
+      // Calculate intersection of the ray with the bounding box
+      const W = 66;
+      const H = 24;
+      const cosA = Math.abs(Math.cos(rad));
+      const sinA = Math.abs(Math.sin(rad));
+      
+      const labelRetreat = Math.min(
+        cosA > 0.001 ? W / cosA : 1000,
+        sinA > 0.001 ? H / sinA : 1000
+      ) + 3; // +3px for visual padding so it doesn't overlap the border
+      
+      const edgeX1 = centerX + (dx / distance) * centerRetreat;
+      const edgeY1 = centerY + (dy / distance) * centerRetreat;
+      const edgeX2 = x - (dx / distance) * labelRetreat;
+      const edgeY2 = y - (dy / distance) * labelRetreat;
 
       return {
         ...node,
         x,
         y,
-        quadrantRight,
-        quadrantBelow,
-        labelX: quadrantRight ? '18px' : 'calc(-100% - 18px)',
-        labelY: quadrantBelow ? '18px' : 'calc(-100% - 18px)',
+        edgeX1,
+        edgeY1,
+        edgeX2,
+        edgeY2
       };
     });
 
     const edges = nodes.map((node) => ({
       id: node.id,
-      x1: centerX,
-      y1: centerY,
-      x2: node.x,
-      y2: node.y,
+      x1: node.edgeX1,
+      y1: node.edgeY1,
+      x2: node.edgeX2,
+      y2: node.edgeY2,
     }));
 
     return { width: mapBox.width, height: mapBox.height, centerX, centerY, nodes, edges };
@@ -222,14 +245,9 @@ const ImpactMapSection = ({ isCrisis }) => {
                   top: `${node.y}px`,
                 }}
               >
-                <span className={`network-node-anchor ${isActive ? 'active' : ''} ${isDominoHit ? 'danger' : ''}`} aria-hidden="true" />
                 <button
                   type="button"
                   className={`network-node-label ${isActive ? 'active' : ''} ${isDominoHit ? 'danger' : ''}`}
-                  style={{
-                    '--label-x': node.labelX,
-                    '--label-y': node.labelY,
-                  }}
                   onClick={() => {
                     setActiveActorId(node.id);
                   }}

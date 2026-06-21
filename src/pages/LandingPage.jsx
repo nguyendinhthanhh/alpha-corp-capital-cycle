@@ -23,7 +23,7 @@ const LandingPage = () => {
   }, []);
 
   return (
-    <div className="landing-page" style={{ position: 'relative' }}>
+    <div className="landing-page">
       <HeroSection isCrisis={isCrisis} onToggleCrisis={() => setIsCrisis((current) => !current)} />
       <MarketContextSection isCrisis={isCrisis} onSetCrisis={setIsCrisis} />
       <CapitalJourneySection isCrisis={isCrisis} />

@@ -73,12 +73,12 @@ export const getScrollBehavior = () => (prefersReducedMotion() ? 'auto' : 'smoot
 
 const getHeaderOffset = () => {
   if (typeof window === 'undefined') {
-    return 96;
+    return 112;
   }
 
   const rootStyles = window.getComputedStyle(document.documentElement);
-  const cssHeaderHeight = parseFloat(rootStyles.getPropertyValue('--header-height'));
-  return Number.isFinite(cssHeaderHeight) ? cssHeaderHeight + 56 : 136;
+  const cssHeaderOffset = parseFloat(rootStyles.getPropertyValue('--header-offset'));
+  return Number.isFinite(cssHeaderOffset) ? cssHeaderOffset + 40 : 152;
 };
 
 export const scrollToSectionById = (id) => {

@@ -72,6 +72,7 @@
   --container-max: 1280px;
   --container-narrow: 840px;
   --header-height: 80px;
+  --header-offset: calc(var(--header-height) + clamp(0.75rem, 1.6vw, 1.25rem));
 
   --spacing-section-desktop: clamp(4rem, 6vw, 6rem);
   --spacing-section-tablet: clamp(3rem, 5vw, 4rem);
@@ -104,7 +105,7 @@
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
-  scroll-padding-top: calc(var(--header-height) + 5rem);
+  scroll-padding-top: calc(var(--header-offset) + 4rem);
 }
 
 body {
@@ -262,7 +263,7 @@ ol {
 .section-padding {
   position: relative;
   padding: var(--spacing-section-mobile) 0;
-  scroll-margin-top: calc(var(--header-height) + 5rem);
+  scroll-margin-top: calc(var(--header-offset) + 4rem);
 }
 
 @media (min-width: 768px) {
@@ -357,7 +358,12 @@ ol {
 
 .main-content {
   flex-grow: 1;
-  padding-top: var(--header-height);
+  padding-top: var(--header-offset);
+}
+
+.landing-page {
+  position: relative;
+  padding-top: clamp(0.5rem, 1.5vw, 1rem);
 }
 
 .route-shell,

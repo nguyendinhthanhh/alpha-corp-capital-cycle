@@ -1,5 +1,5 @@
 .story-page {
-  padding: calc(var(--header-height) + 2rem) 0 clamp(4rem, 8vw, 6rem);
+  padding: calc(var(--header-offset) + 1.5rem) 0 clamp(4rem, 8vw, 6rem);
 }
 
 .story-layout {
@@ -9,7 +9,7 @@
 
 .story-sidebar {
   position: sticky;
-  top: calc(var(--header-height) + 1.25rem);
+  top: calc(var(--header-offset) + 1rem);
   align-self: start;
   padding: 1.5rem;
   display: grid;

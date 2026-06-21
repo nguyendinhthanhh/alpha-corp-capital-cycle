@@ -23,6 +23,7 @@ const MarketContextSection = ({ isCrisis, onSetCrisis }) => {
   );
 
   const flowStrength = 100 - activeCount * 30;
+  const clampedFlowStrength = Math.max(0, Math.min(flowStrength, 100));
 
   const handleManualToggle = (setter, nextValueFactory) => {
     if (isExternallyForcedCrisis) {
@@ -124,24 +125,30 @@ const MarketContextSection = ({ isCrisis, onSetCrisis }) => {
               <div className="bridge-track">
                 <motion.div
                   className="bridge-fill"
-                  animate={{ width: `${flowStrength}%` }}
+                  animate={{ width: `${clampedFlowStrength}%` }}
                   transition={{ type: 'spring', stiffness: 50 }}
                 />
 
                 <motion.div
                   className="particle"
+                  key={clampedFlowStrength}
+                  initial={{
+                    opacity: 0,
+                    scale: 0.85,
+                  }}
                   animate={{
-                    x: [0, 200],
-                    opacity: flowStrength > 10 ? [0, 1, 0] : 0,
+                    left: `${clampedFlowStrength}%`,
+                    opacity: [0, 1, 0],
+                    scale: [0.85, 1, 0.95],
                   }}
                   transition={{
-                    repeat: Infinity,
-                    duration: Math.max(1.6, 220 / Math.max(flowStrength, 15)),
-                    ease: 'linear',
+                    left: { duration: 1.05, ease: 'easeOut' },
+                    opacity: { duration: 1.05, times: [0, 0.6, 1] },
+                    scale: { duration: 1.05, times: [0, 0.55, 1] },
                   }}
                 />
               </div>
-              <div className="bridge-status">Thanh khoản: {flowStrength}%</div>
+              <div className="bridge-status">Thanh khoản: {clampedFlowStrength}%</div>
             </div>
 
             <div className="market-node demand-node">
@@ -177,7 +184,7 @@ const MarketContextSection = ({ isCrisis, onSetCrisis }) => {
             >
               <AlertCircle size={20} className="mr-2" />
               <span>
-                <strong>Khủng hoảng:</strong> Điểm H&apos; &rarr; T&apos; bị khóa chặt.
+                <strong>Khủng hoảng:</strong> Điểm H&apos; -&gt; T&apos; bị khóa chặt.
               </span>
             </motion.div>
           )}

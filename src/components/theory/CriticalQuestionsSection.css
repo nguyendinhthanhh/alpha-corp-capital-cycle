@@ -8,6 +8,22 @@
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.03);
   overflow: hidden;
+  transition:
+    transform var(--motion-duration-ui) var(--motion-ease-out),
+    box-shadow var(--motion-duration-ui) var(--motion-ease-out);
+}
+
+.faq-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-item {
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
 }
 
 .faq-question {
@@ -47,5 +63,11 @@
 }
 
 .faq-answer {
-  padding: 0 1.1rem 1rem 3rem;
+  padding: 0 1.2rem 1rem 3rem;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--text-light);
+  max-height: 100vh;
+  transition: max-height 0.3s ease-out;
+  overflow-y: auto;
 }
