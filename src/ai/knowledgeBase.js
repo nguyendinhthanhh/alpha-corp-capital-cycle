@@ -1,5 +1,5 @@
-import { capitalForms, spaceTimeConditions } from '../data/capitalFlowStages';
-import { capitalNodes, labMissions } from '../data/capitalLabData';
+import { capitalForms, spaceTimeConditions } from '../data/capitalFlowStages.js';
+import { capitalNodes, labMissions } from '../data/capitalLabData.js';
 
 const normalize = (value = '') =>
   String(value)

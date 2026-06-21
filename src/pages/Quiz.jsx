@@ -40,6 +40,7 @@ const Quiz = () => {
         appState: {
           pageName: 'Kiem tra',
           quiz: {
+            questionId: `quiz-${currentQ + 1}`,
             question: questionText,
             options: normalizedOptions,
             answerIndex: currentQuestion.answer,
@@ -49,6 +50,13 @@ const Quiz = () => {
             totalQuestions: quizQuestions.length,
             score,
             selected,
+            selectedAnswer: selected != null ? normalizedOptions[selected] : '',
+            isCorrect: feedback?.correct ?? null,
+            attemptCount: selected == null ? 0 : 1,
+            conceptIds: [
+              currentQuestion.concept,
+              ...(currentQuestion.conceptIds || []),
+            ].filter(Boolean),
             feedback,
             mistakeConcepts,
           },

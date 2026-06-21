@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import HeroSection from '../components/hero/HeroSection';
 import MarketContextSection from '../components/market/MarketContextSection';
 import CapitalJourneySection from '../components/capital-flow/CapitalJourneySection';
@@ -9,12 +10,17 @@ import ImpactMapSection from '../components/impact-map/ImpactMapSection';
 import AccumulationSection from '../components/theory/AccumulationSection';
 import ProfitInterestSection from '../components/theory/ProfitInterestSection';
 import CriticalQuestionsSection from '../components/theory/CriticalQuestionsSection';
-import { scrollToSectionById } from '../utils/motion';
+import {
+  PENDING_HOME_SECTION_STORAGE_KEY,
+  scrollToPageTop,
+  scrollToSectionById,
+} from '../utils/motion';
 import { useAI } from '../ai/useAI';
 import { buildAIContext } from '../ai/buildAIContext';
 const LandingPage = () => {
   const [isCrisis, setIsCrisis] = useState(false);
   const { setPageContext } = useAI();
+  const location = useLocation();
 
   const sectionMap = useMemo(
     () => ({
@@ -73,13 +79,63 @@ const LandingPage = () => {
   );
 
   useEffect(() => {
-    if (window.location.hash) {
-      const id = window.location.hash.replace('#', '');
-      window.requestAnimationFrame(() => {
-        scrollToSectionById(id);
-      });
+    const pendingTarget =
+      typeof window !== 'undefined'
+        ? window.sessionStorage.getItem(PENDING_HOME_SECTION_STORAGE_KEY)
+        : null;
+    const hashTarget = location.hash.replace('#', '');
+    const targetId = pendingTarget || hashTarget;
+
+    if (targetId) {
+      let frame = 0;
+      const timers = [];
+      let attempts = 0;
+
+      const tryScroll = () => {
+        attempts += 1;
+        const element =
+          targetId === 'hero' ? document.getElementById('hero') : document.getElementById(targetId);
+
+        if (!element) {
+          if (attempts < 8) {
+            frame = window.requestAnimationFrame(tryScroll);
+          }
+          return;
+        }
+
+        if (targetId === 'hero') {
+          scrollToPageTop();
+        } else {
+          scrollToSectionById(targetId);
+        }
+
+        [160, 420, 760, 1200].forEach((delay) => {
+          timers.push(
+            window.setTimeout(() => {
+              if (targetId === 'hero') {
+                scrollToPageTop();
+              } else {
+                scrollToSectionById(targetId);
+              }
+            }, delay),
+          );
+        });
+
+        if (pendingTarget === targetId) {
+          window.sessionStorage.removeItem(PENDING_HOME_SECTION_STORAGE_KEY);
+        }
+      };
+
+      frame = window.requestAnimationFrame(tryScroll);
+
+      return () => {
+        window.cancelAnimationFrame(frame);
+        timers.forEach((timer) => window.clearTimeout(timer));
+      };
     }
-  }, []);
+
+    return undefined;
+  }, [location.hash]);
 
   useEffect(() => {
     const ids = Object.keys(sectionMap);
@@ -103,7 +159,7 @@ const LandingPage = () => {
             route: '/',
             appState: {
               pageName: 'Tong quan',
-              crisisMode: isCrisis,
+              economicState: isCrisis ? 'crisis' : 'normal',
               relevantConceptIds: ['capital-circuit', 'money-capital'],
               sourceLabels: ['Case Alpha Corp'],
             },
@@ -117,14 +173,14 @@ const LandingPage = () => {
     const observed = ids.map((id) => document.getElementById(id)).filter(Boolean);
     observed.forEach((element) => observer.observe(element));
 
-    const currentHash = window.location.hash.replace('#', '');
+    const currentHash = location.hash.replace('#', '');
     const initialSection = sectionMap[currentHash] || sectionMap.hero;
     setPageContext(
       buildAIContext({
         route: '/',
         appState: {
           pageName: 'Tong quan',
-          crisisMode: isCrisis,
+          economicState: isCrisis ? 'crisis' : 'normal',
           relevantConceptIds: ['capital-circuit', 'money-capital'],
           sourceLabels: ['Case Alpha Corp'],
         },
@@ -133,7 +189,7 @@ const LandingPage = () => {
     );
 
     return () => observer.disconnect();
-  }, [isCrisis, sectionMap, setPageContext]);
+  }, [isCrisis, location.hash, sectionMap, setPageContext]);
 
   useEffect(() => {
     setPageContext(
@@ -141,14 +197,14 @@ const LandingPage = () => {
         route: '/',
         appState: {
           pageName: 'Tong quan',
-          crisisMode: isCrisis,
+          economicState: isCrisis ? 'crisis' : 'normal',
           relevantConceptIds: ['capital-circuit', 'money-capital'],
           sourceLabels: ['Case Alpha Corp'],
         },
-        selectedContent: sectionMap[window.location.hash.replace('#', '')] || sectionMap.hero,
+        selectedContent: sectionMap[location.hash.replace('#', '')] || sectionMap.hero,
       }),
     );
-  }, [isCrisis, sectionMap, setPageContext]);
+  }, [isCrisis, location.hash, sectionMap, setPageContext]);
 
   return (
     <div className="landing-page">

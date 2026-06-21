@@ -1,17 +1,18 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { getContextualActions } from './contextualActions';
-import { sendTutorRequest } from './tutorClient';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { clearTutorState, loadTutorState, saveTutorState } from './tutorStorage';
+import { sendTutorRequest } from './tutorClient';
 import { TutorContext } from './TutorContext';
+
 const MAX_MESSAGES = 24;
+let messageCounter = 0;
 
 const buildWelcomeMessage = () => ({
   id: `welcome-${Date.now()}`,
   role: 'assistant',
   content:
-    'Mình là AI Capital Tutor. Mình chỉ dùng kiến thức học thuật đã kiểm chứng trong dự án này để giải thích, phân tích mô phỏng, hỗ trợ quiz và liên hệ Alpha Corp. Nếu bạn muốn, hãy dùng một gợi ý ngắn hoặc hỏi trực tiếp theo ngữ cảnh hiện tại.',
+    'AI Capital Tutor se tra loi theo knowledge base da kiem chung cua du an va context thuc te cua trang hien tai. Neu provider AI that loi, he thong se ghi ro khi dang dung phan tich du phong.',
   sourceLabels: ['Verified academic context'],
-  fallbackUsed: true,
+  fallbackUsed: false,
 });
 
 const defaultState = {
@@ -22,7 +23,7 @@ const defaultState = {
   messages: [buildWelcomeMessage()],
   pageContext: {
     route: '/',
-    pageName: 'Tổng quan',
+    pageName: 'Tong quan',
     relevantConceptIds: ['capital-circuit', 'money-capital'],
     sourceLabels: ['Case Alpha Corp'],
   },
@@ -31,13 +32,25 @@ const defaultState = {
 };
 
 const createMessage = (role, content, extra = {}) => ({
-  id: `${role}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+  id: `${role}-${Date.now()}-${messageCounter += 1}`,
   role,
   content,
   ...extra,
 });
 
 const trimMessages = (messages) => messages.slice(-MAX_MESSAGES);
+
+const uniqueBy = (items, getKey) => {
+  const seen = new Set();
+  return (items || []).filter((item) => {
+    const key = getKey(item);
+    if (!key || seen.has(key)) {
+      return false;
+    }
+    seen.add(key);
+    return true;
+  });
+};
 
 const mergeContext = (current, next = {}) => ({
   ...current,
@@ -49,14 +62,28 @@ const mergeContext = (current, next = {}) => ({
 export function AIProvider({ children }) {
   const [state, setState] = useState(() => {
     const saved = loadTutorState();
+    const savedMessages = saved?.messages?.length ? saved.messages : null;
+    const hasUserMessages = savedMessages?.some((message) => message.role === 'user');
+    const messages =
+      savedMessages && (hasUserMessages || savedMessages.length > 1)
+        ? savedMessages
+        : defaultState.messages;
+
     return saved
       ? {
           ...defaultState,
           ...saved,
-          messages: saved.messages?.length ? saved.messages : defaultState.messages,
+          messages,
         }
       : defaultState;
   });
+
+  const [lastRequest, setLastRequest] = useState({
+    prompt: '',
+    action: null,
+  });
+
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     saveTutorState({
@@ -96,27 +123,50 @@ export function AIProvider({ children }) {
   }, []);
 
   const resetConversation = useCallback(() => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+
     setState((current) => ({
       ...current,
       messages: [buildWelcomeMessage()],
       currentAction: null,
       error: null,
+      isLoading: false,
     }));
     clearTutorState();
   }, []);
 
+  const abortCurrentRequest = useCallback(() => {
+    abortControllerRef.current?.abort();
+    abortControllerRef.current = null;
+
+    setState((current) => ({
+      ...current,
+      isLoading: false,
+      error: 'Da dung request hien tai.',
+    }));
+  }, []);
+
   const sendMessage = useCallback(async (message, action = null) => {
     const content = typeof message === 'string' ? message.trim() : '';
-    if (!content) return;
+    if (!content || state.isLoading) {
+      return;
+    }
 
-    let userMessage = null;
+    const currentPageContext = state.pageContext;
+    const currentMessages = state.messages;
+    const userMessage = createMessage('user', content, { action });
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    setLastRequest({
+      prompt: content,
+      action,
+    });
 
     setState((current) => {
       if (current.isLoading) {
         return current;
       }
-
-      userMessage = createMessage('user', content, { action });
 
       return {
         ...current,
@@ -129,29 +179,27 @@ export function AIProvider({ children }) {
       };
     });
 
-    if (!userMessage) {
-      return;
-    }
-
-    const currentPageContext = state.pageContext;
-    const currentMessages = trimMessages([...state.messages, userMessage]).map(({ role, content: msgContent }) => ({
+    const nextMessages = trimMessages([...currentMessages, userMessage]).map(({ role, content: messageContent }) => ({
       role,
-      content: msgContent,
+      content: messageContent,
     }));
 
     try {
       const response = await sendTutorRequest({
-        messages: currentMessages,
+        messages: nextMessages,
         pageContext: currentPageContext,
         action,
+        signal: controller.signal,
       });
 
       const assistantMessage = createMessage('assistant', response.answer, {
         sections: response.sections,
-        relatedConcepts: response.relatedConcepts,
-        sourceLabels: response.sourceLabels,
-        suggestedActions: response.suggestedActions || getContextualActions(currentPageContext),
-        fallbackUsed: response.fallbackUsed !== false,
+        relatedConcepts: uniqueBy(response.relatedConcepts, (concept) => concept?.id),
+        sourceLabels: [...new Set((response.sourceLabels || []).filter(Boolean))],
+        suggestedActions: response.suggestedActions || [],
+        fallbackUsed: response.fallbackUsed === true,
+        demoMode: response.demoMode === true,
+        providerMeta: response.providerMeta,
       });
 
       setState((current) => ({
@@ -162,24 +210,34 @@ export function AIProvider({ children }) {
         error: null,
       }));
     } catch (error) {
+      if (error?.name === 'AbortError') {
+        return;
+      }
+
       setState((current) => ({
         ...current,
         isLoading: false,
         error: error?.message || 'Khong the tao phan hoi.',
-        messages: trimMessages([
-          ...current.messages,
-          createMessage('assistant', 'Khong the ket noi AI. He thong dang hien thi phan phan tich hoc thuat da duoc nhom kiem chung.', {
-            fallbackUsed: true,
-            sourceLabels: ['Verified academic context'],
-          }),
-        ]),
       }));
+    } finally {
+      if (abortControllerRef.current === controller) {
+        abortControllerRef.current = null;
+      }
     }
-  }, [state.messages, state.pageContext]);
+  }, [state.isLoading, state.messages, state.pageContext]);
+
+  const retryLastMessage = useCallback(async () => {
+    if (!lastRequest.prompt || state.isLoading) {
+      return;
+    }
+
+    await sendMessage(lastRequest.prompt, lastRequest.action);
+  }, [lastRequest.action, lastRequest.prompt, sendMessage, state.isLoading]);
 
   const value = useMemo(
     () => ({
       ...state,
+      lastRequest,
       setPageContext,
       openTutor,
       closeTutor,
@@ -187,10 +245,13 @@ export function AIProvider({ children }) {
       toggleTutor,
       toggleContext,
       resetConversation,
+      abortCurrentRequest,
+      retryLastMessage,
       sendMessage,
     }),
     [
       state,
+      lastRequest,
       setPageContext,
       openTutor,
       closeTutor,
@@ -198,6 +259,8 @@ export function AIProvider({ children }) {
       toggleTutor,
       toggleContext,
       resetConversation,
+      abortCurrentRequest,
+      retryLastMessage,
       sendMessage,
     ],
   );

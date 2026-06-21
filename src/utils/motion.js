@@ -12,6 +12,8 @@ export const motionTokens = {
   },
 };
 
+export const PENDING_HOME_SECTION_STORAGE_KEY = "alpha-home-section-target";
+
 export const revealVariants = {
   container: {
     hidden: { opacity: 0 },
@@ -71,6 +73,40 @@ export const prefersReducedMotion = () =>
 
 export const getScrollBehavior = () => (prefersReducedMotion() ? 'auto' : 'smooth');
 
+const getLenisScroller = () => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  return window.__appLenis ?? null;
+};
+
+export const scrollToY = (top) => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const target = Math.max(0, top);
+  const lenis = getLenisScroller();
+
+  if (lenis && !prefersReducedMotion()) {
+    lenis.scrollTo(target, {
+      duration: 1.05,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    });
+    return;
+  }
+
+  window.scrollTo({
+    top: target,
+    behavior: getScrollBehavior(),
+  });
+};
+
+export const scrollToPageTop = () => {
+  scrollToY(0);
+};
+
 const getHeaderOffset = () => {
   if (typeof window === 'undefined') {
     return 112;
@@ -98,8 +134,5 @@ export const scrollToSectionById = (id) => {
   const anchor = preferredTarget || section;
   const top = window.scrollY + anchor.getBoundingClientRect().top - getHeaderOffset();
 
-  window.scrollTo({
-    top: Math.max(0, top),
-    behavior: getScrollBehavior(),
-  });
+  scrollToY(top);
 };

@@ -9,3 +9,10 @@
 - Transparency for AI scope, fallback behavior, and context inputs is exposed in the Appendix page.
 - The implementation avoids a generic chat bubble and instead pushes contextual actions, source labels, and structured summaries.
 
+## 2026-06-21 - Server-side AI grounding
+
+- Replaced the frontend-first tutor flow with a server-first `POST /api/ai/chat` pipeline.
+- Added provider adapters so the project can use `openai-compatible` or `gemini-native` without exposing secrets to the browser.
+- Moved retrieval, verified knowledge assembly, prompt construction, response normalization, and fallback generation to `server/`.
+- Disabled silent frontend fallback. The browser now either receives a real provider-backed response, an explicitly labeled fallback from the server, or a configuration/error message.
+- Added `docs/02-ACADEMIC-SOURCE-OF-TRUTH.md` as the canonical grounding note for AI tutor behavior.

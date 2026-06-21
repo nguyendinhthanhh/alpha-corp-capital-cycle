@@ -2,17 +2,17 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Bot,
+  ChevronDown,
   ChevronUp,
-  CircleHelp,
-  Loader2,
-  MessageSquareText,
+  OctagonX,
   RotateCcw,
   Send,
-  ShieldAlert,
+  Sparkles,
   X,
+  Zap,
 } from 'lucide-react';
-import { useAI } from '../../ai/useAI';
 import { getContextualActions } from '../../ai/contextualActions';
+import { useAI } from '../../ai/useAI';
 import './AITutorDrawer.css';
 
 const formatText = (text) => {
@@ -53,101 +53,181 @@ const formatText = (text) => {
     return parts.length ? parts : [value];
   };
 
-  const blocks = String(text)
+  return String(text)
     .trim()
     .split(/\n{2,}/)
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((block, blockIndex) => {
+      const lines = block.split('\n');
+      const listItems = lines.filter((line) => /^\s*[-*]\s+/.test(line));
+      const numberedItems = lines.filter((line) => /^\s*\d+\.\s+/.test(line));
 
-  return blocks.map((block, blockIndex) => {
-    const lines = block.split('\n');
-    const listItems = lines.filter((line) => /^\s*[-*]\s+/.test(line));
-    const numberedItems = lines.filter((line) => /^\s*\d+\.\s+/.test(line));
+      if (listItems.length > 0) {
+        return (
+          <ul key={`block-${blockIndex}`} className="ai-text-list">
+            {listItems.map((item, itemIndex) => (
+              <li key={`${blockIndex}-${itemIndex}`}>{inline(item.replace(/^\s*[-*]\s+/, ''))}</li>
+            ))}
+          </ul>
+        );
+      }
 
-    if (listItems.length > 0) {
+      if (numberedItems.length > 0) {
+        return (
+          <ol key={`block-${blockIndex}`} className="ai-text-list">
+            {numberedItems.map((item, itemIndex) => (
+              <li key={`${blockIndex}-${itemIndex}`}>{inline(item.replace(/^\s*\d+\.\s+/, ''))}</li>
+            ))}
+          </ol>
+        );
+      }
+
+      const formulaLike = /[A-Z][A-Z'0-9\s\->]+/.test(block) && /->|H'|T'|SX/.test(block);
+
       return (
-        <ul key={`block-${blockIndex}`} className="ai-text-list">
-          {listItems.map((item, itemIndex) => (
-            <li key={`${blockIndex}-${itemIndex}`}>{inline(item.replace(/^\s*[-*]\s+/, ''))}</li>
-          ))}
-        </ul>
+        <p key={`block-${blockIndex}`} className={formulaLike ? 'ai-formula-line' : ''}>
+          {inline(block)}
+        </p>
       );
-    }
-
-    if (numberedItems.length > 0) {
-      return (
-        <ol key={`block-${blockIndex}`} className="ai-text-list">
-          {numberedItems.map((item, itemIndex) => (
-            <li key={`${blockIndex}-${itemIndex}`}>{inline(item.replace(/^\s*\d+\.\s+/, ''))}</li>
-          ))}
-        </ol>
-      );
-    }
-
-    const formulaLike = /[A-Z][A-Z'0-9\s\-–>]+/.test(block) && /->|→|H'|T'|SX/.test(block);
-
-    return (
-      <p key={`block-${blockIndex}`} className={formulaLike ? 'ai-formula-line' : ''}>
-        {inline(block)}
-      </p>
-    );
-  });
+    });
 };
 
-const ContextRow = ({ label, value }) => (
-  <div className="ai-context-row">
-    <span className="ai-context-label">{label}</span>
-    <strong>{value || 'Chua co du lieu'}</strong>
+const TypingIndicator = () => (
+  <div className="ai-typing-indicator">
+    <span className="ai-typing-dot" />
+    <span className="ai-typing-dot" />
+    <span className="ai-typing-dot" />
   </div>
 );
 
 const MessageBubble = ({ message }) => {
   const isUser = message.role === 'user';
+  const [showDetails, setShowDetails] = useState(false);
+
+  const relatedConcepts = Array.isArray(message.relatedConcepts)
+    ? message.relatedConcepts
+        .filter((concept, index, array) =>
+          concept?.id && array.findIndex((item) => item?.id === concept.id) === index,
+        )
+        .slice(0, 3)
+    : [];
+
+  const hasSections = !isUser && message.sections?.length > 0;
+  const hasChips = !isUser && relatedConcepts.length > 0;
+  const hasDetails = hasSections || hasChips;
 
   return (
-    <div className={`ai-message ${isUser ? 'is-user' : 'is-assistant'}`}>
-      <div className="ai-message-badge">
-        {isUser ? <MessageSquareText size={14} /> : <Bot size={14} />}
-        <span>{isUser ? 'Ban' : 'AI chat'}</span>
+    <motion.div
+      className={`ai-msg ${isUser ? 'ai-msg--user' : 'ai-msg--bot'}`}
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+    >
+      {!isUser && (
+        <div className="ai-msg-avatar">
+          <Bot size={14} />
+        </div>
+      )}
+
+      <div className="ai-msg-content">
+        {message.fallbackUsed && (
+          <div className="ai-fallback-badge">
+            {message.demoMode ? 'Che do demo' : 'Phan tich du phong'}
+          </div>
+        )}
+        <div className="ai-msg-body">{formatText(message.content)}</div>
+
+        {hasDetails && (
+          <>
+            <button
+              type="button"
+              className="ai-detail-toggle"
+              onClick={() => setShowDetails((value) => !value)}
+            >
+              {showDetails ? 'An chi tiet' : 'Xem chi tiet'}
+              {showDetails ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+            </button>
+
+            {showDetails && (
+              <motion.div
+                className="ai-msg-details"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                {hasSections && (
+                  <div className="ai-msg-sections">
+                    {message.sections.map((section) => (
+                      <div key={section.title} className="ai-section-card">
+                        <span className="ai-section-title">{section.title}</span>
+                        <div className="ai-section-body">{formatText(section.content)}</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {hasChips && (
+                  <div className="ai-chips">
+                    {relatedConcepts.map((concept, index) => (
+                      <span key={`${concept.id}-${index}`} className="ai-chip">
+                        {concept.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </motion.div>
+            )}
+          </>
+        )}
       </div>
-
-      <div className="ai-message-body">
-        {formatText(message.content)}
-      </div>
-
-      {!isUser && message.sections?.length > 0 && (
-        <div className="ai-message-sections">
-          {message.sections.map((section) => (
-            <div key={section.title} className="ai-mini-card">
-              <span className="ai-mini-card-title">{section.title}</span>
-              <div className="ai-mini-card-content">{formatText(section.content)}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {!isUser && message.relatedConcepts?.length > 0 && (
-        <div className="ai-chip-row">
-          {message.relatedConcepts.map((concept) => (
-            <span key={concept.id} className="ai-chip">
-              {concept.label}
-            </span>
-          ))}
-        </div>
-      )}
-
-      {!isUser && message.sourceLabels?.length > 0 && (
-        <div className="ai-source-row">
-          <span className="ai-source-label">Nguon:</span>
-          {message.sourceLabels.map((label) => (
-            <span key={label} className="ai-source-pill">
-              {label}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
+    </motion.div>
   );
 };
+
+const ContextRow = ({ label, value }) => (
+  <div className="ai-ctx-row">
+    <span className="ai-ctx-key">{label}</span>
+    <span className="ai-ctx-val">{value || '—'}</span>
+  </div>
+);
+
+const ContextPanel = ({ pageContext, onClose }) => (
+  <motion.div
+    className="ai-ctx-panel"
+    initial={{ height: 0, opacity: 0 }}
+    animate={{ height: 'auto', opacity: 1 }}
+    exit={{ height: 0, opacity: 0 }}
+    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+  >
+    <div className="ai-ctx-header">
+      <span className="ai-ctx-title">
+        <Zap size={12} />
+        Context dang dung
+      </span>
+      <button type="button" className="ai-btn-icon" onClick={onClose}>
+        <ChevronUp size={14} />
+      </button>
+    </div>
+    <div className="ai-ctx-grid">
+      <ContextRow label="Route" value={pageContext.route} />
+      <ContextRow label="Page" value={pageContext.pageName} />
+      <ContextRow label="Section" value={pageContext.sectionTitle} />
+      <ContextRow label="Stage" value={pageContext.activeStage?.title || pageContext.activeStage?.formula} />
+      <ContextRow label="State" value={pageContext.economicState} />
+      <ContextRow label="Stakeholder" value={pageContext.selectedStakeholder?.name} />
+      <ContextRow label="Capital Lab" value={pageContext.capitalLab?.chapterTitle} />
+      <ContextRow label="Simulation" value={pageContext.simulation?.scenario} />
+      <ContextRow label="Quiz" value={pageContext.quiz?.question} />
+    </div>
+    {pageContext.relevantConceptIds?.length > 0 && (
+      <div className="ai-ctx-tags">
+        {pageContext.relevantConceptIds.map((id) => (
+          <span key={id} className="ai-ctx-tag">{id}</span>
+        ))}
+      </div>
+    )}
+  </motion.div>
+);
 
 export function AITutorDrawer() {
   const {
@@ -160,6 +240,8 @@ export function AITutorDrawer() {
     closeTutor,
     toggleContext,
     resetConversation,
+    abortCurrentRequest,
+    retryLastMessage,
     sendMessage,
   } = useAI();
 
@@ -167,27 +249,58 @@ export function AITutorDrawer() {
   const scrollRef = useRef(null);
   const inputRef = useRef(null);
 
-  const suggestedActions = useMemo(
-    () => getContextualActions(pageContext),
+  const suggestedActions = useMemo(() => getContextualActions(pageContext), [pageContext]);
+  const contextSummary = useMemo(
+    () => [
+      pageContext.pageName,
+      pageContext.activeStage?.title || pageContext.activeStage?.formula,
+      pageContext.capitalLab?.chapterTitle,
+      pageContext.economicState === 'crisis' ? 'Khung hoang dang hoat dong' : '',
+    ].filter(Boolean).join(' · '),
     [pageContext],
   );
 
   useEffect(() => {
     if (!isOpen) return;
-    const el = scrollRef.current;
-    if (el) {
-      el.scrollTop = el.scrollHeight;
+    const element = scrollRef.current;
+    if (element) {
+      requestAnimationFrame(() => {
+        element.scrollTo({ top: element.scrollHeight, behavior: 'smooth' });
+      });
     }
-  }, [messages, isOpen, isLoading]);
+  }, [messages, isLoading, isOpen]);
 
   useEffect(() => {
-    if (isOpen) {
-      inputRef.current?.focus();
-    }
+    if (!isOpen) return;
+    const timer = window.setTimeout(() => inputRef.current?.focus(), 120);
+    return () => window.clearTimeout(timer);
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen) return undefined;
+    if (!isOpen) {
+      return undefined;
+    }
+
+    const { body, documentElement } = document;
+    const previousOverflow = body.style.overflow;
+    const previousPaddingRight = body.style.paddingRight;
+    const scrollbarWidth = window.innerWidth - documentElement.clientWidth;
+
+    body.style.overflow = 'hidden';
+    if (scrollbarWidth > 0) {
+      body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+
+    return () => {
+      body.style.overflow = previousOverflow;
+      body.style.paddingRight = previousPaddingRight;
+    };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
 
     const handleEscape = (event) => {
       if (event.key === 'Escape') {
@@ -197,7 +310,7 @@ export function AITutorDrawer() {
 
     window.addEventListener('keydown', handleEscape);
     return () => window.removeEventListener('keydown', handleEscape);
-  }, [isOpen, closeTutor]);
+  }, [closeTutor, isOpen]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -223,135 +336,151 @@ export function AITutorDrawer() {
       {isOpen && (
         <>
           <motion.div
-            className="ai-tutor-backdrop"
+            className="ai-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={closeTutor}
           />
 
           <motion.aside
-            className="ai-tutor-shell"
-            initial={{ opacity: 0, y: 18, scale: 0.96 }}
+            className="ai-drawer"
+            initial={{ opacity: 0, y: 24, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 18, scale: 0.96 }}
-            transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+            exit={{ opacity: 0, y: 24, scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 320, damping: 30 }}
             role="dialog"
             aria-modal="false"
-            aria-label="AI chat"
+            aria-label="AI Capital Tutor"
           >
-            <div className="ai-tutor-header">
-              <div className="ai-tutor-title-block">
-                <div className="ai-tutor-eyebrow">
-                  <MessageSquareText size={14} />
-                  <span>AI chat</span>
+            <div className="ai-header">
+              <div className="ai-header-left">
+                <div className="ai-header-avatar">
+                  <Sparkles size={16} />
                 </div>
-                <h2>Chat theo context hien tai</h2>
-                <p>Hoi truc tiep ve trang nay, AI se tra loi theo du lieu da kiem chung trong du an.</p>
+                <div className="ai-header-info">
+                  <h2>AI Capital Tutor</h2>
+                  <span className="ai-header-status">
+                    <span className="ai-status-dot" />
+                    {isLoading ? 'Dang goi AI' : 'San sang'} · {pageContext.pageName || 'Tong quan'}
+                  </span>
+                </div>
               </div>
 
-              <div className="ai-tutor-header-actions">
-                <button type="button" className="ai-icon-btn" onClick={toggleContext} aria-pressed={viewContext}>
-                  <CircleHelp size={18} />
-                  <span>Context</span>
+              <div className="ai-header-actions">
+                <button
+                  type="button"
+                  className="ai-btn-icon"
+                  onClick={toggleContext}
+                  aria-pressed={viewContext}
+                  title="Xem context"
+                >
+                  {viewContext ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
-                <button type="button" className="ai-icon-btn" onClick={resetConversation}>
-                  <RotateCcw size={18} />
-                  <span>Reset</span>
+                <button
+                  type="button"
+                  className="ai-btn-icon"
+                  onClick={resetConversation}
+                  title="Reset conversation"
+                >
+                  <RotateCcw size={16} />
                 </button>
-                <button type="button" className="ai-close-btn" onClick={closeTutor} aria-label="Dong AI chat">
-                  <X size={18} />
+                <button
+                  type="button"
+                  className="ai-btn-icon ai-btn-close"
+                  onClick={closeTutor}
+                  aria-label="Dong"
+                >
+                  <X size={16} />
                 </button>
               </div>
             </div>
 
-            <div className="ai-context-strip">
-              <span className="ai-context-pill">{pageContext.pageName || 'Tong quan'}</span>
-              <span className="ai-context-pill is-muted">{pageContext.sectionTitle || pageContext.chapterTitle || pageContext.quiz?.question || 'Khong co section ro rang'}</span>
-              {pageContext.route && <span className="ai-context-pill is-route">{pageContext.route}</span>}
+            <div className="ai-context-indicator">
+              <span>Dang phan tich:</span>
+              <strong>{contextSummary || pageContext.pageName || 'Context hien tai'}</strong>
+              <button type="button" className="ai-context-button" onClick={toggleContext}>
+                Xem context AI dang dung
+              </button>
             </div>
 
-            <div className="ai-suggestion-row">
-              {suggestedActions.map((action) => (
-                <button key={action.id} type="button" className="ai-suggestion-chip" onClick={() => handleAction(action)}>
-                  {action.label}
-                </button>
-              ))}
-            </div>
+            <AnimatePresence>
+              {viewContext && (
+                <ContextPanel pageContext={pageContext} onClose={toggleContext} />
+              )}
+            </AnimatePresence>
 
-            {viewContext && (
-              <div className="ai-context-panel">
-                <div className="ai-context-panel-header">
-                  <strong>Context AI dang dung</strong>
-                  <button type="button" className="ai-icon-btn compact" onClick={toggleContext}>
-                    <ChevronUp size={16} />
-                    <span>An</span>
-                  </button>
-                </div>
-
-                <div className="ai-context-grid">
-                  <ContextRow label="Route" value={pageContext.route} />
-                  <ContextRow label="Page" value={pageContext.pageName} />
-                  <ContextRow label="Section" value={pageContext.sectionTitle || pageContext.chapterTitle} />
-                  <ContextRow label="Mission" value={pageContext.activeMission || pageContext.capitalLab?.chapterTitle} />
-                  <ContextRow label="Quiz" value={pageContext.quiz?.question || pageContext.currentQuestion?.question} />
-                  <ContextRow label="Simulation" value={pageContext.simulation?.scenario} />
-                </div>
-
-                <div className="ai-context-tags">
-                  {pageContext.relevantConceptIds?.map((id) => (
-                    <span key={id} className="ai-context-tag">
-                      {id}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="ai-message-list" ref={scrollRef}>
+            <div className="ai-messages" ref={scrollRef}>
               {messages.map((message) => (
                 <MessageBubble key={message.id} message={message} />
               ))}
 
               {isLoading && (
-                <div className="ai-message is-assistant">
-                  <div className="ai-message-badge">
-                    <Loader2 size={14} className="spin" />
-                    <span>AI dang phan tich</span>
+                <div className="ai-msg ai-msg--bot">
+                  <div className="ai-msg-avatar">
+                    <Bot size={14} />
                   </div>
-                  <p className="ai-loading-copy">Dang tim khung giai thich tu khoa hoc thuat da kiem chung.</p>
+                  <div className="ai-msg-content">
+                    <TypingIndicator />
+                  </div>
                 </div>
               )}
             </div>
 
             {error && (
-              <div className="ai-error-banner">
-                <ShieldAlert size={18} />
+              <div className="ai-error" role="alert">
                 <span>{error}</span>
               </div>
             )}
 
-            <div className="ai-footer-note">
-              <span>API key nam o server. Neu proxy chua san sang, AI se dung fallback rule-based.</span>
-            </div>
+            {messages.length <= 1 && (
+              <div className="ai-suggestions">
+                {suggestedActions.map((action) => (
+                  <button
+                    key={action.id}
+                    type="button"
+                    className="ai-suggestion"
+                    onClick={() => handleAction(action)}
+                  >
+                    <Sparkles size={12} />
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <form className="ai-composer" onSubmit={handleSubmit}>
-              <textarea
-                ref={inputRef}
-                value={draft}
-                onChange={(event) => setDraft(event.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Nhap cau hoi, Enter de gui..."
-                rows={3}
-              />
-              <div className="ai-composer-actions">
-                <button type="button" className="ai-icon-btn compact" onClick={() => setDraft('')}>
-                  <X size={16} />
-                  <span>Clear</span>
-                </button>
-                <button type="submit" className="ai-send-btn" disabled={isLoading || !draft.trim()}>
+              <div className="ai-composer-wrap">
+                <textarea
+                  ref={inputRef}
+                  value={draft}
+                  onChange={(event) => setDraft(event.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder="Nhap cau hoi, Enter de gui..."
+                  rows={1}
+                />
+                <button
+                  type="submit"
+                  className="ai-send"
+                  disabled={isLoading || !draft.trim()}
+                  aria-label="Gui"
+                >
                   <Send size={16} />
-                  <span>Send</span>
+                </button>
+              </div>
+
+              <div className="ai-composer-actions">
+                <button type="button" className="ai-inline-action" onClick={resetConversation}>
+                  <RotateCcw size={14} />
+                  Clear
+                </button>
+                <button type="button" className="ai-inline-action" onClick={retryLastMessage} disabled={isLoading}>
+                  Retry
+                </button>
+                <button type="button" className="ai-inline-action" onClick={abortCurrentRequest} disabled={!isLoading}>
+                  <OctagonX size={14} />
+                  Stop
                 </button>
               </div>
             </form>

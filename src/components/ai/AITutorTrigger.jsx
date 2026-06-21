@@ -1,9 +1,9 @@
-import { MessageSquareText, X } from 'lucide-react';
+import { Bot, X } from 'lucide-react';
 import { useAI } from '../../ai/useAI';
 import './AITutorTrigger.css';
 
 export function AITutorTrigger() {
-  const { openTutor, closeTutor, isOpen, toggleTutor } = useAI();
+  const { openTutor, closeTutor, isOpen } = useAI();
 
   const handleClick = () => {
     if (isOpen) {
@@ -18,18 +18,14 @@ export function AITutorTrigger() {
       type="button"
       className={`ai-fab ${isOpen ? 'is-open' : ''}`}
       onClick={handleClick}
-      aria-label={isOpen ? 'Dong AI chat' : 'Mo AI chat'}
-      title="AI chat"
-      onContextMenu={(event) => {
-        event.preventDefault();
-        toggleTutor();
-      }}
+      aria-label={isOpen ? 'Đóng AI Chat' : 'Mở AI Chat'}
+      title="AI Capital Tutor"
     >
-      <span className="ai-fab-icon">{isOpen ? <X size={18} /> : <MessageSquareText size={18} />}</span>
-      <span className="ai-fab-copy">
-        <strong>{isOpen ? 'Dong chat' : 'AI chat'}</strong>
-        <span>{isOpen ? 'Tap de dong' : 'Hoi theo trang'}</span>
+      <span className="ai-fab-glow" />
+      <span className="ai-fab-icon">
+        {isOpen ? <X size={20} /> : <Bot size={20} />}
       </span>
+      <span className="ai-fab-label">{isOpen ? 'Đóng' : 'AI Chat'}</span>
     </button>
   );
 }

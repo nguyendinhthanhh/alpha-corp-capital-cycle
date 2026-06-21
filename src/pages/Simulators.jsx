@@ -23,6 +23,10 @@ const Simulators = () => {
   const total = reserve + production + labor;
   const isBalanced = total === 100;
   const activeScenario = scenarios.find(s => s.id === activeScenarioId);
+  const liquidityState = reserve < 15 ? 'critical' : reserve < 25 ? 'warning' : 'stable';
+  const continuityState = isBalanced ? 'balanced' : 'unbalanced';
+  const commodityConcentration = production;
+  const circulationState = activeScenarioId === 'crisis' ? 'stagnant' : activeScenarioId === 'credit-tightening' ? 'slowed' : 'normal';
 
   useEffect(() => {
     setPageContext(
@@ -38,6 +42,10 @@ const Simulators = () => {
               production,
               labor,
             },
+            liquidityState,
+            continuityState,
+            commodityConcentration,
+            circulationState,
             result,
             isBalanced,
             total,
@@ -47,7 +55,21 @@ const Simulators = () => {
         },
       }),
     );
-  }, [activeScenario?.name, activeScenarioId, isBalanced, labor, production, reserve, result, setPageContext, total]);
+  }, [
+    activeScenario?.name,
+    activeScenarioId,
+    circulationState,
+    commodityConcentration,
+    continuityState,
+    isBalanced,
+    labor,
+    liquidityState,
+    production,
+    reserve,
+    result,
+    setPageContext,
+    total,
+  ]);
 
   // Clear result when inputs change
   useEffect(() => {

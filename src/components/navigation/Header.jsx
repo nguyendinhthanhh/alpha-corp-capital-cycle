@@ -1,17 +1,26 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { scrollToSectionById } from "../../utils/motion";
+import {
+  PENDING_HOME_SECTION_STORAGE_KEY,
+  scrollToPageTop,
+  scrollToSectionById,
+} from "../../utils/motion";
 import "./Header.css";
 
 const navItems = [
-  { id: "overview", label: "Tổng quan", path: "/" },
-  { id: "capital-journey", label: "Hành trình vốn", path: "/#capital-journey" },
-  { id: "crisis", label: "Điểm đứt gãy", path: "/#crisis" },
-  { id: "capital-lab", label: "Capital Lab", path: "/capital-lab" },
-  { id: "simulators", label: "Mô phỏng", path: "/simulators" },
-  { id: "quiz", label: "Kiểm tra", path: "/quiz" },
-  { id: "appendix", label: "Nguồn & AI", path: "/appendix" },
+  { id: "hero", label: "Tổng quan", route: "/", sectionId: "hero" },
+  { id: "crisis", label: "Điểm đứt gãy", route: "/", sectionId: "crisis" },
+  {
+    id: "capital-journey",
+    label: "Hành trình vốn",
+    route: "/",
+    sectionId: "capital-journey",
+  },
+  { id: "capital-lab", label: "Capital Lab", route: "/capital-lab" },
+  { id: "simulators", label: "Mô phỏng", route: "/simulators" },
+  { id: "quiz", label: "Kiểm tra", route: "/quiz" },
+  { id: "appendix", label: "Nguồn & AI", route: "/appendix" },
 ];
 
 const homeSectionNavMap = [
@@ -85,38 +94,57 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [location.pathname]);
 
-  const handleNavClick = (path) => {
-    setIsMobileMenuOpen(false);
-
-    if (path.startsWith("/#")) {
-      const id = path.replace("/#", "");
-      if (location.pathname !== "/") {
-        navigate(path);
-        return;
-      }
-
-      const element = document.getElementById(id);
-      if (element) {
-        scrollToSectionById(id);
-      }
+  const replaceHomeUrl = (sectionId) => {
+    if (typeof window === "undefined" || location.pathname !== "/") {
       return;
     }
 
-    navigate(path);
+    const nextUrl = sectionId && sectionId !== "hero" ? `/#${sectionId}` : "/";
+    window.history.replaceState(window.history.state, "", nextUrl);
   };
 
-  const checkIsActive = (path) => {
-    if (path === "/" || path === "/#hero") {
-      return location.pathname === "/" && activeSection === "hero";
-    }
-
-    if (path.startsWith("/#")) {
-      return (
-        location.pathname === "/" && activeSection === path.replace("/#", "")
+  const handleHomeSectionNavigation = (sectionId = "hero") => {
+    if (location.pathname !== "/") {
+      window.sessionStorage.setItem(
+        PENDING_HOME_SECTION_STORAGE_KEY,
+        sectionId,
       );
+      navigate(sectionId === "hero" ? "/" : `/#${sectionId}`);
+      return;
     }
 
-    return location.pathname.startsWith(path);
+    if (sectionId === "hero") {
+      scrollToPageTop();
+    } else {
+      scrollToSectionById(sectionId);
+    }
+
+    replaceHomeUrl(sectionId);
+  };
+
+  const handleNavClick = (item) => {
+    setIsMobileMenuOpen(false);
+
+    if (item.route === "/" && item.sectionId) {
+      handleHomeSectionNavigation(item.sectionId);
+      return;
+    }
+
+    navigate(item.route);
+  };
+
+  const handleBrandClick = (event) => {
+    event.preventDefault();
+    setIsMobileMenuOpen(false);
+    handleHomeSectionNavigation("hero");
+  };
+
+  const checkIsActive = (item) => {
+    if (item.route === "/" && item.sectionId) {
+      return location.pathname === "/" && activeSection === item.sectionId;
+    }
+
+    return location.pathname.startsWith(item.route);
   };
 
   return (
@@ -128,7 +156,7 @@ const Header = () => {
         />
 
         <div className="container header-container">
-          <Link to="/" className="brand-logo">
+          <Link to="/" className="brand-logo" onClick={handleBrandClick}>
             <span className="brand-name">AlphaCorp</span>
             <span className="brand-subtitle">Capital Cycle Study</span>
           </Link>
@@ -137,8 +165,8 @@ const Header = () => {
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => handleNavClick(item.path)}
-                className={`nav-item ${checkIsActive(item.path) ? "active" : ""}`}
+                onClick={() => handleNavClick(item)}
+                className={`nav-item ${checkIsActive(item) ? "active" : ""}`}
               >
                 {item.label}
               </button>
@@ -164,8 +192,8 @@ const Header = () => {
           {navItems.map((item) => (
             <button
               key={item.id}
-              onClick={() => handleNavClick(item.path)}
-              className={`mobile-nav-item ${checkIsActive(item.path) ? "active" : ""}`}
+              onClick={() => handleNavClick(item)}
+              className={`mobile-nav-item ${checkIsActive(item) ? "active" : ""}`}
             >
               {item.label}
             </button>

@@ -62,6 +62,7 @@ export function buildAIContext({ route, appState = {}, selectedContent = {}, use
 
   return {
     ...pageContext,
+    route,
     relevantConcepts: relatedConceptsDetailed,
     sourceLabels: dedupe([
       ...pageContext.sourceLabels,

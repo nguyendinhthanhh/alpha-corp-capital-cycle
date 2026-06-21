@@ -1,33 +1,25 @@
-import { analyzeWithRules } from './fallbackAnalyzer';
+const API_ENDPOINT = '/api/ai/chat';
 
-const cleanUrl = (value) => (value ? value.trim().replace(/\/$/, '') : '');
+export async function sendTutorRequest({ messages = [], pageContext = {}, action = null, signal } = {}) {
+  const response = await fetch(API_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ messages, pageContext, action }),
+    signal,
+  });
 
-export async function sendTutorRequest({ messages = [], pageContext = {}, action = null } = {}) {
-  const endpoint = cleanUrl(import.meta.env.VITE_AI_CHAT_URL || import.meta.env.VITE_AI_ENDPOINT || '/api/ai-chat');
-
-  if (endpoint) {
-    try {
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages, pageContext, action }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`AI endpoint returned ${response.status}`);
-      }
-
-      const payload = await response.json();
-      if (payload?.answer) {
-        return {
-          ...payload,
-          fallbackUsed: false,
-        };
-      }
-    } catch (error) {
-      console.warn('AI Capital Tutor endpoint unavailable, falling back to rules.', error);
-    }
+  const payload = await response.json().catch(() => ({}));
+  if (!response.ok) {
+    const error = new Error(payload?.error || `AI endpoint returned ${response.status}`);
+    error.statusCode = response.status;
+    throw error;
   }
 
-  return analyzeWithRules({ messages, pageContext, action });
+  if (!payload?.answer) {
+    throw new Error('AI response khong hop le.');
+  }
+
+  return payload;
 }

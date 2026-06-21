@@ -1,5 +1,9 @@
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getScrollBehavior, scrollToSectionById } from '../../utils/motion';
+import {
+  PENDING_HOME_SECTION_STORAGE_KEY,
+  scrollToPageTop,
+  scrollToSectionById,
+} from '../../utils/motion';
 import './Footer.css';
 
 const Footer = () => {
@@ -10,7 +14,8 @@ const Footer = () => {
   const handleJump = (path) => {
     if (path === '/') {
       if (location.pathname === '/') {
-        window.scrollTo({ top: 0, behavior: getScrollBehavior() });
+        scrollToPageTop();
+        window.history.replaceState(window.history.state, '', '/');
       } else {
         navigate('/');
       }
@@ -24,11 +29,13 @@ const Footer = () => {
 
     const id = path.replace('/#', '');
     if (location.pathname !== '/') {
+      window.sessionStorage.setItem(PENDING_HOME_SECTION_STORAGE_KEY, id);
       navigate(path);
       return;
     }
 
     scrollToSectionById(id);
+    window.history.replaceState(window.history.state, '', `/#${id}`);
   };
 
   return (
@@ -79,4 +86,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

@@ -23,6 +23,12 @@ const StoryMode = () => {
           sectionId: `chapter-${chapter.number}`,
           sectionTitle: chapter.title,
           chapterTitle: chapter.title,
+          activeStage: {
+            id: String(chapter.stage || '').toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+            index: Number(chapter.number) - 1,
+            formula: chapter.stage,
+            title: chapter.title,
+          },
           sourceLabels: ['caseData.storyChapters'],
           relevantConceptIds: ['capital-circuit', 'capital-turnover', 'surplus-value'],
         },
