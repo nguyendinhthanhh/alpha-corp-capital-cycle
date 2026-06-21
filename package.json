@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:ai": "node scripts/dev-with-ai.mjs",
+    "ai:proxy": "node scripts/gemini-proxy.mjs",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"

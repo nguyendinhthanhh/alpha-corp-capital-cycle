@@ -3,10 +3,9 @@ import { analyzeWithRules } from './fallbackAnalyzer';
 const cleanUrl = (value) => (value ? value.trim().replace(/\/$/, '') : '');
 
 export async function sendTutorRequest({ messages = [], pageContext = {}, action = null } = {}) {
-  const demoMode = String(import.meta.env.VITE_AI_DEMO_MODE || 'true').toLowerCase() !== 'false';
-  const endpoint = cleanUrl(import.meta.env.VITE_AI_CHAT_URL || import.meta.env.VITE_AI_ENDPOINT || '');
+  const endpoint = cleanUrl(import.meta.env.VITE_AI_CHAT_URL || import.meta.env.VITE_AI_ENDPOINT || '/api/ai-chat');
 
-  if (!demoMode && endpoint) {
+  if (endpoint) {
     try {
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -32,4 +31,3 @@ export async function sendTutorRequest({ messages = [], pageContext = {}, action
 
   return analyzeWithRules({ messages, pageContext, action });
 }
-
