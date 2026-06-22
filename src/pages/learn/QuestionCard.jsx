@@ -13,6 +13,10 @@ export function QuestionCard({
   const [multiAnswer, setMultiAnswer] = useState([]);
   const [orderingAnswer, setOrderingAnswer] = useState([]);
   const [shortAnswer, setShortAnswer] = useState('');
+  const correctOptionIds = useMemo(
+    () => (question.options || []).filter((option) => option.isCorrect).map((option) => option.id),
+    [question.options],
+  );
 
   const isLocked = busy || Boolean(feedback);
 
@@ -78,16 +82,30 @@ export function QuestionCard({
     onSubmit(response);
   };
 
+  const getChoiceStateClassName = (optionId, isActive) => {
+    if (!feedback) {
+      return isActive ? 'is-active' : '';
+    }
+
+    const isCorrect = correctOptionIds.includes(optionId);
+
+    if (isActive && isCorrect) return 'is-active is-correct';
+    if (isActive && !isCorrect) return 'is-active is-incorrect';
+    if (!isActive && isCorrect) return 'is-correct';
+    return '';
+  };
+
   const renderChoiceButtons = (multiple = false) => (
     <div className="learn-choice-grid">
       {(question.options || []).map((option) => {
         const isActive = multiple ? multiAnswer.includes(option.id) : singleAnswer === option.id;
+        const stateClassName = getChoiceStateClassName(option.id, isActive);
 
         return (
           <button
             key={option.id}
             type="button"
-            className={`learn-choice ${isActive ? 'is-active' : ''}`}
+            className={`learn-choice ${stateClassName}`.trim()}
             onClick={() => (multiple ? handleMultipleToggle(option.id) : handleSingleSelect(option.id))}
             disabled={isLocked}
             aria-pressed={isActive}
@@ -115,7 +133,19 @@ export function QuestionCard({
         <div className="learn-choice-grid learn-choice-grid-compact">
           <button
             type="button"
-            className={`learn-choice ${singleAnswer === true ? 'is-active' : ''}`}
+            className={`learn-choice ${
+              feedback
+                ? String(question.correctAnswer) === 'true'
+                  ? singleAnswer === true
+                    ? 'is-active is-correct'
+                    : 'is-correct'
+                  : singleAnswer === true
+                    ? 'is-active is-incorrect'
+                    : ''
+                : singleAnswer === true
+                  ? 'is-active'
+                  : ''
+            }`.trim()}
             onClick={() => {
               if (isLocked) return;
               setSingleAnswer(true);
@@ -130,7 +160,19 @@ export function QuestionCard({
           </button>
           <button
             type="button"
-            className={`learn-choice ${singleAnswer === false ? 'is-active' : ''}`}
+            className={`learn-choice ${
+              feedback
+                ? String(question.correctAnswer) === 'false'
+                  ? singleAnswer === false
+                    ? 'is-active is-correct'
+                    : 'is-correct'
+                  : singleAnswer === false
+                    ? 'is-active is-incorrect'
+                    : ''
+                : singleAnswer === false
+                  ? 'is-active'
+                  : ''
+            }`.trim()}
             onClick={() => {
               if (isLocked) return;
               setSingleAnswer(false);

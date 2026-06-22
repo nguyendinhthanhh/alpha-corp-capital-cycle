@@ -1,7 +1,7 @@
 import { sendTutorRequest } from '../ai/tutorClient.js';
 
 function formatOptions(options = []) {
-  return options.map((item) => `${item.id}. ${item.label}`).join('\n');
+  return options.map((item) => `${item.id}. ${item.text || item.label}`).join('\n');
 }
 
 export function buildQuizAIMessage({

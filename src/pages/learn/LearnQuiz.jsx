@@ -18,6 +18,136 @@ function buildResultLabel(status) {
   return 'Chưa chính xác';
 }
 
+function formatOptionText(option) {
+  return option?.text || option?.label || option?.id || '';
+}
+
+function formatAnswerValue(question, rawAnswer) {
+  if (rawAnswer == null || rawAnswer === '') {
+    return 'Chưa có đáp án.';
+  }
+
+  if (typeof rawAnswer === 'boolean') {
+    return rawAnswer ? 'Đúng' : 'Sai';
+  }
+
+  const answerIds = Array.isArray(rawAnswer)
+    ? rawAnswer
+    : String(rawAnswer)
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+  if (question.type === 'true-false') {
+    const normalized = String(rawAnswer).trim().toLowerCase();
+    return normalized === 'true' ? 'Đúng' : 'Sai';
+  }
+
+  if (answerIds.length === 0) {
+    return String(rawAnswer);
+  }
+
+  const labels = answerIds.map((answerId) => {
+    const option = question.options?.find((item) => item.id === answerId);
+    return option ? `${answerId.toUpperCase()}. ${formatOptionText(option)}` : answerId;
+  });
+
+  return labels.join(' • ');
+}
+
+function getSelectedOption(question, feedback) {
+  if (!feedback || question.type === 'true-false') {
+    return null;
+  }
+
+  return question.options?.find((option) => option.id === feedback.selectedAnswer) || null;
+}
+
+function getPrimaryConceptSummary(question) {
+  const primaryConcept = question.conceptIds?.[0];
+  return getConceptMeta(primaryConcept)?.summary || '';
+}
+
+function buildITAnalogy(question) {
+  const conceptIds = new Set(question.conceptIds || []);
+
+  if (conceptIds.has('liquidity') || conceptIds.has('commodity-capital')) {
+    return 'Hãy hình dung team dev đã build xong một release lớn nhưng chưa deploy được và chưa thu tiền từ khách. Tài sản kỹ thuật có đó, nhưng cashflow vẫn chưa quay về để trả hạ tầng, lương và tiếp tục sprint mới.';
+  }
+
+  if (conceptIds.has('capital-circuit') || conceptIds.has('reproduction')) {
+    return 'Giống một pipeline sản phẩm: tiền là budget ban đầu, mua đầu vào là thuê dev và hạ tầng, sản xuất là build feature, H’ là bản release đã xong, còn T’ là lúc người dùng trả tiền. Không chốt được tiền thì pipeline dừng ở khâu cuối.';
+  }
+
+  if (conceptIds.has('spatial-condition') || conceptIds.has('temporal-condition')) {
+    return 'Giống vận hành một hệ thống gồm code, CI và production. Nếu dồn toàn bộ tài nguyên vào một chỗ hoặc một bước bị treo quá lâu, toàn bộ pipeline phát hành sẽ nghẽn.';
+  }
+
+  return 'Hãy xem câu này như một pipeline dev: budget -> build -> release -> doanh thu quay về. Điểm nào chưa quay lại thành tiền hoặc chưa nối tiếp được sang vòng sau thì đó là chỗ nghẽn của hệ thống.';
+}
+
+function buildClientSideQuizInsight({ question, feedback, action, masteryScore }) {
+  const conceptSummary = getPrimaryConceptSummary(question);
+  const selectedOption = getSelectedOption(question, feedback);
+  const correctAnswer = formatAnswerValue(question, question.correctAnswer);
+
+  if (action === 'quiz-hint') {
+    return {
+      answer: [
+        'Không gọi được AI server, đang dùng fallback cục bộ.',
+        `Gợi ý nhanh: tập trung vào khái niệm "${getConceptMeta(question.conceptIds?.[0])?.label || 'trọng tâm'}".`,
+        conceptSummary ? `Điểm cần nhớ: ${conceptSummary}` : null,
+        'Loại trước các phương án chỉ mô tả hiện tượng phụ hoặc không giúp vốn quay lại vòng tiếp theo.',
+      ]
+        .filter(Boolean)
+        .join('\n\n'),
+      fallbackUsed: true,
+      localFallback: true,
+    };
+  }
+
+  if (action === 'it-analogy') {
+    return {
+      answer: [
+        'Không gọi được AI server, đang dùng fallback cục bộ.',
+        buildITAnalogy(question),
+      ].join('\n\n'),
+      fallbackUsed: true,
+      localFallback: true,
+    };
+  }
+
+  if (action === 'quiz-explanation') {
+    return {
+      answer: [
+        'Không gọi được AI server, đang dùng fallback cục bộ.',
+        feedback?.result?.status === 'correct'
+          ? 'Bạn chọn đúng hướng. Trọng tâm là giữ cho chu kỳ vốn nối tiếp được sang vòng sau.'
+          : `Bạn nhầm ở chỗ: ${selectedOption?.wrongReason || feedback?.reviewItem?.errorType || 'đã chọn phương án không xử lý đúng nút của chu kỳ vốn.'}`,
+        `Đáp án đúng: ${correctAnswer}`,
+        `Logic ngắn: ${question.explanation}`,
+      ].join('\n\n'),
+      fallbackUsed: true,
+      localFallback: true,
+    };
+  }
+
+  return {
+    answer: [
+      'Không gọi được AI server, đang dùng fallback cục bộ.',
+      `Giải thích ngắn: ${question.explanation}`,
+      conceptSummary ? `Nhớ thêm: ${conceptSummary}` : null,
+      feedback?.result?.status === 'correct'
+        ? `Bạn đang ở mức mastery khoảng ${masteryScore}%. Tiếp tục giữ đúng trọng tâm này ở câu tiếp theo.`
+        : `Nếu làm lại, hãy bắt đầu từ khâu khiến vốn chưa thể quay về hoặc chưa thể nối sang vòng mới.`,
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
+    fallbackUsed: true,
+    localFallback: true,
+  };
+}
+
 export default function LearnQuiz() {
   const [searchParams] = useSearchParams();
   const targetConceptId = searchParams.get('conceptId') || null;
@@ -40,8 +170,7 @@ export default function LearnQuiz() {
 
   const primaryConcept = currentQuestion?.conceptIds?.[0];
   const masteryScore = primaryConcept ? overview.concepts.find((item) => item.conceptId === primaryConcept)?.score || 0 : 0;
-  const strongestConcept = overview.strongest?.label || 'Chưa có';
-  const weakestConcept = overview.weakest?.label || 'Chưa có';
+  const selectedOption = feedback ? getSelectedOption(currentQuestion, feedback) : null;
 
   useEffect(() => {
     if (!currentQuestion) return;
@@ -56,7 +185,7 @@ export default function LearnQuiz() {
           quiz: {
             questionId: currentQuestion.id,
             question: currentQuestion.prompt,
-            options: currentQuestion.options?.map((item) => item.label) || [],
+            options: currentQuestion.options?.map((item) => formatOptionText(item)) || [],
             conceptIds: currentQuestion.conceptIds,
             attemptCount: (lastAttempt?.questionId === currentQuestion.id ? lastAttempt.attemptCount : 0) || 0,
             selectedAnswer: feedback?.selectedAnswer || '',
@@ -69,15 +198,24 @@ export default function LearnQuiz() {
     );
   }, [currentQuestion, feedback?.result?.isCorrect, feedback?.selectedAnswer, lastAttempt?.attemptCount, lastAttempt?.questionId, setPageContext]);
 
+  const conceptBadges = useMemo(() => {
+    const labels =
+      currentQuestion?.conceptIds.map((conceptId) => getConceptMeta(conceptId)?.label || conceptId) || [];
+
+    return [...new Set(labels)];
+  }, [currentQuestion]);
+
+  const primaryConceptLabel = getConceptMeta(primaryConcept)?.label || 'Khái niệm trọng tâm';
+  const relatedConceptLabels = conceptBadges.filter((label) => label !== primaryConceptLabel);
+
   const advanceQuestion = () => {
     const nextAnswered = currentQuestion ? [...answeredIds, currentQuestion.id] : answeredIds;
+
     if (sessionCount >= QUIZ_SET_SIZE) {
       completeMeaningfulActivity('quiz-set', new Date(), { sessionId: sessionIdRef.current });
       setSessionComplete(true);
       setAnsweredIds(nextAnswered);
-      if (topRef.current) {
-        topRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
+      topRef.current?.scrollIntoView({ behavior: 'smooth' });
       return;
     }
 
@@ -89,13 +227,7 @@ export default function LearnQuiz() {
     setAiLoading(false);
     setHintsUsed(0);
     startedAtRef.current = Date.now();
-    
-    // Cuộn lên mượt mà
-    if (topRef.current) {
-      topRef.current.scrollIntoView({ behavior: 'smooth' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    topRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleSubmit = (response) => {
@@ -126,11 +258,13 @@ export default function LearnQuiz() {
 
     setLastAttempt(attempt);
     setFeedback({ ...applied, selectedAnswer });
+    setAiInsight(null);
     setSessionCount((current) => current + 1);
   };
 
   const handleAIAction = async (action, label, includeCorrectAnswer = false) => {
     if (!currentQuestion) return;
+
     setAiLoading(true);
     try {
       const response = await runLearningAI({
@@ -143,7 +277,7 @@ export default function LearnQuiz() {
           quiz: {
             questionId: currentQuestion.id,
             question: currentQuestion.prompt,
-            options: currentQuestion.options?.map((item) => item.label) || [],
+            options: currentQuestion.options?.map((item) => formatOptionText(item)) || [],
             selectedAnswer: feedback?.selectedAnswer || '',
             attemptCount: lastAttempt?.attemptCount || 0,
             conceptIds: currentQuestion.conceptIds,
@@ -158,10 +292,29 @@ export default function LearnQuiz() {
           includeCorrectAnswer,
         }),
       });
+
       if (action === 'quiz-hint') {
         setHintsUsed((current) => current + 1);
       }
+
       setAiInsight({ ...response, label });
+    } catch (error) {
+      if (action === 'quiz-hint') {
+        setHintsUsed((current) => current + 1);
+      }
+
+      const localFallback = buildClientSideQuizInsight({
+        question: currentQuestion,
+        feedback,
+        action,
+        masteryScore,
+      });
+
+      setAiInsight({
+        ...localFallback,
+        label,
+        errorMessage: error?.message || 'Không gọi được AI server.',
+      });
     } finally {
       setAiLoading(false);
     }
@@ -182,12 +335,6 @@ export default function LearnQuiz() {
       return next;
     });
   };
-
-  const conceptBadges = useMemo(
-    () =>
-      currentQuestion?.conceptIds.map((conceptId) => getConceptMeta(conceptId)?.label || conceptId) || [],
-    [currentQuestion],
-  );
 
   if (verifiedQuestionBank.length === 0) {
     return (
@@ -221,8 +368,10 @@ export default function LearnQuiz() {
       >
         {sessionComplete ? (
           <div className="learn-result-panel" style={{ textAlign: 'center', padding: '3rem' }}>
-            <h2>Đã hoàn thành set câu hỏi!</h2>
-            <p style={{ marginTop: '1rem', marginBottom: '2rem' }}>Set này đã được tính là một hoạt động học có ý nghĩa cho streak. Bước hợp lý tiếp theo là review hoặc mở progress map.</p>
+            <h2>Đã hoàn thành set câu hỏi</h2>
+            <p style={{ marginTop: '1rem', marginBottom: '2rem' }}>
+              Set này đã được tính là một hoạt động học có ý nghĩa cho streak. Bước tiếp theo hợp lý là review hoặc mở progress map.
+            </p>
             <div className="learn-inline-actions" style={{ justifyContent: 'center' }}>
               <button type="button" className="btn btn-primary" onClick={resetSession}>
                 <RefreshCcw size={16} />
@@ -238,21 +387,23 @@ export default function LearnQuiz() {
           </div>
         ) : currentQuestion ? (
           <div className="learn-quiz-grid">
-            <div className="learn-quiz-main" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              
-              {/* Context strip moved to top and simplified */}
-              <div className="learn-quiz-context-bar">
-                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  <Target size={18} className="text-teal" />
-                  <span className="learn-panel-label" style={{ margin: 0 }}>Trọng tâm:</span>
-                  <strong style={{ color: 'var(--text-primary)' }}>{getConceptMeta(primaryConcept)?.label || 'Khái niệm trọng tâm'}</strong>
-                </div>
-                <div className="learn-concept-chips" style={{ display: 'flex', gap: '0.5rem', margin: 0 }}>
-                  {conceptBadges.map((conceptLabel) => (
-                    <span key={conceptLabel} className="status-chip" style={{ background: 'rgba(104, 205, 216, 0.1)', borderColor: 'rgba(104, 205, 216, 0.2)', color: 'var(--teal-300)' }}>
-                      {conceptLabel}
-                    </span>
-                  ))}
+            <div className="learn-quiz-main">
+              <div className="learn-quiz-context-strip">
+                <div className="learn-quiz-context-row">
+                  <div className="learn-quiz-focus">
+                    <Target size={18} className="text-teal" />
+                    <span className="learn-panel-label" style={{ margin: 0 }}>Trọng tâm</span>
+                    <strong>{primaryConceptLabel}</strong>
+                  </div>
+
+                  {relatedConceptLabels.length > 0 && (
+                    <div className="learn-quiz-context-related">
+                      <span className="learn-panel-label" style={{ margin: 0 }}>Liên quan</span>
+                      <span className="learn-quiz-context-related-text">
+                        {relatedConceptLabels.join(' · ')}
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -266,115 +417,196 @@ export default function LearnQuiz() {
               />
 
               {feedback && (
-                <div className={`learn-feedback-panel state-${feedback.result.status}`} style={{ marginTop: '0.5rem' }}>
-                  <div className="panel-header" style={{ marginBottom: '1rem', borderBottom: '1px solid var(--border-light)', paddingBottom: '1rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                      <div style={{
-                        width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        background: feedback.result.status === 'correct' ? 'rgba(110, 205, 154, 0.15)' : 'rgba(255, 110, 92, 0.15)',
-                        color: feedback.result.status === 'correct' ? 'var(--green-500)' : 'var(--red-500)'
-                      }}>
-                        <Zap size={18} />
-                      </div>
-                      <h2 style={{ fontSize: '1.25rem', margin: 0 }}>{buildResultLabel(feedback.result.status)}</h2>
+                <div className={`learn-feedback-panel learn-quiz-detail-panel state-${feedback.result.status === 'correct' ? 'correct' : 'incorrect'}`}>
+                  <div className="panel-header learn-quiz-detail-header">
+                    <div>
+                      <span className="learn-panel-label">Chi tiết kiểm chứng</span>
+                      <h3>Giải thích sâu hơn và nguồn đối chiếu</h3>
                     </div>
                     <span className="status-chip">{feedback.result.scoreFraction * 100}% weight</span>
                   </div>
-                  
-                  <div style={{ fontSize: '1.05rem', lineHeight: '1.6', marginBottom: '1.5rem' }}>
-                    {currentQuestion.explanation}
-                  </div>
-                  
-                  <div className="learn-feedback-grid" style={{ gridTemplateColumns: '1fr 1fr', display: 'grid' }}>
+
+                  <div className="learn-feedback-grid learn-quiz-detail-grid">
                     <div className="learn-insight-box">
                       <span className="learn-panel-label">Nguồn kiến thức</span>
-                      <p style={{ margin: '0.25rem 0', fontSize: '0.95rem', color: 'var(--text-primary)' }}>
+                      <p>
                         {currentQuestion.source?.sessionOrSlot} · {currentQuestion.topic || 'Không rõ'} · Slide {currentQuestion.source?.slideNumber}
                       </p>
                     </div>
-                    
+
                     {currentQuestion.alphaCorpConnection && (
                       <div className="learn-insight-box">
                         <span className="learn-panel-label">Liên hệ Alpha Corp</span>
-                        <p style={{ fontSize: '0.95rem' }}>{currentQuestion.alphaCorpConnection}</p>
+                        <p>{currentQuestion.alphaCorpConnection}</p>
                       </div>
                     )}
-                    
-                    {feedback.reviewItem?.errorType && feedback.result.status !== 'correct' && (
-                      <div className="learn-insight-box" style={{ gridColumn: 'span 2', borderColor: 'rgba(255, 110, 92, 0.3)', background: 'rgba(255, 110, 92, 0.05)' }}>
-                        <span className="learn-panel-label" style={{ color: 'var(--red-300)' }}>Điểm nhầm chính</span>
-                        <p style={{ fontSize: '0.95rem', color: 'var(--text-primary)' }}>{feedback.reviewItem.errorType}</p>
+
+                    {feedback.result.status !== 'correct' && (
+                      <div className="learn-insight-box learn-quiz-mistake-box">
+                        <span className="learn-panel-label">Điểm nhầm chính</span>
+                        <p>{selectedOption?.wrongReason || feedback.reviewItem?.errorType || 'Bạn đang chọn phương án không giải quyết đúng nút của chu kỳ vốn.'}</p>
                       </div>
                     )}
                   </div>
-                  
-                  <div className="learn-inline-actions" style={{ marginTop: '1.5rem', borderTop: '1px solid var(--border-light)', paddingTop: '1.5rem', justifyContent: 'flex-end' }}>
+
+                  <div className="learn-inline-actions learn-quiz-detail-actions">
                     <Link to="/story" className="btn btn-secondary">Xem phần lý luận</Link>
-                    <button type="button" className="btn btn-primary" onClick={advanceQuestion} style={{ minWidth: '160px' }}>
-                      Câu tiếp theo <Zap size={16} style={{ marginLeft: '0.25rem' }} />
-                    </button>
                   </div>
                 </div>
               )}
             </div>
 
             <aside className="learn-sidebar learn-quiz-sidebar">
-              <div className="learn-dashboard-card learn-quiz-coach-card" style={{ padding: '1.25rem' }}>
-                <div className="panel-header" style={{ marginBottom: '1rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <Bot size={20} className="text-teal" />
-                    <h2 style={{ fontSize: '1.1rem', margin: 0 }}>Quiz Coach</h2>
-                  </div>
-                  <strong className="learn-mastery-number" style={{ fontSize: '1.1rem', color: 'var(--teal-300)' }}>{masteryScore}% Mastery</strong>
-                </div>
-                
-                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
-                   Hệ thống AI sẽ gợi ý và giải thích giúp bạn nắm vững concept.
-                 </p>
-                 
-                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', margin: '0.5rem 0 1rem 0', padding: '0.65rem 0.8rem', borderRadius: '0.75rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.85rem' }}>
-                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                     <span style={{ color: 'var(--text-muted)' }}>Mạnh nhất:</span>
-                     <strong style={{ color: 'var(--green-300)', fontWeight: 600 }}>{strongestConcept}</strong>
-                   </div>
-                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                     <span style={{ color: 'var(--text-muted)' }}>Yếu nhất:</span>
-                     <strong style={{ color: 'var(--red-300)', fontWeight: 600 }}>{weakestConcept}</strong>
-                   </div>
-                 </div>
-
-                <div className="learn-ai-action-list" style={{ display: 'grid', gap: '0.5rem' }}>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleAIAction('quiz-hint', 'Gợi ý', false)} disabled={aiLoading || feedback != null} style={{ justifyContent: 'flex-start' }}>
-                    <Sparkles size={14} className="mr-2" /> Gợi ý làm bài
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleAIAction('explain', 'Giải thích đơn giản hơn', feedback != null)} disabled={aiLoading || !feedback} style={{ justifyContent: 'flex-start' }}>
-                    <Compass size={14} className="mr-2" /> Giải thích đơn giản hơn
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleAIAction('it-analogy', 'Ví dụ IT', feedback != null)} disabled={aiLoading || !feedback} style={{ justifyContent: 'flex-start' }}>
-                    <Bot size={14} className="mr-2" /> Liên hệ với ví dụ IT
-                  </button>
-                  <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleAIAction('quiz-explanation', 'Vì sao tôi sai?', true)} disabled={aiLoading || !feedback || feedback.result.status === 'correct'} style={{ justifyContent: 'flex-start' }}>
-                    <Target size={14} className="mr-2" /> Phân tích lỗi sai
-                  </button>
-                </div>
-              </div>
-
-              {aiInsight && (
-                <div className="learn-quiz-ai-response" style={{ padding: '1.25rem', border: '1px solid rgba(104, 205, 216, 0.3)', background: 'rgba(104, 205, 216, 0.05)' }}>
-                  <div className="panel-header" style={{ marginBottom: '0.75rem' }}>
-                    <h3 style={{ fontSize: '1rem', color: 'var(--teal-300)', margin: 0 }}>{aiInsight.label}</h3>
-                    <Sparkles size={16} className="text-teal" />
-                  </div>
-                  <div style={{ fontSize: '0.95rem', lineHeight: '1.6', color: 'var(--text-primary)', whiteSpace: 'pre-line' }}>
-                    {aiInsight.answer}
-                  </div>
-                  {aiInsight.fallbackUsed && (
-                    <div style={{ marginTop: '1rem' }}>
-                      <span className="status-chip is-danger" style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem' }}>Hệ thống dùng quy tắc dự phòng</span>
+              <div className={`learn-dashboard-card learn-quiz-coach-card ${feedback ? `learn-quiz-review-card state-${feedback.result.status}` : ''}`}>
+                <div className="panel-header learn-quiz-coach-header">
+                  <div className="learn-quiz-coach-title">
+                    {feedback ? <Zap size={18} className="text-teal" /> : <Bot size={18} className="text-teal" />}
+                    <div>
+                      <span className="learn-panel-label">{feedback ? 'Kết quả hiện tại' : 'Quiz Coach'}</span>
+                      <h2>{feedback ? buildResultLabel(feedback.result.status) : 'Hỗ trợ làm bài'}</h2>
                     </div>
-                  )}
+                  </div>
+                  <strong className="learn-mastery-number">{masteryScore}% mastery</strong>
                 </div>
-              )}
+
+                {feedback ? (
+                  <>
+                    <div className="learn-quiz-review-copy">
+                      <div className="learn-quiz-review-block">
+                        <span className="learn-panel-label">Hiểu nhanh</span>
+                        <p>{currentQuestion.explanation}</p>
+                      </div>
+
+                      <div className="learn-quiz-review-summary">
+                        <div className="learn-quiz-review-mini">
+                          <span className="learn-panel-label">Bạn đã chọn</span>
+                          <p>{feedback.selectedAnswer}</p>
+                        </div>
+                        <div className="learn-quiz-review-mini">
+                          <span className="learn-panel-label">Đáp án đúng</span>
+                          <p>{formatAnswerValue(currentQuestion, currentQuestion.correctAnswer)}</p>
+                        </div>
+                      </div>
+
+                      {feedback.result.status !== 'correct' && (
+                        <div className="learn-quiz-review-note is-danger">
+                          <span className="learn-panel-label">Sai ở đâu</span>
+                          <p>{selectedOption?.wrongReason || feedback.reviewItem?.errorType || 'Bạn đang nhầm giữa phương án mô tả hiện tượng và phương án xử lý đúng nút của chu kỳ vốn.'}</p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="learn-ai-action-list learn-quiz-coach-actions">
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleAIAction('explain', 'Giải thích đơn giản hơn', true)}
+                        disabled={aiLoading}
+                      >
+                        <Compass size={14} />
+                        Giải thích đơn giản hơn
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleAIAction('it-analogy', 'Ví dụ IT', true)}
+                        disabled={aiLoading}
+                      >
+                        <Bot size={14} />
+                        Liên hệ với ví dụ IT
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleAIAction('quiz-explanation', 'Phân tích lỗi sai', true)}
+                        disabled={aiLoading || feedback.result.status === 'correct'}
+                      >
+                        <Target size={14} />
+                        Phân tích lỗi sai
+                      </button>
+                    </div>
+
+                    <div className="learn-quiz-ai-response">
+                      <div className="panel-header">
+                        <h3>{aiInsight?.label || 'Coach response'}</h3>
+                        {aiLoading ? <span className="status-chip is-info">Đang xử lý</span> : <Sparkles size={16} className="text-teal" />}
+                      </div>
+
+                      <div className="learn-quiz-ai-response-body">
+                        {aiInsight ? (
+                          <div className="learn-quiz-ai-response-copy">
+                            <p>{aiInsight.answer}</p>
+                            {(aiInsight.fallbackUsed || aiInsight.localFallback) && (
+                              <span className="status-chip is-danger">
+                                {aiInsight.localFallback ? 'Fallback cục bộ' : 'Fallback từ server'}
+                              </span>
+                            )}
+                            {aiInsight.errorMessage && (
+                              <p className="learn-help-text">Lý do: {aiInsight.errorMessage}</p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="learn-quiz-ai-placeholder">
+                            <p>Ba trợ giúp chính hiện nằm ngay tại đây để bạn không phải kéo xuống dưới nữa.</p>
+                            <p className="learn-help-text">Nếu AI server chưa sẵn sàng, hệ thống sẽ tự dùng fallback để vẫn trả lời được.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="learn-inline-actions learn-quiz-review-actions">
+                      <button type="button" className="btn btn-primary" onClick={advanceQuestion}>
+                        Câu tiếp theo
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <p className="learn-help-text">
+                      Chọn đáp án là hệ thống chấm ngay. Sau đó giải thích ngắn, ví dụ IT và phân tích lỗi sai sẽ hiện ngay ở panel này.
+                    </p>
+
+                    <div className="learn-ai-action-list learn-quiz-coach-actions">
+                      <button
+                        type="button"
+                        className="btn btn-secondary btn-sm"
+                        onClick={() => handleAIAction('quiz-hint', 'Gợi ý làm bài', false)}
+                        disabled={aiLoading}
+                      >
+                        <Sparkles size={14} />
+                        Gợi ý làm bài
+                      </button>
+                    </div>
+
+                    <div className="learn-quiz-ai-response">
+                      <div className="panel-header">
+                        <h3>{aiInsight?.label || 'Hint panel'}</h3>
+                        {aiLoading ? <span className="status-chip is-info">Đang xử lý</span> : <Sparkles size={16} className="text-teal" />}
+                      </div>
+
+                      <div className="learn-quiz-ai-response-body">
+                        {aiInsight ? (
+                          <div className="learn-quiz-ai-response-copy">
+                            <p>{aiInsight.answer}</p>
+                            {(aiInsight.fallbackUsed || aiInsight.localFallback) && (
+                              <span className="status-chip is-danger">
+                                {aiInsight.localFallback ? 'Fallback cục bộ' : 'Fallback từ server'}
+                              </span>
+                            )}
+                            {aiInsight.errorMessage && (
+                              <p className="learn-help-text">Lý do: {aiInsight.errorMessage}</p>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="learn-quiz-ai-placeholder">
+                            <p>Bấm “Gợi ý làm bài” nếu cần định hướng trước khi chọn.</p>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
             </aside>
           </div>
         ) : (

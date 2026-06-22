@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { BadgeCheck, Brain, Download, Trash2 } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { BadgeCheck, Brain, Check, ChevronDown, Download, Trash2 } from 'lucide-react';
 import { achievementDefinitions } from '../../learning/engine';
 import { getConceptMeta, learningConcepts } from '../../learning/concepts';
 import { runLearningAI } from '../../learning/ai';
@@ -12,6 +12,8 @@ export default function LearnProgress() {
   const [explanation, setExplanation] = useState('');
   const [aiResponse, setAiResponse] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [conceptMenuOpen, setConceptMenuOpen] = useState(false);
+  const conceptMenuRef = useRef(null);
 
   const selectedConcept = getConceptMeta(conceptId);
   const selectedConceptState = overview.concepts.find((item) => item.conceptId === conceptId);
@@ -23,6 +25,28 @@ export default function LearnProgress() {
         .filter(Boolean),
     [profile.achievements],
   );
+
+  useEffect(() => {
+    const handlePointerDown = (event) => {
+      if (!conceptMenuRef.current?.contains(event.target)) {
+        setConceptMenuOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === 'Escape') {
+        setConceptMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('keydown', handleEscape);
+
+    return () => {
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, []);
 
   const handleExport = () => {
     const blob = new Blob([exportProgress()], { type: 'application/json' });
@@ -95,13 +119,52 @@ export default function LearnProgress() {
           <div className="panel-header">
             <h2>Explain It Back</h2>
           </div>
-          <select className="learn-select" value={conceptId} onChange={(event) => setConceptId(event.target.value)}>
-            {learningConcepts.map((concept) => (
-              <option key={concept.id} value={concept.id}>
-                {concept.label}
-              </option>
-            ))}
-          </select>
+
+          <div className="learn-select-shell" ref={conceptMenuRef}>
+            <button
+              type="button"
+              className={`learn-select-trigger ${conceptMenuOpen ? 'is-open' : ''}`}
+              onClick={() => setConceptMenuOpen((current) => !current)}
+              aria-haspopup="listbox"
+              aria-expanded={conceptMenuOpen}
+            >
+              <span className="learn-select-trigger-copy">
+                <span className="learn-panel-label">Khái niệm đang ôn</span>
+                <strong>{selectedConcept.label}</strong>
+              </span>
+              <ChevronDown size={16} className="learn-select-trigger-icon" />
+            </button>
+
+            {conceptMenuOpen && (
+              <div className="learn-select-menu" role="listbox" aria-label="Chọn khái niệm">
+                {learningConcepts.map((concept) => {
+                  const conceptState = overview.concepts.find((item) => item.conceptId === concept.id);
+                  const isActive = concept.id === conceptId;
+
+                  return (
+                    <button
+                      key={concept.id}
+                      type="button"
+                      className={`learn-select-option ${isActive ? 'is-active' : ''}`}
+                      onClick={() => {
+                        setConceptId(concept.id);
+                        setConceptMenuOpen(false);
+                      }}
+                      role="option"
+                      aria-selected={isActive}
+                    >
+                      <span className="learn-select-option-copy">
+                        <strong>{concept.label}</strong>
+                        <small>{conceptState?.score || 0}% · {conceptState?.state || 'Chưa học'}</small>
+                      </span>
+                      {isActive && <Check size={16} className="text-teal shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           <p>{selectedConcept.summary}</p>
           <textarea
             className="learn-textarea"
