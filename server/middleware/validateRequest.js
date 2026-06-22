@@ -7,6 +7,7 @@ const allowedActions = new Set([
   'it-analogy',
   'analyze-stage',
   'analyze-simulation',
+  'analyze-mission',
   'quiz-hint',
   'quiz-explanation',
   'evaluate-answer',

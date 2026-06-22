@@ -96,14 +96,62 @@ const routeContext = {
     sourceLabels: ['AI Capital Tutor'],
     relevantConceptIds: ['capital-circuit', 'liquidity', 'profit'],
   },
+  '/learn': {
+    pageName: 'Khong gian hoc tap kinh te',
+    sourceLabels: ['Case Alpha Corp', 'docs/02-ACADEMIC-SOURCE-OF-TRUTH.md'],
+    relevantConceptIds: ['capital-circuit', 'liquidity', 'capital-turnover'],
+  },
+  '/learn/quiz': {
+    pageName: 'Adaptive Quiz Arena',
+    sourceLabels: ['Quiz', 'Case Alpha Corp'],
+    relevantConceptIds: ['capital-circuit', 'liquidity', 'surplus-value'],
+    quiz: {},
+  },
+  '/learn/daily': {
+    pageName: 'Daily Economic Challenge',
+    sourceLabels: ['Quiz', 'Case Alpha Corp'],
+    relevantConceptIds: ['market', 'liquidity', 'capital-turnover'],
+  },
+  '/learn/review': {
+    pageName: 'Mistake Review',
+    sourceLabels: ['Quiz', 'Case Alpha Corp'],
+    relevantConceptIds: ['liquidity', 'commodity-capital', 'temporal-condition'],
+  },
+  '/learn/progress': {
+    pageName: 'Knowledge Map',
+    sourceLabels: ['Quiz', 'Case Alpha Corp'],
+    relevantConceptIds: ['capital-circuit', 'profit', 'interest'],
+  },
+  '/learn/debate': {
+    pageName: 'Phong luyen phan bien',
+    sourceLabels: ['Case Alpha Corp'],
+    relevantConceptIds: ['liquidity', 'market', 'profit'],
+  },
+  '/learn/case-mission': {
+    pageName: 'Nhiem vu: Khoi phuc vong tuan hoan',
+    sourceLabels: ['Capital Lab', 'Case Alpha Corp'],
+    relevantConceptIds: ['liquidity', 'spatial-condition', 'temporal-condition'],
+  },
 };
+
+function resolveRouteContext(pathname) {
+  if (routeContext[pathname]) {
+    return routeContext[pathname];
+  }
+
+  if (pathname.startsWith('/learn')) {
+    return routeContext['/learn'];
+  }
+
+  return routeContext['/'];
+}
 
 export function AIContextBridge() {
   const location = useLocation();
   const { setPageContext } = useAI();
 
   useEffect(() => {
-    const baseContext = routeContext[location.pathname] || routeContext['/'];
+    const baseContext = resolveRouteContext(location.pathname);
     const homeContext = location.pathname === '/' ? homeSections[location.hash] || homeSections['#hero'] : {};
 
     setPageContext(

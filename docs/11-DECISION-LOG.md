@@ -16,3 +16,11 @@
 - Moved retrieval, verified knowledge assembly, prompt construction, response normalization, and fallback generation to `server/`.
 - Disabled silent frontend fallback. The browser now either receives a real provider-backed response, an explicitly labeled fallback from the server, or a configuration/error message.
 - Added `docs/02-ACADEMIC-SOURCE-OF-TRUTH.md` as the canonical grounding note for AI tutor behavior.
+
+## 2026-06-22 - Economic Learning Arena
+
+- Added a new `/learn` route tree for a persistent learning loop: dashboard, adaptive quiz, daily challenge, review queue, case mission, debate arena, and progress map.
+- Introduced a versioned local learning profile with migration, export, reset, streak tracking, review scheduling, achievements, and concept-level mastery records.
+- Replaced the old fixed quiz navigation path with the new adaptive learning flow while keeping `/quiz` as a redirect to `/learn/quiz`.
+- Kept AI generation server-side and added route-specific learning actions so hints, mission analysis, debate feedback, and explain-back evaluation all go through the existing grounded `/api/ai/chat` pipeline or its explicit fallback.
+- Limited the production question bank to verified questions only and added pure logic tests for grading, adaptive selection, daily challenge determinism, streaks, migration, and storage recovery.

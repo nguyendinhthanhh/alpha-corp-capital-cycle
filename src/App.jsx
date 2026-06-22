@@ -1,5 +1,5 @@
 import { useEffect, Suspense, lazy } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Lenis from "lenis";
 import Layout from "./components/layout/Layout";
 import PageLoader from "./components/shared/PageLoader";
@@ -8,9 +8,16 @@ import { prefersReducedMotion } from "./utils/motion";
 
 const StoryMode = lazy(() => import("./pages/StoryMode"));
 const Simulators = lazy(() => import("./pages/Simulators"));
-const Quiz = lazy(() => import("./pages/Quiz"));
 const Appendix = lazy(() => import("./pages/Appendix"));
 const CapitalLabPage = lazy(() => import("./pages/CapitalLabPage"));
+const LearnLayout = lazy(() => import("./pages/learn/LearnLayout"));
+const LearnDashboard = lazy(() => import("./pages/learn/LearnDashboard"));
+const LearnQuiz = lazy(() => import("./pages/learn/LearnQuiz"));
+const LearnDaily = lazy(() => import("./pages/learn/LearnDaily"));
+const LearnReview = lazy(() => import("./pages/learn/LearnReview"));
+const LearnProgress = lazy(() => import("./pages/learn/LearnProgress"));
+const LearnDebate = lazy(() => import("./pages/learn/LearnDebate"));
+const LearnCaseMission = lazy(() => import("./pages/learn/LearnCaseMission"));
 
 function App() {
   useEffect(() => {
@@ -73,10 +80,75 @@ function App() {
           path="quiz"
           element={
             <Suspense fallback={<PageLoader />}>
-              <Quiz />
+              <Navigate to="/learn/quiz" replace />
             </Suspense>
           }
         />
+        <Route
+          path="learn"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LearnLayout />
+            </Suspense>
+          }
+        >
+          <Route
+            index
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnDashboard />
+              </Suspense>
+            }
+          />
+          <Route
+            path="quiz"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnQuiz />
+              </Suspense>
+            }
+          />
+          <Route
+            path="daily"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnDaily />
+              </Suspense>
+            }
+          />
+          <Route
+            path="review"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnReview />
+              </Suspense>
+            }
+          />
+          <Route
+            path="progress"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnProgress />
+              </Suspense>
+            }
+          />
+          <Route
+            path="debate"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnDebate />
+              </Suspense>
+            }
+          />
+          <Route
+            path="case-mission"
+            element={
+              <Suspense fallback={<PageLoader />}>
+                <LearnCaseMission />
+              </Suspense>
+            }
+          />
+        </Route>
         <Route
           path="appendix"
           element={

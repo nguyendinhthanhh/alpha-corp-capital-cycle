@@ -19,7 +19,7 @@ const navItems = [
   },
   { id: "capital-lab", label: "Capital Lab", route: "/capital-lab" },
   { id: "simulators", label: "Mô phỏng", route: "/simulators" },
-  { id: "quiz", label: "Kiểm tra", route: "/quiz" },
+  { id: "learn", label: "Học tập", route: "/learn" },
   { id: "appendix", label: "Nguồn & AI", route: "/appendix" },
 ];
 

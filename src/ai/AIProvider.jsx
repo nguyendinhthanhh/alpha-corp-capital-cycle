@@ -184,13 +184,25 @@ export function AIProvider({ children }) {
       content: messageContent,
     }));
 
-    try {
-      const response = await sendTutorRequest({
+    const attemptRequest = () =>
+      sendTutorRequest({
         messages: nextMessages,
         pageContext: currentPageContext,
         action,
         signal: controller.signal,
       });
+
+    try {
+      let response;
+      try {
+        response = await attemptRequest();
+      } catch (firstError) {
+        if (firstError?.name === 'AbortError') {
+          throw firstError;
+        }
+        // One automatic retry for transient network / server errors
+        response = await attemptRequest();
+      }
 
       const assistantMessage = createMessage('assistant', response.answer, {
         sections: response.sections,
@@ -214,11 +226,19 @@ export function AIProvider({ children }) {
         return;
       }
 
+      const errorMessage = error?.message || 'Khong the tao phan hoi. Hay thu lai.';
       setState((current) => ({
         ...current,
         isLoading: false,
-        error: error?.message || 'Khong the tao phan hoi.',
+        error: errorMessage,
       }));
+
+      // Auto-clear error after 8 seconds so users aren't stuck
+      setTimeout(() => {
+        setState((current) =>
+          current.error === errorMessage ? { ...current, error: null } : current,
+        );
+      }, 8000);
     } finally {
       if (abortControllerRef.current === controller) {
         abortControllerRef.current = null;

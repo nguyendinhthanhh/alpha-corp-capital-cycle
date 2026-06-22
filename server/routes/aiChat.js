@@ -61,16 +61,10 @@ function safeJsonParse(raw) {
 }
 
 function selectConversation(messages) {
-  return messages.slice(-10).map((message) => ({
+  return messages.slice(-6).map((message) => ({
     role: message.role,
-    content: message.content.trim().slice(0, env.maxInputChars),
+    content: message.content.trim().slice(0, 1500),
   }));
-}
-
-function buildConversationText(messages) {
-  return messages
-    .map((message) => `${message.role === 'assistant' ? 'ASSISTANT' : 'USER'}: ${message.content}`)
-    .join('\n');
 }
 
 export async function handleAIChat(body) {
@@ -79,13 +73,20 @@ export async function handleAIChat(body) {
   const pageContext = sanitizePageContext(body.pageContext);
   const action = typeof body.action === 'string' ? body.action : null;
   const conversation = selectConversation(body.messages);
-  const latestUserMessage = [...conversation].reverse().find((message) => message.role === 'user')?.content || '';
+  
+  let latestUserMessage = '';
+  if (conversation.length > 0 && conversation[conversation.length - 1].role === 'user') {
+    latestUserMessage = conversation.pop().content;
+  } else {
+    latestUserMessage = [...conversation].reverse().find((message) => message.role === 'user')?.content || '';
+  }
+
   const retrievedConcepts = retrieveKnowledge({
     query: latestUserMessage,
     activeConceptIds: pageContext.relevantConceptIds,
     route: pageContext.route,
     action,
-    limit: 6,
+    limit: 3,
     context: pageContext,
   });
 
@@ -107,7 +108,19 @@ export async function handleAIChat(body) {
     );
   }
 
-  assertProviderConfig();
+  try {
+    assertProviderConfig();
+  } catch (configError) {
+    console.error('[ai-chat] Provider not configured:', configError?.message);
+    return normalizeAIResponse(
+      buildFallbackResponse({ pageContext, retrievedConcepts, sourceLabels, action }),
+      {
+        route: pageContext.route,
+        allowedSourceLabels: sourceLabels,
+        fallbackSourceLabels: sourceLabels,
+      },
+    );
+  }
 
   const provider = createAIProvider();
   const controller = new AbortController();
@@ -120,7 +133,6 @@ export async function handleAIChat(body) {
         retrievedConcepts,
         caseContextText: buildCaseContextText(),
         pageContext,
-        conversationText: buildConversationText(conversation),
         action,
         userQuery: latestUserMessage,
       }),
@@ -146,16 +158,7 @@ export async function handleAIChat(body) {
       },
     );
   } catch (error) {
-    if (error?.name === 'AbortError') {
-      const timeoutError = new Error('Provider AI bi timeout.');
-      timeoutError.statusCode = 502;
-      timeoutError.code = 'provider_timeout';
-      throw timeoutError;
-    }
-
-    if (['provider_auth_failed', 'provider_rate_limited', 'provider_request_failed'].includes(error?.code)) {
-      throw error;
-    }
+    console.error('[ai-chat] Provider error:', error?.code || 'unknown', error?.message || error);
 
     return normalizeAIResponse(
       buildFallbackResponse({
@@ -174,3 +177,4 @@ export async function handleAIChat(body) {
     clearTimeout(timeout);
   }
 }
+

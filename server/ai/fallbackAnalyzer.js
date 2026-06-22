@@ -3,6 +3,34 @@ import { getSuggestedActions } from './suggestedActions.js';
 function buildPrimaryExplanation(pageContext, retrievedConcepts) {
   const first = retrievedConcepts[0];
 
+  if (pageContext.route === '/learn/quiz') {
+    return `Khong the ket noi mo hinh AI. He thong dang dung phan tich quy tac da duoc kiem chung cho Adaptive Quiz. Huong dung luc nay la quay lai khai niem cua cau hoi, phan biet no voi cac lua chon de gay nham, roi noi no voi tinh huong Alpha Corp.`;
+  }
+
+  if (pageContext.route === '/learn/daily') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi fallback hoc tap cho Daily Challenge. Hay doc cau hoi qua logic H' -> T', thanh khoan, va toc do quay vong cua tu ban truoc khi chot dap an.`;
+  }
+
+  if (pageContext.route === '/learn/review') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi fallback hoc tap cho Review Queue. Day la luc nen quay lai diem nham cu, sua dung khai niem, va noi lai no voi chang Alpha Corp da gay loi.`;
+  }
+
+  if (pageContext.route === '/learn/case-mission') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi fallback hoc tap cho Case Mission. Trong mission nay, can doc ket qua theo can bang giua thanh khoan, kha nang noi tiep chu ky, va muc do von bi dồn vao H'.`;
+  }
+
+  if (pageContext.route === '/learn/debate') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi fallback hoc tap cho Debate Arena. Mot lap luan tot can chi ra khai niem dung, diem doi nghich, va he qua cua no trong case Alpha Corp.`;
+  }
+
+  if (pageContext.route === '/learn/progress') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi fallback hoc tap cho Progress Map. Hay dung chi so nay de xac dinh concept nao can on tiep, khong xem day la danh gia nang luc tuyet doi.`;
+  }
+
+  if (pageContext.route === '/learn') {
+    return `Khong the ket noi mo hinh AI. He thong dang hien thi rule-based guidance cho learning dashboard. Uu tien hop ly nhat la: review neu dang co cau toi han; neu chua, lam daily challenge hoac adaptive quiz de tao du lieu hoc tap moi.`;
+  }
+
   if (pageContext.route === '/capital-lab') {
     return `Khong the ket noi mo hinh AI. He thong dang hien thi phan tich quy tac da duoc nhom kiem chung cho chang ${pageContext.capitalLab?.chapterTitle || 'Capital Lab hien tai'}. Trong context nay, trong tam van la xac dinh dong von dang nam o dau va vi sao no co the bi nghen truoc khi quay ve T'.`;
   }
