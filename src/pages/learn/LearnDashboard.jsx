@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BadgeCheck, Brain, Flame, LibraryBig, ListChecks, Sparkles, Target } from 'lucide-react';
+import { BadgeCheck, Brain, LibraryBig, Sparkles } from 'lucide-react';
 import { achievementDefinitions, getMasteryStateLabel } from '../../learning/engine';
 import { getConceptMeta, learningConcepts } from '../../learning/concepts';
 import { useLearning } from '../../learning/useLearning';
@@ -62,12 +62,10 @@ function buildDashboardSuggestion(overview, dueReviewItems) {
 }
 
 export default function LearnDashboard() {
-  const { overview, profile, dailyChallenge, dueReviewItems } = useLearning();
+  const { overview, profile, dueReviewItems } = useLearning();
   const suggestion = buildDashboardSuggestion(overview, dueReviewItems);
   const activeMission = profile.missionDraft || profile.missionHistory[0] || null;
   const unlockedAchievements = achievementDefinitions.filter((item) => profile.achievements.includes(item.id));
-  const continueTarget = dueReviewItems.length > 0 ? '/learn/review' : '/learn/quiz';
-  const continueText = dueReviewItems.length > 0 ? 'Bạn đang có review queue đang tới hạn.' : 'Adaptive quiz sẽ tự chọn câu kế tiếp theo mastery hiện tại.';
 
   return (
     <LearningRouteFrame
@@ -130,41 +128,7 @@ export default function LearnDashboard() {
           </div>
         </section>
 
-        <section className="learn-dashboard-card">
-          <div className="panel-header">
-            <h2>Tiếp tục học</h2>
-            <Target size={18} className="text-teal" />
-          </div>
-          <p>{continueText}</p>
-          <Link to={continueTarget} className="btn btn-primary">
-            Tiếp tục
-            <ArrowRight size={16} />
-          </Link>
-        </section>
-
-        <section className="learn-dashboard-card">
-          <div className="panel-header">
-            <h2>Daily Challenge</h2>
-            <Flame size={18} className="text-gold" />
-          </div>
-          <p>{dailyChallenge?.prompt || 'Hôm nay chưa có thử thách nào được xuất bản.'}</p>
-          <Link to="/learn/daily" className="btn btn-secondary">
-            Mở thử thách hôm nay
-          </Link>
-        </section>
-
-        <section className="learn-dashboard-card">
-          <div className="panel-header">
-            <h2>Mistake Review</h2>
-            <ListChecks size={18} className="text-red" />
-          </div>
-          <p>{dueReviewItems.length > 0 ? `Có ${dueReviewItems.length} câu đang chờ ôn lại theo lịch spaced review.` : 'Hiện chưa có câu nào tới hạn review.'}</p>
-          <Link to="/learn/review" className="btn btn-secondary">
-            Mở review queue
-          </Link>
-        </section>
-
-        <section className="learn-dashboard-card">
+        <section className="learn-dashboard-card learn-card-mission">
           <div className="panel-header">
             <h2>Alpha Corp Mission</h2>
             <LibraryBig size={18} className="text-teal" />
@@ -179,7 +143,7 @@ export default function LearnDashboard() {
           </Link>
         </section>
 
-        <section className="learn-dashboard-card learn-dashboard-card-wide">
+        <section className="learn-dashboard-card learn-dashboard-card-wide learn-card-ai">
           <div className="panel-header">
             <h2>AI Tutor Suggestion</h2>
             <Sparkles size={18} className="text-teal" />
@@ -191,7 +155,7 @@ export default function LearnDashboard() {
           </Link>
         </section>
 
-        <section className="learn-dashboard-card learn-dashboard-card-wide">
+        <section className="learn-dashboard-card learn-dashboard-card-wide learn-card-path">
           <div className="panel-header">
             <h2>Knowledge Path</h2>
             <Brain size={18} className="text-teal" />
@@ -220,7 +184,7 @@ export default function LearnDashboard() {
           </div>
         </section>
 
-        <section className="learn-dashboard-card">
+        <section className="learn-dashboard-card learn-card-achievements">
           <div className="panel-header">
             <h2>Achievements</h2>
             <BadgeCheck size={18} className="text-green" />

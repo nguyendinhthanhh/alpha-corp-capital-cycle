@@ -241,7 +241,7 @@ export default function LearnQuiz() {
             <div className="learn-quiz-main" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               
               {/* Context strip moved to top and simplified */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255, 255, 255, 0.02)', padding: '1rem 1.25rem', borderRadius: '1rem', border: '1px solid var(--border-light)' }}>
+              <div className="learn-quiz-context-bar">
                 <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                   <Target size={18} className="text-teal" />
                   <span className="learn-panel-label" style={{ margin: 0 }}>Trọng tâm:</span>
@@ -328,9 +328,20 @@ export default function LearnQuiz() {
                   <strong className="learn-mastery-number" style={{ fontSize: '1.1rem', color: 'var(--teal-300)' }}>{masteryScore}% Mastery</strong>
                 </div>
                 
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-                  Hệ thống AI sẽ gợi ý và giải thích giúp bạn nắm vững concept.
-                </p>
+                 <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '0.75rem' }}>
+                   Hệ thống AI sẽ gợi ý và giải thích giúp bạn nắm vững concept.
+                 </p>
+                 
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', margin: '0.5rem 0 1rem 0', padding: '0.65rem 0.8rem', borderRadius: '0.75rem', background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', fontSize: '0.85rem' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                     <span style={{ color: 'var(--text-muted)' }}>Mạnh nhất:</span>
+                     <strong style={{ color: 'var(--green-300)', fontWeight: 600 }}>{strongestConcept}</strong>
+                   </div>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                     <span style={{ color: 'var(--text-muted)' }}>Yếu nhất:</span>
+                     <strong style={{ color: 'var(--red-300)', fontWeight: 600 }}>{weakestConcept}</strong>
+                   </div>
+                 </div>
 
                 <div className="learn-ai-action-list" style={{ display: 'grid', gap: '0.5rem' }}>
                   <button type="button" className="btn btn-secondary btn-sm" onClick={() => handleAIAction('quiz-hint', 'Gợi ý', false)} disabled={aiLoading || feedback != null} style={{ justifyContent: 'flex-start' }}>
