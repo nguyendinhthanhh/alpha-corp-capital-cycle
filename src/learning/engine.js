@@ -560,10 +560,11 @@ function buildQuestionPriority(question, profile, answeredIds, lastAttempt) {
   return weakestSignal + adaptiveSignal + reviewPressure + alreadySeen;
 }
 
-export function selectAdaptiveQuestion({ questions, profile, answeredQuestionIds = [], lastAttempt = null }) {
+export function selectAdaptiveQuestion({ questions, profile, answeredQuestionIds = [], lastAttempt = null, targetConceptId = null }) {
   const answeredIds = new Set(answeredQuestionIds);
   const candidates = ensureArray(questions)
     .filter((question) => question.verificationStatus === 'verified')
+    .filter((question) => !targetConceptId || question.conceptIds.includes(targetConceptId))
     .sort((left, right) => {
       const priorityDelta =
         buildQuestionPriority(right, profile, answeredIds, lastAttempt) -
@@ -577,12 +578,24 @@ export function selectAdaptiveQuestion({ questions, profile, answeredQuestionIds
   return candidates[0] || null;
 }
 
-export function getDailyChallenge(dateInput = new Date()) {
+export function getDailyChallenge(dateInput = new Date(), questions = null) {
   const date = new Date(dateInput);
   const dayIndex = Math.floor(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()) / DAY_MS);
+  
+  if (questions && Array.isArray(questions)) {
+    const verified = questions.filter(q => q.verificationStatus === 'verified');
+    if (verified.length === 0) return null;
+    const index = Math.abs(dayIndex) % verified.length;
+    return verified[index];
+  }
+
+  // Production fallback
+  if (!dailyChallengeQuestionIds || dailyChallengeQuestionIds.length === 0) return null;
   const index = Math.abs(dayIndex) % dailyChallengeQuestionIds.length;
   const questionId = dailyChallengeQuestionIds[index];
-  return getQuestionById(questionId);
+  const q = getQuestionById(questionId);
+  if (!q || q.verificationStatus !== 'verified') return null;
+  return q;
 }
 
 export function getMasteryStateLabel(score) {

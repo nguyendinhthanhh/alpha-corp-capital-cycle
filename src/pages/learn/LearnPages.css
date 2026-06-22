@@ -3,6 +3,71 @@
   padding-bottom: clamp(4rem, 7vw, 6rem);
 }
 
+.learn-knowledge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.learn-knowledge-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border-light);
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+}
+
+.learn-knowledge-card:hover {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.learn-knowledge-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.learn-knowledge-card-header strong {
+  font-size: 1.1rem;
+  color: var(--gold-400);
+}
+
+.learn-knowledge-card p {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  flex-grow: 1;
+}
+
+.learn-knowledge-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.learn-knowledge-card-footer small {
+  color: var(--text-tertiary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  border-radius: 0.5rem;
+}
+
 .learn-subnav {
   display: flex;
   gap: 0.75rem;
@@ -432,7 +497,7 @@
 
 .learn-choice-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.75rem;
 }
 
@@ -448,8 +513,9 @@
   border: 1px solid var(--border-light);
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
-  display: grid;
-  gap: 0.3rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
   transition: all var(--motion-duration-ui) var(--motion-ease-out);
   cursor: pointer;
 }
@@ -542,6 +608,11 @@
   background: rgba(255, 255, 255, 0.03);
   color: var(--text-primary);
   padding: 0.95rem 1rem;
+}
+
+.learn-select option {
+  background: var(--bg-surface);
+  color: var(--text-primary);
 }
 
 .learn-feedback-panel.state-correct {

@@ -9,7 +9,10 @@
     "dev:server": "node server/index.js",
     "dev:ai": "node scripts/dev-with-ai.mjs",
     "ai:server": "node server/index.js",
-    "build": "vite build",
+    "build": "npm run validate:quiz:production && vite build",
+    "validate:quiz:all": "node scripts/validate-quiz.mjs all",
+    "validate:quiz:production": "node scripts/validate-quiz.mjs production",
+    "validate:quiz:release": "node scripts/validate-release.mjs",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "preview": "vite preview",
@@ -36,6 +39,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "officeparser": "^7.2.1",
     "typescript": "^5.9.3",
     "vite": "^8.0.12"
   }

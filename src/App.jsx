@@ -18,6 +18,7 @@ const LearnReview = lazy(() => import("./pages/learn/LearnReview"));
 const LearnProgress = lazy(() => import("./pages/learn/LearnProgress"));
 const LearnDebate = lazy(() => import("./pages/learn/LearnDebate"));
 const LearnCaseMission = lazy(() => import("./pages/learn/LearnCaseMission"));
+const QuizReview = lazy(() => import("./pages/dev/QuizReview"));
 
 function App() {
   useEffect(() => {
@@ -154,6 +155,14 @@ function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <Appendix />
+            </Suspense>
+          }
+        />
+        <Route
+          path="quiz-review"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <QuizReview />
             </Suspense>
           }
         />

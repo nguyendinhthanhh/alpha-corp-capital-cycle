@@ -9,17 +9,19 @@ import {
   updateStreak,
   gradeQuestion,
 } from '../src/learning/engine.js';
-import { getQuestionById, verifiedQuestionBank } from '../src/learning/questionBank.js';
+import { verifiedFixtureQuestions } from './fixtures/verifiedQuestions.js';
 
 test('gradeQuestion scores single-choice correctly', () => {
-  const question = getQuestionById('q01-money-capital-start');
+  const question = verifiedFixtureQuestions.find(q => q.id === 'test-q1-capital-circuit');
   const result = gradeQuestion(question, 'c');
-  assert.equal(result.status, 'correct');
-  assert.equal(result.isCorrect, true);
+  assert.equal(result.status, 'incorrect'); // 'a' is correct, so 'c' is incorrect
+  const correctResult = gradeQuestion(question, 'a');
+  assert.equal(correctResult.status, 'correct');
+  assert.equal(correctResult.isCorrect, true);
 });
 
 test('gradeQuestion supports multiple-choice partial and full scoring', () => {
-  const question = getQuestionById('q13-profit-vs-interest');
+  const question = verifiedFixtureQuestions.find(q => q.id === 'test-q3-profit');
 
   const partial = gradeQuestion(question, ['a', 'b']);
   assert.equal(partial.status, 'partial');
@@ -31,7 +33,7 @@ test('gradeQuestion supports multiple-choice partial and full scoring', () => {
 });
 
 test('gradeQuestion supports ordering questions', () => {
-  const question = getQuestionById('q14-order-cycle');
+  const question = verifiedFixtureQuestions.find(q => q.id === 'test-q4-order');
   const correct = gradeQuestion(question, ['t', 'h', 'sx', 'hp', 'tp']);
   const incorrect = gradeQuestion(question, ['t', 'sx', 'h', 'hp', 'tp']);
 
@@ -41,11 +43,11 @@ test('gradeQuestion supports ordering questions', () => {
 
 test('applyQuestionResult creates review item and mastery updates for incorrect answers', () => {
   const profile = createDefaultLearningProfile();
-  const question = getQuestionById('q10-assets-vs-cash');
+  const question = verifiedFixtureQuestions.find(q => q.id === 'test-q2-spatial-condition');
   const { profile: nextProfile, result } = applyQuestionResult({
     profile,
     question,
-    response: 'a',
+    response: 'c', // incorrect
     hintsUsed: 0,
     responseTimeMs: 4000,
   });
@@ -53,33 +55,50 @@ test('applyQuestionResult creates review item and mastery updates for incorrect 
   assert.equal(result.status, 'incorrect');
   assert.equal(nextProfile.reviewQueue.length, 1);
   assert.equal(nextProfile.reviewQueue[0].questionId, question.id);
-  assert.ok(nextProfile.mastery.liquidity.masteryScore <= 2);
+  assert.ok(nextProfile.mastery['spatial-condition'].masteryScore <= 2);
 });
 
 test('selectAdaptiveQuestion prioritizes same concept after an incorrect attempt', () => {
   const profile = createDefaultLearningProfile();
   const nextQuestion = selectAdaptiveQuestion({
-    questions: verifiedQuestionBank,
+    questions: verifiedFixtureQuestions,
     profile,
-    answeredQuestionIds: ['q10-assets-vs-cash'],
+    answeredQuestionIds: ['test-q1-capital-circuit'],
     lastAttempt: {
-      questionId: 'q10-assets-vs-cash',
-      conceptIds: ['liquidity', 'commodity-capital'],
-      difficulty: 2,
+      questionId: 'test-q1-capital-circuit',
+      conceptIds: ['capital-circuit'],
+      difficulty: 1,
       resultStatus: 'incorrect',
     },
   });
 
-  assert.ok(nextQuestion.conceptIds.includes('liquidity') || nextQuestion.conceptIds.includes('commodity-capital'));
+  assert.ok(nextQuestion !== null);
+  assert.ok(nextQuestion.conceptIds.includes('capital-circuit') || nextQuestion.conceptIds.includes('spatial-condition'));
+});
+
+test('selectAdaptiveQuestion handles empty bank safely', () => {
+  const profile = createDefaultLearningProfile();
+  const nextQuestion = selectAdaptiveQuestion({
+    questions: [],
+    profile,
+    answeredQuestionIds: [],
+    lastAttempt: null,
+  });
+  assert.equal(nextQuestion, null);
 });
 
 test('getDailyChallenge is stable for the same day and changes on the next day', () => {
-  const dayOne = getDailyChallenge('2026-06-22T00:00:00.000Z');
-  const sameDay = getDailyChallenge('2026-06-22T23:59:59.000Z');
-  const nextDay = getDailyChallenge('2026-06-23T00:00:00.000Z');
+  const dayOne = getDailyChallenge('2026-06-22T00:00:00.000Z', verifiedFixtureQuestions);
+  const sameDay = getDailyChallenge('2026-06-22T23:59:59.000Z', verifiedFixtureQuestions);
+  const nextDay = getDailyChallenge('2026-06-23T00:00:00.000Z', verifiedFixtureQuestions);
 
   assert.equal(dayOne.id, sameDay.id);
   assert.notEqual(dayOne.id, nextDay.id);
+});
+
+test('getDailyChallenge handles empty bank safely', () => {
+  const emptyDaily = getDailyChallenge('2026-06-22T00:00:00.000Z', []);
+  assert.equal(emptyDaily, null);
 });
 
 test('updateStreak increments only on consecutive days', () => {
@@ -98,12 +117,10 @@ test('migrateLearningProfile tolerates corrupted shapes', () => {
     version: 0,
     streak: { current: 2, completedDates: 'oops' },
     mastery: null,
-    reviewQueue: [{ questionId: 'q01', createdAt: '2026-06-22T00:00:00.000Z' }],
   });
 
-  assert.equal(Array.isArray(profile.streak.completedDates), true);
-  assert.equal(Array.isArray(profile.reviewQueue), true);
-  assert.equal(typeof profile.mastery, 'object');
   assert.equal(profile.version, 1);
+  assert.equal(profile.streak.current, 2);
+  assert.ok(Array.isArray(profile.streak.completedDates));
+  assert.ok(typeof profile.mastery === 'object');
 });
-

@@ -147,7 +147,7 @@ export default function LearnDashboard() {
             <h2>Daily Challenge</h2>
             <Flame size={18} className="text-gold" />
           </div>
-          <p>{dailyChallenge.prompt}</p>
+          <p>{dailyChallenge?.prompt || 'Hôm nay chưa có thử thách nào được xuất bản.'}</p>
           <Link to="/learn/daily" className="btn btn-secondary">
             Mở thử thách hôm nay
           </Link>
@@ -196,18 +196,23 @@ export default function LearnDashboard() {
             <h2>Knowledge Path</h2>
             <Brain size={18} className="text-teal" />
           </div>
-          <div className="learn-knowledge-list">
+          <div className="learn-knowledge-grid">
             {overview.concepts.map((item) => {
               const meta = getConceptMeta(item.conceptId);
               return (
-                <div key={item.conceptId} className="learn-knowledge-row">
-                  <div>
+                <div key={item.conceptId} className="learn-knowledge-card">
+                  <div className="learn-knowledge-card-header">
                     <strong>{meta?.label || item.label}</strong>
-                    <p>{meta?.summary}</p>
+                    <div className="learn-knowledge-score">
+                      <span>{item.score}%</span>
+                    </div>
                   </div>
-                  <div className="learn-knowledge-score">
-                    <span>{item.score}%</span>
+                  <p>{meta?.summary}</p>
+                  <div className="learn-knowledge-card-footer">
                     <small>{item.state}</small>
+                    <Link to={`/learn/quiz?conceptId=${item.conceptId}`} className="btn btn-secondary btn-sm">
+                      Làm Quiz
+                    </Link>
                   </div>
                 </div>
               );

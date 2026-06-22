@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { CalendarRange, Flame } from 'lucide-react';
 import { normalizeDateInput } from '../../learning/engine';
 import { useLearning } from '../../learning/useLearning';
@@ -28,6 +29,22 @@ export default function LearnDaily() {
     recordDailyAttempt(dailyChallenge.id, applied.result.status, new Date());
     setFeedback(applied);
   };
+
+  if (!dailyChallenge) {
+    return (
+      <LearningRouteFrame eyebrow="Daily Economic Challenge" title="Thử thách hôm nay" subtitle="">
+        <div className="learn-result-panel" style={{ padding: '3rem 2rem', textAlign: 'center', background: '#1a1a1a', borderRadius: '8px', border: '1px solid #333' }}>
+          <h2 style={{ color: '#fff', marginBottom: '1rem' }}>Thử thách hôm nay đang được kiểm chứng</h2>
+          <p style={{ color: '#aaa', marginBottom: '0.5rem' }}>Nhóm đang đối chiếu câu hỏi với tài liệu môn học.</p>
+          <p style={{ color: '#aaa', marginBottom: '2rem' }}>Không có câu hỏi chưa kiểm chứng nào được sử dụng.</p>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <Link to="/learn" className="btn btn-secondary" style={{ display: 'inline-block' }}>Quay về không gian học tập</Link>
+            <Link to="/quiz-review" className="btn btn-primary" style={{ display: 'inline-block' }}>Đến trang Kiểm chứng (Review)</Link>
+          </div>
+        </div>
+      </LearningRouteFrame>
+    );
+  }
 
   return (
     <LearningRouteFrame

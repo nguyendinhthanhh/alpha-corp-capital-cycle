@@ -139,12 +139,13 @@ export function LearningProvider({ children }) {
   const overview = useMemo(() => buildLearningOverview(profile), [profile]);
   const dailyChallenge = useMemo(() => getDailyChallenge(new Date()), []);
 
-  const getAdaptiveQuestion = useCallback((answeredQuestionIds = [], lastAttempt = null) => {
+  const getAdaptiveQuestion = useCallback((answeredQuestionIds = [], lastAttempt = null, targetConceptId = null) => {
     return selectAdaptiveQuestion({
       questions: verifiedQuestionBank,
       profile,
       answeredQuestionIds,
       lastAttempt,
+      targetConceptId,
     });
   }, [profile]);
 

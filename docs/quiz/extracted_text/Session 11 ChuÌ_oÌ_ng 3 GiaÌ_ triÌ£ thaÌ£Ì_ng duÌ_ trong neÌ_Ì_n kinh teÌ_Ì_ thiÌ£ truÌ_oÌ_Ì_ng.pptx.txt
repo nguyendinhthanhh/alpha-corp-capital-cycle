@@ -1,0 +1,86 @@
+
+--- Slide 1 ---
+GIÁ TRỊ THẶNG DƯ TRONG NỀN KINH TẾ THỊ TRƯỜNG
+
+Session 11
+
+--- Slide 2 ---
+3. Các hình thức biểu hiện giá trị thặng dư trong nền kinh tế thị trường
+
+--- Slide 3 ---
+3.1 Lợi nhuận
+
+--- Slide 4 ---
+3.1.1. Chi phí sản xuất
+Chi phí sản xuất tư bản chủ nghĩa là phần giá trị của hàng hóa, bù lại giá cả của những tư liệu sản xuất đã tiêu dùng và giá cả của sức lao động đã được sử dụng để sản xuất hàng hóa ấy.
+4
+Chi phí sản xuất được ký hiệu là K. 
+Với K (= C + V)
+
+--- Slide 5 ---
+3.1.2. Bản chất lợi nhuận
+Giữa giá trị hàng hóa (C+V+m) và chi phí sản xuất (C+V) luôn có một khoảng chênh lệch, đó là “m”. Nó là “lãi” hay “lợi nhuận”.
+Giá trị thặng dư được so với toàn bộ tư bản ứng trước, được quan niệm là “con đẻ” của tư bản ứng trước sẽ mang hình thức chuyển hoá là lợi nhuận. Ký hiệu “p”.
+
+5
+
+--- Slide 6 ---
+3.1.3. Tỷ suất lợi nhuận và các nhân tố ảnh hưởng tới tỷ suất lợi nhuận
+Tỷ suất lợi nhuận: là tỷ lệ phần trăm giữa lợi nhuận và toàn bộ giá trị của tư bản ứng trước (ký hiệu là p’)
+Tỷ suất lợi nhuận được tính theo công thức
+p’ = p / (C + V) *100%
+Tỷ suất lợi nhuận phản ánh mức doanh lợi đầu tư tư bản
+6
+
+--- Slide 7 ---
+Các nhân tố ảnh hưởng tới tỷ suất lợi nhuận
+Tỷ suất giá trị thặng dư → đồng biến. 
+Cấu tạo hữu cơ của tư bản (C/V) → ngịch biến. 
+Tốc độ chu chuyển của tư bản → đồng biến.
+Tiết kiệm tư bản bất biến (C) → đồng biến.
+p’ có xu hướng ngày càng giảm xuống.
+7
+
+--- Slide 8 ---
+3.1.4. Lợi nhuận bình quân
+Cạnh tranh giữa các ngành là cơ chế cho sự hình thành lợi nhuận bình quân.
+Giả sử có 3 ngành sản xuất (cơ khí, dệt và da), vốn, tỷ suất giá trị thặng dư, tốc độ chu chuyển đều bằng nhau. Tuy nhiên, tỷ suất lợi nhuận khác nhau. Kết quả, hình thành lợi nhuận bình quân.
+8
+
+--- Slide 9 ---
+3.1.5. lợi nhuận thương nghiệp 
+Bản chất của tư bản thương nghiệp: Là một bộ phận của tư bản công nghiệp tách rời ra khi phân công lao động xã hội đã phát triển. 
+H’ - T’ tách ra thành tư bản thương nghiệp. 
+Lợi nhuận thương nghiệp: Bản chất của lợi nhuận thương nghiệp: là phần giá trị thặng dư được tạo ra từ sản xuất, do các nhà tư bản công nghiệp “nhường” cho các nhà tư bản thương nghiệp.
+9
+
+--- Slide 10 ---
+3.2. Lợi tức
+Lợi tức và tỷ suất lợi tức
+Lợi tức (z) là một phần lợi nhuận bình quân mà nhà tư bản đi vay để hoạt động phải trả cho người cho vay về quyền được tạm sử dụng tư bản tiền tệ. 
+Tỷ suất lợi tức: Là tỷ lệ phần trăm giữa số lợi tức thu được và số tư bản cho vay trong một thời gian nhất định. 
+
+10
+
+--- Slide 11 ---
+3.3. Địa tô tư bản chủ nghĩa
+Địa tô tư bản chủ nghĩa: lợi nhuận siêu ngạch dôi ra ngoài lợi nhuận bình quân mà nhà tư bản kinh doanh nông nghiệp phải trả cho địa chủ vì đã kinh doanh trên ruộng đất của địa chủ.
+Địa tô chênh lệch: lợi nhuận siêu ngạch dôi ra ngoài lợi nhuận bình quân được hình thành trên những ruộng đất có điều kiện kinh doanh trung bình và thuận lợi. 
+
+11
+
+--- Slide 12 ---
+12
+TÀI LIỆU HỌC TẬP  MÔN HỌC
+Sách, giáo trình chính:
+Giáo trình Kinh tế chính trị Mác – Lênin (giáo trình tập huấn năm 2019- Bộ GDĐT)
+2. Tài liệu tham khảo: 
+[1] Bộ Giáo dục và Đào tạo, Giáo trình Những Nguyên lý cơ bản của Chủ nghĩa Mác-Lênin, Nxb.Chính trị quốc gia, Hà Nội, 2014.
+[2] Hội đồng Trung ương chỉ đạo biên soạn giáo trình quốc gia các bộ môn khoa học Mác – Lênin, Giáo trình Kinh tế chính trị Mác-Lênin, Nxb.Chính trị quốc gia, Hà Nội, 2010. 
+[3]website: https://www.marxists.org/
+
+
+--- Slide 13 ---
+13
+Thank You!
+Any questions?

@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { buildQuizAIMessage } from '../src/learning/ai.js';
-import { getQuestionById } from '../src/learning/questionBank.js';
+import { verifiedFixtureQuestions } from './fixtures/verifiedQuestions.js';
 
 test('quiz hint prompt omits verified answer when includeCorrectAnswer is false', () => {
-  const question = getQuestionById('q01-money-capital-start');
+  const question = verifiedFixtureQuestions[0];
   const prompt = buildQuizAIMessage({
     question,
     selectedAnswer: 'a',
@@ -17,7 +17,7 @@ test('quiz hint prompt omits verified answer when includeCorrectAnswer is false'
 });
 
 test('quiz explanation prompt can include verified answer after user has answered', () => {
-  const question = getQuestionById('q01-money-capital-start');
+  const question = verifiedFixtureQuestions[0];
   const prompt = buildQuizAIMessage({
     question,
     selectedAnswer: 'a',
@@ -26,6 +26,6 @@ test('quiz explanation prompt can include verified answer after user has answere
   });
 
   assert.match(prompt, /Đáp án đúng đã xác minh/i);
-  assert.match(prompt, /Question ID: q01-money-capital-start/i);
+  assert.match(prompt, /Question ID: test-q1-capital-circuit/i);
 });
 

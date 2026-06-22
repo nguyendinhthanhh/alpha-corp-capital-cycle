@@ -254,7 +254,7 @@ export default function LearnCaseMission() {
               </div>
               <div className="learn-inline-actions">
                 <button type="button" className="btn btn-secondary" onClick={analyzeWithAI} disabled={aiLoading}>
-                  AI phân tích quyết định của tôi
+                  {aiLoading ? 'AI đang phân tích...' : 'AI phân tích quyết định của tôi'}
                 </button>
               </div>
               {aiResponse && (

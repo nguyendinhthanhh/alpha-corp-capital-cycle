@@ -93,7 +93,7 @@ export function QuestionCard({
             aria-pressed={isActive}
           >
             <span className="learn-choice-key">{option.id.toUpperCase()}</span>
-            <span>{option.label}</span>
+            <span className="learn-choice-text">{option.text || option.label}</span>
           </button>
         );
       })}
@@ -164,7 +164,7 @@ export function QuestionCard({
                     disabled={isLocked}
                   >
                     <Grip size={16} />
-                    {option.label}
+                    <span className="learn-choice-text">{option.text || option.label}</span>
                   </button>
                 ))}
             </div>
@@ -178,7 +178,7 @@ export function QuestionCard({
                 return (
                   <div key={optionId} className="learn-ordering-item">
                     <span className="learn-ordering-index">{index + 1}</span>
-                    <span className="learn-ordering-label">{option?.label}</span>
+                    <span className="learn-ordering-label">{option?.text || option?.label}</span>
                     <div className="learn-ordering-actions">
                       <button type="button" onClick={() => moveOrderingItem(index, -1)} disabled={isLocked}>
                         <ArrowUp size={15} />

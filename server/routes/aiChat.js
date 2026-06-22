@@ -20,7 +20,7 @@ function decodeJsonString(rawValue = '') {
 
 function salvageJsonLikePayload(raw) {
   const text = String(raw || '');
-  const answerMatch = text.match(/"answer"\s*:\s*"((?:\\.|[^"\\])*)"/);
+  const answerMatch = text.match(/"answer"\s*:\s*"((?:\\.|[^"\\])*?)(?:"|$)/);
 
   if (!answerMatch) {
     return null;
@@ -140,7 +140,16 @@ export async function handleAIChat(body) {
       signal: controller.signal,
     });
 
-    const parsed = safeJsonParse(result.text);
+    let parsed = safeJsonParse(result.text);
+    
+    // Fix double-encoded JSON issue where the model puts JSON string inside the answer field
+    if (typeof parsed?.answer === 'string' && parsed.answer.trim().startsWith('{')) {
+      const innerParsed = safeJsonParse(parsed.answer);
+      if (innerParsed && innerParsed.answer) {
+        parsed.answer = innerParsed.answer;
+      }
+    }
+
     return normalizeAIResponse(
       {
         ...parsed,

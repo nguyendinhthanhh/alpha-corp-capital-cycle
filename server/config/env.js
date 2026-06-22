@@ -47,7 +47,7 @@ export const env = {
   ),
   demoMode: toBoolean(process.env.AI_DEMO_MODE, false),
   requestTimeoutMs: toNumber(process.env.AI_REQUEST_TIMEOUT_MS, 30000),
-  maxOutputTokens: toNumber(process.env.AI_MAX_OUTPUT_TOKENS, 1000),
+  maxOutputTokens: toNumber(process.env.AI_MAX_OUTPUT_TOKENS, 2500),
   maxInputChars: toNumber(process.env.AI_MAX_INPUT_CHARS, 4000),
   maxMessages: toNumber(process.env.AI_MAX_MESSAGES, 12),
   rateLimitWindowMs: toNumber(process.env.AI_RATE_LIMIT_WINDOW_MS, 60000),

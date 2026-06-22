@@ -1,10 +1,25 @@
 import { getSuggestedActions } from './suggestedActions.js';
 
-function buildPrimaryExplanation(pageContext, retrievedConcepts) {
+function buildPrimaryExplanation(pageContext, retrievedConcepts, action) {
   const first = retrievedConcepts[0];
 
   if (pageContext.route === '/learn/quiz') {
-    return `Khong the ket noi mo hinh AI. He thong dang dung phan tich quy tac da duoc kiem chung cho Adaptive Quiz. Huong dung luc nay la quay lai khai niem cua cau hoi, phan biet no voi cac lua chon de gay nham, roi noi no voi tinh huong Alpha Corp.`;
+    if (action === 'quiz-hint') {
+      return `Khong the ket noi mo hinh AI. Gợi ý dự phòng: Hãy quay lại khái niệm trọng tâm của câu hỏi và phân biệt các lựa chọn gây nhầm lẫn trước khi chọn đáp án.`;
+    }
+    if (action === 'explain') {
+      return `Khong the ket noi mo hinh AI. Giải thích đơn giản (dự phòng): Câu hỏi này đang kiểm tra sự thấu hiểu của bạn về chu trình tuần hoàn vốn. Hãy nhớ rằng vốn phải đi qua đủ các giai đoạn để sinh lời.`;
+    }
+    if (action === 'it-analogy') {
+      return `Khong the ket noi mo hinh AI. Ví dụ IT dự phòng: Giống như vòng đời phát triển phần mềm, vốn ban đầu giống như ngân sách trả cho dev (H), quá trình code là SX, và sản phẩm là H' chờ thu tiền (T').`;
+    }
+    if (action === 'quiz-explanation') {
+      return `Khong the ket noi mo hinh AI. Phân tích lỗi sai dự phòng: Nếu bạn trả lời sai, khả năng cao là đã nhầm lẫn giữa hai khái niệm tương đồng. Hãy đọc phần "Điểm nhầm chính" bên dưới.`;
+    }
+    if (action === 'similar-question') {
+      return `Khong the ket noi mo hinh AI. Không thể tạo câu tương tự lúc này. Hãy bấm "Câu tiếp theo" để nhận câu hỏi từ ngân hàng hệ thống.`;
+    }
+    return `Khong the ket noi mo hinh AI. He thong dang dung phan tich quy tac da duoc kiem chung cho Adaptive Quiz. Huong dung luc nay la quay lai khai niem cua cau hoi, phan biet no voi cac lua chon de gay nham.`;
   }
 
   if (pageContext.route === '/learn/daily') {
@@ -80,7 +95,7 @@ export function buildFallbackResponse({ pageContext, retrievedConcepts, sourceLa
   }
 
   return {
-    answer: buildPrimaryExplanation(pageContext, retrievedConcepts),
+    answer: buildPrimaryExplanation(pageContext, retrievedConcepts, action),
     sections,
     relatedConcepts: retrievedConcepts.slice(0, 3).map((concept) => ({
       id: concept.id,
