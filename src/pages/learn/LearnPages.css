@@ -758,7 +758,7 @@
 }
 
 .learn-choice-grid-compact {
-  grid-template-columns: repeat(2, minmax(0, 240px));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .learn-choice {
@@ -1051,9 +1051,10 @@
   white-space: nowrap;
 }
 
+/* ─── Tablet (≤ 1024px) ─────────────────────────────────── */
 @media (max-width: 1024px) {
+  /* Collapse all two-column + multi-column grids */
   .learn-route-header,
-  .learn-hero-card,
   .learn-quiz-grid,
   .learn-two-column,
   .learn-progress-grid,
@@ -1061,10 +1062,21 @@
     grid-template-columns: 1fr;
   }
 
+  /* Hero card: stack progress ring above content */
+  .learn-hero-card {
+    grid-template-columns: 1fr;
+  }
+
+  .learn-hero-visual {
+    justify-content: center;
+  }
+
+  /* Dashboard cards all become full-width */
   .learn-dashboard-card,
   .learn-dashboard-card-wide,
   .learn-sidebar,
   .learn-quiz-grid > :first-child,
+  .learn-quiz-sidebar,
   .learn-two-column > div,
   .learn-progress-grid > div,
   .learn-mission-grid > div {
@@ -1087,21 +1099,282 @@
   .learn-quiz-context-related {
     max-width: 100%;
   }
+
+  /* Dashboard grid: allow 2 per row on tablet */
+  .learn-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .learn-hero-card {
+    grid-column: span 2;
+  }
+
+  .learn-dashboard-card {
+    grid-column: span 1;
+  }
+
+  .learn-dashboard-card-wide {
+    grid-column: span 2;
+  }
 }
 
+/* ─── Mobile (≤ 768px) ──────────────────────────────────── */
 @media (max-width: 768px) {
-  .learn-choice-grid,
-  .learn-ordering {
+  /* Single column everywhere */
+  .learn-dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .learn-hero-card,
+  .learn-dashboard-card,
+  .learn-dashboard-card-wide {
+    grid-column: span 1;
+  }
+
+  /* Route header: stack title + actions */
+  .learn-route-header {
+    grid-template-columns: 1fr;
+    margin-bottom: 1rem;
+  }
+
+  .learn-route-copy h1 {
+    font-size: clamp(1.6rem, 6vw, 2rem);
+  }
+
+  .learn-route-header.is-compact .learn-route-copy h1 {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
   }
 
   .learn-route-actions {
     justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
+  /* Subnav: horizontal scroll */
   .learn-subnav {
     overflow-x: auto;
     flex-wrap: nowrap;
-    padding-bottom: 0.25rem;
+    padding-bottom: 0.4rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .learn-subnav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .learn-subnav-item {
+    flex-shrink: 0;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.85rem;
+  }
+
+  /* Hero card: full single column, smaller ring */
+  .learn-hero-card {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .learn-progress-ring {
+    width: 140px;
+    height: 140px;
+  }
+
+  /* Metric row: equal-width boxes, 2-up */
+  .learn-metric-row {
+    gap: 0.65rem;
+  }
+
+  .learn-metric-row > div {
+    flex: 1 1 calc(50% - 0.35rem);
+    min-width: 0;
+  }
+
+  /* Strength/weakness: stack */
+  .learn-strength-weakness {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+
+  .learn-insight-box {
+    flex: 1 1 100%;
+  }
+
+  /* Cards: reduce padding */
+  .learn-dashboard-card,
+  .learn-hero-card,
+  .learn-question-card,
+  .learn-feedback-panel,
+  .learn-result-panel {
+    padding: 1rem;
+  }
+
+  /* Quiz choice options: bigger tap targets */
+  .learn-choice {
+    padding: 0.9rem 1rem;
+    gap: 0.75rem;
+  }
+
+  /* Quiz grid: single column */
+  .learn-quiz-grid,
+  .learn-ordering,
+  .learn-choice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Quiz context bar: wrap nicely */
+  .learn-quiz-context-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  /* Context row: stack focus + related */
+  .learn-quiz-context-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .learn-quiz-context-related {
+    max-width: 100%;
+  }
+
+  /* Knowledge grid: single column */
+  .learn-knowledge-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Score grid: 2-up */
+  .learn-score-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Inline actions: stack to full-width */
+  .learn-inline-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .learn-inline-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Result panel: full width */
+  .learn-result-panel {
+    width: 100%;
+  }
+
+  /* Review summary: already 1-col from 1024, keep */
+  .learn-quiz-review-summary {
+    grid-template-columns: 1fr;
+  }
+
+  /* Map grid: 2-up */
+  .learn-map-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ─── Small mobile (≤ 480px) ────────────────────────────── */
+@media (max-width: 480px) {
+  /* Container: tighter horizontal padding */
+  .learn-route header,
+  .learn-route .container {
+    padding-inline: 0.75rem;
+  }
+
+  /* Subnav items: icon-only on very small screens */
+  .learn-subnav-item span {
+    display: none;
+  }
+
+  .learn-subnav-item {
+    padding: 0.7rem 0.9rem;
+  }
+
+  /* Route title: even smaller */
+  .learn-route-copy h1 {
+    font-size: clamp(1.35rem, 7vw, 1.65rem);
+  }
+
+  /* Metric row: full-width each */
+  .learn-metric-row > div {
+    flex: 1 1 100%;
+  }
+
+  /* Dashboard snapshot cards: 2-col tight */
+  .learn-dashboard-snapshot-grid {
+    flex-direction: row;
+    gap: 0.5rem;
+  }
+
+  .learn-dashboard-snapshot-card {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: auto;
+    padding: 0.75rem;
+  }
+
+  /* Cards: minimal padding */
+  .learn-dashboard-card,
+  .learn-hero-card,
+  .learn-question-card,
+  .learn-feedback-panel {
+    padding: 0.85rem;
+    border-radius: 1rem;
+  }
+
+  /* Progress ring: compact */
+  .learn-progress-ring {
+    width: 120px;
+    height: 120px;
+  }
+
+  /* Score grid: full-width each */
+  .learn-score-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Map grid: full-width each */
+  .learn-map-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Knowledge node path: auto-fill smaller */
+  .learn-path {
+    grid-template-columns: repeat(auto-fill, minmax(60px, max-content));
+    gap: 0.4rem;
+  }
+
+  .learn-path-node {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.65rem;
+  }
+
+  /* Quiz choice: generous tap target */
+  .learn-choice {
+    min-height: 3rem;
+    padding: 0.85rem 0.9rem;
+  }
+
+  /* Buttons in actions: always full-width */
+  .learn-route-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Quiz detail grid: 1 col */
+  .learn-quiz-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hide "back" text, show icon only */
+  .learn-back-link {
+    font-size: 0.85rem;
+    padding: 0.6rem 0.9rem;
+  }
+}
+
