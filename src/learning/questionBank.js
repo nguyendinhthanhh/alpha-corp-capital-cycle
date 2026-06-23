@@ -91,7 +91,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "H → T → H",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây là công thức lưu thông hàng hóa giản đơn, không phải công thức chung của tư bản."
       },
       {
         "id": "b",
@@ -101,12 +102,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "SX → H → SX",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Sản xuất và hàng hóa không tự khởi đầu và kết thúc tuần hoàn mà không đi qua tiền tệ."
       },
       {
         "id": "d",
         "text": "T → SX → T",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Công thức này thiếu các khâu chuyển hóa qua hàng hóa và sản xuất để làm tăng giá trị."
       }
     ],
     "correctAnswer": "b",
@@ -158,7 +161,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Khi mua đầu vào T → H",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Giai đoạn này chỉ mua bán, trao đổi ngang giá và chuẩn bị các yếu tố sản xuất, chưa tạo ra giá trị mới."
       },
       {
         "id": "b",
@@ -168,12 +172,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Khi bán hàng hóa H’ → T’",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây chỉ là quá trình thực hiện giá trị đã tạo ra trong sản xuất, không tự sinh ra giá trị thặng dư mới."
       },
       {
         "id": "d",
         "text": "Khi ngân hàng giải ngân khoản vay",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Giải ngân chỉ cung cấp tư bản tiền tệ ban đầu dưới dạng vốn vay, chưa đi vào sản xuất để tạo giá trị mới."
       }
     ],
     "correctAnswer": "b",
@@ -277,7 +283,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Toàn bộ vốn phải tồn tại ở dạng hàng hóa để tối đa hóa lợi nhuận",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Nếu dồn toàn bộ vốn vào hàng hóa, chu kỳ sẽ bị tắc nghẽn ở khâu khác và gây mất cân đối thanh khoản."
       },
       {
         "id": "b",
@@ -287,12 +294,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Doanh nghiệp phải mở rộng địa lý của dự án",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Không gian ở đây đề cập đến sự cùng tồn tại của các hình thái tư bản, không phải địa lý vật lý."
       },
       {
         "id": "d",
         "text": "Chỉ cần giữ thật nhiều tiền dự phòng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Nếu chỉ giữ tiền mặt mà không đưa vào sản xuất và hàng hóa thì tư bản không thể vận động để sinh lời."
       }
     ],
     "correctAnswer": "b",
@@ -347,12 +356,14 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Ở T → H vì doanh nghiệp không mua đất nữa",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Việc mua đất bị ảnh hưởng sau đó, nhưng điểm đứt gãy trực tiếp ban đầu nằm ở khâu bán hàng."
       },
       {
         "id": "b",
         "text": "Ở SX vì công nhân ngừng tạo giá trị mới",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Sản xuất vẫn tiếp tục tạo ra phần thô, điểm tắc nghẽn trực tiếp là ở khâu tiêu thụ sản phẩm."
       },
       {
         "id": "c",
@@ -362,7 +373,8 @@ export const questionBank = [
       {
         "id": "d",
         "text": "Ở T’ → T vì tiền tự mất giá",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tiền mất giá không phải nguyên nhân đứt gãy tuần hoàn thời gian do căn hộ không bán được."
       }
     ],
     "correctAnswer": "c",
@@ -425,17 +437,20 @@ export const questionBank = [
       {
         "id": "b",
         "text": "Thời gian lao động + thời gian nghỉ",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây chỉ là các bộ phận trong thời gian sản xuất, chưa bao gồm thời gian lưu thông."
       },
       {
         "id": "c",
         "text": "Thời gian xây dựng + thời gian marketing",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây là các hoạt động cụ thể, không phản ánh đầy đủ hai phạm trù lớn là thời gian sản xuất và lưu thông."
       },
       {
         "id": "d",
         "text": "Thời gian vay vốn + thời gian trả lãi",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây là các mốc thời gian tài chính của khoản vay, không phải thời gian chu chuyển của tư bản."
       }
     ],
     "correctAnswer": "a",
@@ -488,7 +503,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Làm giảm thời gian sản xuất",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Thị trường đóng băng làm chậm khâu bán hàng (lưu thông), không làm giảm thời gian sản xuất."
       },
       {
         "id": "b",
@@ -498,12 +514,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Làm tăng ngay giá trị thặng dư",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Lưu thông bị tắc nghẽn ngăn cản việc thực hiện giá trị thặng dư chứ không làm tăng nó."
       },
       {
         "id": "d",
         "text": "Làm biến hàng hóa thành tiền nhanh hơn",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Ngược lại, đóng băng làm chậm quá trình chuyển hóa hàng hóa thành tiền."
       }
     ],
     "correctAnswer": "b",
@@ -561,7 +579,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Từ vốn tự có của ngân hàng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Lợi tức là khoản doanh nghiệp đi vay phải trả cho ngân hàng, không phải tiền từ ngân hàng tự cấp."
       },
       {
         "id": "b",
@@ -571,12 +590,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Từ quá trình in tiền của Nhà nước",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Nhà nước in tiền không tạo ra giá trị thặng dư làm nguồn gốc thực tế cho lợi tức."
       },
       {
         "id": "d",
         "text": "Từ việc tài sản tự tăng giá bất kỳ",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tài sản tăng giá trên giấy tờ không tạo ra giá trị thặng dư thực tế để chi trả lợi tức."
       }
     ],
     "correctAnswer": "b",
@@ -629,7 +650,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Có tài sản lớn thì luôn có thể dùng thay tiền ngay",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tài sản phi tiền mặt như công trình dở dang không thể dùng để trực tiếp chi trả lương hay nợ vay đến hạn."
       },
       {
         "id": "b",
@@ -639,12 +661,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Thanh khoản chỉ quan trọng với ngân hàng, không quan trọng với doanh nghiệp sản xuất",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Mọi doanh nghiệp đều cần thanh khoản để tránh nguy cơ phá sản do đứt dòng tiền."
       },
       {
         "id": "d",
         "text": "Tài sản dở dang càng nhiều thì thanh khoản càng cao",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tài sản dở dang bị kẹt vốn lâu thực chất làm giảm thanh khoản của doanh nghiệp."
       }
     ],
     "correctAnswer": "b",
@@ -702,7 +726,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Vay thêm vốn bất kể khả năng bán hàng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Vay thêm vốn vô tội vạ không tạo ra tích lũy thực tế mà tăng rủi ro nợ nần."
       },
       {
         "id": "b",
@@ -712,12 +737,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Giảm lương để tạo cảm giác lợi nhuận",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Giảm lương làm suy yếu khả năng tái sản xuất sức lao động, không tạo ra tích lũy tư bản bền vững."
       },
       {
         "id": "d",
         "text": "Giữ toàn bộ tiền trong trạng thái dự trữ",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Giữ toàn bộ tiền mặt mà không đầu tư mở rộng sẽ chỉ là tích trữ (hoarding), không phải tích lũy để tái sản xuất mở rộng."
       }
     ],
     "correctAnswer": "b",
@@ -1178,7 +1205,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Tư bản sản xuất là tiền vay, tư bản hàng hóa là lãi phải trả",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tiền vay thuộc tư bản tiền tệ, lãi phải trả thuộc phạm trù lợi tức."
       },
       {
         "id": "b",
@@ -1188,12 +1216,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Hai khái niệm giống nhau, chỉ khác cách gọi",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tư bản sản xuất nằm trong quá trình thi công sản xuất, còn tư bản hàng hóa là sản phẩm mang giá trị đã hoàn thành giai đoạn sản xuất."
       },
       {
         "id": "d",
         "text": "Tư bản hàng hóa luôn có thanh khoản cao hơn tư bản sản xuất",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Thanh khoản tùy thuộc vào khả năng tiêu thụ, tư bản hàng hóa bị đóng băng vẫn có thanh khoản cực thấp."
       }
     ],
     "correctAnswer": "b",
@@ -1251,17 +1281,20 @@ export const questionBank = [
       {
         "id": "b",
         "text": "Xem việc bán chậm là yếu tố kéo dài lưu thông",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đây là nhận định chính xác về thời gian lưu thông, không phải sai lầm."
       },
       {
         "id": "c",
         "text": "Nhận ra H’ chưa tự động là T’",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Nhận thức này hoàn toàn đúng đắn theo lý thuyết chu kỳ tuần hoàn tư bản."
       },
       {
         "id": "d",
         "text": "Phân biệt tài sản với tiền mặt",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Việc phân biệt này là cần thiết và đúng đắn, không phải sai lầm thanh khoản."
       }
     ],
     "correctAnswer": "a",
@@ -1593,17 +1626,20 @@ export const questionBank = [
       {
         "id": "b",
         "text": "Tích lũy là cất tiền lại và không cho nó tham gia chu kỳ nữa",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đó là hành vi tích trữ tiền tệ (hoarding), làm nghẽn chu kỳ tuần hoàn tư bản."
       },
       {
         "id": "c",
         "text": "Tích lũy và thanh khoản là một khái niệm",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tích lũy liên quan đến quy mô tư bản mở rộng, thanh khoản liên quan đến khả năng chi trả bằng tiền mặt."
       },
       {
         "id": "d",
         "text": "Tích lũy chỉ diễn ra trong lưu thông, không liên quan sản xuất",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tích lũy đòi hỏi giá trị thặng dư tạo ra từ sản xuất được nhập vào tư bản ứng trước để tái đầu tư."
       }
     ],
     "correctAnswer": "a",
@@ -1657,7 +1693,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Một lần xây xong dự án là kết thúc toàn bộ vận động",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Đó là tái sản xuất đơn lẻ hoặc chu kỳ khép kín, không thể hiện tính chất lặp lại liên tục."
       },
       {
         "id": "b",
@@ -1667,12 +1704,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Chỉ là việc nhân bản hàng hóa về số lượng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tái sản xuất là sự vận động tổng thể của các hình thái tư bản, không đơn giản là sản xuất thêm số lượng sản phẩm."
       },
       {
         "id": "d",
         "text": "Chỉ nói tới việc ngân hàng phát hành thêm tín dụng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Tín dụng ngân hàng chỉ hỗ trợ cung cấp tư bản tiền tệ, không đại diện cho toàn bộ quá trình tái sản xuất."
       }
     ],
     "correctAnswer": "b",
@@ -1871,7 +1910,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Chỉ cần giá bán cao là tự động có lợi nhuận bền vững",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Giá bán cao nhưng không bán được hàng hoặc chi phí đầu vào quá lớn thì vẫn không có lợi nhuận thực tế."
       },
       {
         "id": "b",
@@ -1881,12 +1921,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Lợi nhuận không liên quan gì đến lưu thông",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Lợi nhuận không thể thực hiện nếu hàng hóa bị kẹt trong lưu thông (không bán được)."
       },
       {
         "id": "d",
         "text": "Lợi nhuận và lợi tức là cùng một đại lượng",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Lợi tức chỉ là một phần được trích ra từ lợi nhuận để trả cho chủ nợ."
       }
     ],
     "correctAnswer": "b",
@@ -2016,7 +2058,8 @@ export const questionBank = [
       {
         "id": "a",
         "text": "Thị trường luôn hấp thụ hàng hóa nếu hàng hóa có giá trị",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Hàng hóa có giá trị nhưng thiếu sức mua xã hội (sức mua có khả năng thanh toán) thì vẫn bị tồn kho."
       },
       {
         "id": "b",
@@ -2026,12 +2069,14 @@ export const questionBank = [
       {
         "id": "c",
         "text": "Thị trường không ảnh hưởng tới chu chuyển tư bản",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Thị trường quyết định thời gian lưu thông, do đó trực tiếp quyết định tốc độ chu chuyển tư bản."
       },
       {
         "id": "d",
         "text": "Thị trường chỉ quyết định lợi tức, không liên quan thanh khoản",
-        "isCorrect": false
+        "isCorrect": false,
+        "wrongReason": "Thị trường quyết định việc bán hàng, do đó liên quan mật thiết đến thanh khoản dòng tiền."
       }
     ],
     "correctAnswer": "b",
