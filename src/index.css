@@ -103,22 +103,9 @@
 }
 
 html {
-  font-size: 65%; /* Scales down ~65% on desktop to match user's zoomed out preference */
   scroll-behavior: smooth;
   overflow-x: hidden;
   scroll-padding-top: calc(var(--header-offset) + 4rem);
-}
-
-@media (max-width: 1024px) {
-  html {
-    font-size: 80%; /* Slightly larger on tablets */
-  }
-}
-
-@media (max-width: 768px) {
-  html {
-    font-size: 100%; /* Normal 16px base on mobile for readability */
-  }
 }
 
 body {
@@ -144,6 +131,21 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+/* Ensure range inputs have large enough touch targets on mobile */
+input[type="range"] {
+  height: 2.75rem; /* ~44px */
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  input[type="range"] {
+    height: 1.5rem;
+  }
 }
 
 button {

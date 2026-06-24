@@ -22,6 +22,12 @@
   z-index: 0;
 }
 
+@media (max-width: 767px) {
+  .video-case-study-bg {
+    display: none;
+  }
+}
+
 .video-case-study-bg .capital-formula-line {
   position: absolute;
   top: 12rem;

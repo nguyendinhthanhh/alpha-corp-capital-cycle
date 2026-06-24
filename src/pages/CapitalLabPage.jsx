@@ -27,6 +27,13 @@ const CapitalLabPage = () => {
   const { isSupported, isChecking } = useWebGLSupport();
   const [show2D, setShow2D] = useState(false);
   const { setPageContext } = useAI();
+
+  useEffect(() => {
+    // Default to 2D mode on mobile to save performance
+    if (window.innerWidth < 768) {
+      setShow2D(true);
+    }
+  }, []);
   
   const {
     state,
