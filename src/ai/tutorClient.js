@@ -1,6 +1,6 @@
 const API_ENDPOINT = '/api/ai/chat';
 const MAX_API_MESSAGES = 6;
-const CLIENT_TIMEOUT_MS = 6000;
+const CLIENT_TIMEOUT_MS = 60000;
 
 export async function sendTutorRequest({ messages = [], pageContext = {}, action = null, signal } = {}) {
   const trimmedMessages = messages.slice(-MAX_API_MESSAGES);

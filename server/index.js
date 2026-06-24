@@ -48,8 +48,8 @@ async function readJsonBody(request, maxBytes = 256_000) {
   }
 }
 
-const server = createServer(async (request, response) => {
-  const requestPath = new URL(request.url || '/', 'http://localhost').pathname;
+export default async function handler(request, response) {
+  const requestPath = new URL(request.url || '/', `http://${request.headers.host || 'localhost'}`).pathname;
 
   if (request.method === 'OPTIONS') {
     response.writeHead(204, corsHeaders);
@@ -69,8 +69,6 @@ const server = createServer(async (request, response) => {
       const qbPath = path.resolve(process.cwd(), 'src/learning/questionBank.js');
       let content = fs.readFileSync(qbPath, 'utf8');
       
-      // We look for the question block: id: 'q-id' and then replace its verificationStatus
-      // A naive regex to replace the status of a specific question:
       const idMatch = new RegExp(`id:\\s*'${body.id}'`);
       const blockStart = content.search(idMatch);
       if (blockStart !== -1) {
@@ -109,8 +107,11 @@ const server = createServer(async (request, response) => {
     }
     sendJson(response, publicError.statusCode, publicError.payload);
   }
-});
+}
 
-server.listen(env.port, () => {
-  console.log(`[ai-server] listening on http://localhost:${env.port} with provider ${env.provider}`);
-});
+if (!process.env.VERCEL) {
+  const server = createServer(handler);
+  server.listen(env.port, () => {
+    console.log(`[ai-server] listening on http://localhost:${env.port} with provider ${env.provider}`);
+  });
+}

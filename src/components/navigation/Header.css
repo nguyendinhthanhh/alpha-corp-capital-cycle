@@ -37,22 +37,30 @@
 }
 
 .brand-logo {
-  display: grid;
-  gap: 0.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
   flex-shrink: 0;
+  text-decoration: none;
 }
 
 .brand-name {
-  font: 800 1.18rem/1 var(--font-heading);
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 1.8rem;
+  line-height: 1;
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .brand-subtitle {
-  font: 600 0.68rem/1.2 var(--font-mono);
-  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.85rem;
+  line-height: 1;
+  color: var(--teal-400);
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.25em;
 }
 
 .desktop-nav {

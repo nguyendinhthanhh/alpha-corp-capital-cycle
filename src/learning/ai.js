@@ -27,7 +27,9 @@ export function buildQuizAIMessage({
     `Độ khó: ${question.difficulty}`,
     `Current mastery: ${currentMastery}`,
     answerLine,
+    includeCorrectAnswer && question.explanation ? `Giải thích gốc từ hệ thống: ${question.explanation}` : '',
     'Chỉ dùng dữ liệu đã kiểm chứng trong project. Nếu đang ở chế độ gợi ý, chỉ cho hướng suy nghĩ hoặc điểm cần phân biệt.',
+    'YÊU CẦU ĐỊNH DẠNG BẮT BUỘC: Trả lời CỰC KỲ NGẮN GỌN. XUỐNG DÒNG cho mỗi ý. Dùng ký tự "- " để tạo gạch đầu dòng. KHÔNG dùng ký tự "*". KHÔNG viết thành đoạn văn dài.',
   ]
     .filter(Boolean)
     .join('\n');

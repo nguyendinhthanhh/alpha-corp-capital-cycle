@@ -61,7 +61,7 @@ function safeJsonParse(raw) {
 }
 
 function selectConversation(messages) {
-  return messages.slice(-6).map((message) => ({
+  return messages.slice(-4).map((message) => ({
     role: message.role,
     content: message.content.trim().slice(0, 1500),
   }));
@@ -86,7 +86,7 @@ export async function handleAIChat(body) {
     activeConceptIds: pageContext.relevantConceptIds,
     route: pageContext.route,
     action,
-    limit: 3,
+    limit: 2,
     context: pageContext,
   });
 

@@ -18,6 +18,33 @@ function buildResultLabel(status) {
   return 'Chưa chính xác';
 }
 
+function renderAIAnswer(rawText) {
+  if (!rawText) return null;
+  
+  // Xử lý trường hợp AI lười xuống dòng mà gõ liền " - " ngang hàng
+  const text = rawText.replace(/(?<=\S)\s+-\s/g, '\n- ').replace(/(?<=\S)\s+\*\s/g, '\n* ');
+
+  return text.split('\n').map((line, i) => {
+    if (!line.trim()) return null;
+    const isBullet = line.trim().startsWith('-') || line.trim().startsWith('*');
+    const cleanLine = isBullet ? line.replace(/^[-*]\s*/, '') : line;
+    
+    const parts = cleanLine.split(/(\*\*.*?\*\*)/g).map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} style={{ color: 'var(--text-primary)' }}>{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+
+    return (
+      <div key={i} style={{ display: 'flex', gap: '0.5rem', margin: '0.5rem 0' }}>
+        {isBullet && <span style={{ color: 'var(--teal-500)', fontWeight: 'bold' }}>•</span>}
+        <span>{parts}</span>
+      </div>
+    );
+  });
+}
+
 function formatOptionText(option) {
   return option?.text || option?.label || option?.id || '';
 }
@@ -535,7 +562,9 @@ export default function LearnQuiz() {
                       <div className="learn-quiz-ai-response-body">
                         {aiInsight ? (
                           <div className="learn-quiz-ai-response-copy">
-                            <p>{aiInsight.answer}</p>
+                            <div className="rendered-ai-answer" style={{ whiteSpace: 'pre-wrap' }}>
+                              {renderAIAnswer(aiInsight.answer)}
+                            </div>
                             {(aiInsight.fallbackUsed || aiInsight.localFallback) && (
                               <span className="status-chip is-danger">
                                 {aiInsight.localFallback ? 'Fallback cục bộ' : 'Fallback từ server'}
@@ -587,7 +616,9 @@ export default function LearnQuiz() {
                       <div className="learn-quiz-ai-response-body">
                         {aiInsight ? (
                           <div className="learn-quiz-ai-response-copy">
-                            <p>{aiInsight.answer}</p>
+                            <div className="rendered-ai-answer" style={{ whiteSpace: 'pre-wrap' }}>
+                              {renderAIAnswer(aiInsight.answer)}
+                            </div>
                             {(aiInsight.fallbackUsed || aiInsight.localFallback) && (
                               <span className="status-chip is-danger">
                                 {aiInsight.localFallback ? 'Fallback cục bộ' : 'Fallback từ server'}
