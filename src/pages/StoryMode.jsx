@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { storyModeChapters } from '../data/storyData';
 import SectionHeader from '../components/shared/SectionHeader';
@@ -11,6 +12,10 @@ const StoryMode = () => {
   const [activeChapter, setActiveChapter] = useState(storyModeChapters[0].number);
   const reduceMotion = useReducedMotion();
   const { setPageContext } = useAI();
+  const location = useLocation();
+
+  const backLink = location.state?.from || '/';
+  const backLabel = location.state?.fromLabel || 'Trang chủ';
 
   useEffect(() => {
     const chapter = storyModeChapters.find((item) => item.number === activeChapter) || storyModeChapters[0];
@@ -69,15 +74,28 @@ const StoryMode = () => {
 
   return (
     <div className="route-shell story-page">
-      <div className="container story-layout">
-        <SectionHeader
-          eyebrow="Vụ việc"
-          title="Dòng thời gian của một chu kỳ tư bản bị gãy"
-          subtitle="Đây là phiên bản kể chuyện tuyến tính để dùng trực tiếp khi thuyết trình. Mỗi chương gắn một bước của vụ việc với một khái niệm MLN122 và một trạng thái của capital flow."
-          align="left"
-        />
+      <div className="container">
+        <nav className="story-breadcrumb" aria-label="Breadcrumb">
+          <Link to={backLink} className="breadcrumb-link">{backLabel}</Link>
+          <span className="breadcrumb-separator">/</span>
+          <span className="breadcrumb-current">Vụ việc (Dòng thời gian)</span>
+        </nav>
 
-        <aside className="story-sidebar forensic-panel">
+        <header className="story-compact-header">
+          <div className="header-main">
+            <span className="status-chip is-info" style={{ width: 'fit-content', marginBottom: '0.5rem' }}>VỤ VIỆC</span>
+            <h1 className="text-h2">Dòng thời gian của một chu kỳ tư bản bị gãy</h1>
+          </div>
+          <div className="header-desc">
+            <p className="text-body-large text-secondary">
+              Đây là phiên bản kể chuyện tuyến tính để dùng trực tiếp khi thuyết trình. 
+              Mỗi chương gắn một bước của vụ việc với một khái niệm MLN122 và một trạng thái của capital flow.
+            </p>
+          </div>
+        </header>
+
+        <div className="story-layout">
+          <aside className="story-sidebar forensic-panel">
           <div className="panel-header">
             <span className="eyebrow">Chapter Navigation</span>
             <strong>
@@ -85,28 +103,30 @@ const StoryMode = () => {
             </strong>
           </div>
 
-          <div className="story-progress-track" aria-hidden="true">
-            <span style={{ transform: `scaleY(${progressValue / storyModeChapters.length})` }} />
-          </div>
+          <div className="story-nav-container">
+            <div className="story-progress-track" aria-hidden="true">
+              <span style={{ transform: `scaleY(${progressValue / storyModeChapters.length})` }} />
+            </div>
 
-          <nav className="story-nav" aria-label="Điều hướng chương">
-            {storyModeChapters.map((chapter) => (
-              <button
-                key={chapter.number}
-                type="button"
-                className={`story-nav-item ${activeChapter === chapter.number ? 'is-active' : ''}`}
-                onClick={() =>
-                  document.getElementById(`chapter-${chapter.number}`)?.scrollIntoView({
-                    behavior: reduceMotion ? 'auto' : getScrollBehavior(),
-                    block: 'start',
-                  })
-                }
-              >
-                <span>{chapter.number}</span>
-                <strong>{chapter.title}</strong>
-              </button>
-            ))}
-          </nav>
+            <nav className="story-nav" aria-label="Điều hướng chương">
+              {storyModeChapters.map((chapter) => (
+                <button
+                  key={chapter.number}
+                  type="button"
+                  className={`story-nav-item ${activeChapter === chapter.number ? 'is-active' : ''}`}
+                  onClick={() =>
+                    document.getElementById(`chapter-${chapter.number}`)?.scrollIntoView({
+                      behavior: reduceMotion ? 'auto' : getScrollBehavior(),
+                      block: 'start',
+                    })
+                  }
+                >
+                  <span>{chapter.number}</span>
+                  <strong>{chapter.title}</strong>
+                </button>
+              ))}
+            </nav>
+          </div>
         </aside>
 
         <div className="story-chapter-list">
@@ -147,6 +167,7 @@ const StoryMode = () => {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 };

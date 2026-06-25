@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Menu, X } from "lucide-react";
+import { motion } from "framer-motion";
 import {
   PENDING_HOME_SECTION_STORAGE_KEY,
   scrollToPageTop,
@@ -20,7 +21,6 @@ const navItems = [
   { id: "capital-lab", label: "Capital Lab", route: "/capital-lab" },
   { id: "simulators", label: "Mô phỏng", route: "/simulators" },
   { id: "learn", label: "Học tập", route: "/learn" },
-  { id: "appendix", label: "Nguồn & AI", route: "/appendix" },
 ];
 
 const homeSectionNavMap = [
@@ -41,8 +41,13 @@ const Header = () => {
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [activeSection, setActiveSection] = useState("hero");
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0, opacity: 0 });
+  const navRef = useRef(null);
+  const progressRef = useRef(null);
+  const isScrolledRef = useRef(false);
+  const isManualScrolling = useRef(false);
+  const scrollTimeout = useRef(null);
 
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -57,14 +62,21 @@ const Header = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const nextIsScrolled = window.scrollY > 10;
+      if (nextIsScrolled !== isScrolledRef.current) {
+        isScrolledRef.current = nextIsScrolled;
+        setIsScrolled(nextIsScrolled);
+      }
 
       const totalScroll = window.scrollY;
       const windowHeight =
         document.documentElement.scrollHeight -
         document.documentElement.clientHeight;
       const scroll = windowHeight > 0 ? totalScroll / windowHeight : 0;
-      setProgress(Math.min(1, Math.max(0, scroll)));
+      
+      if (progressRef.current) {
+        progressRef.current.style.transform = `scaleX(${Math.min(1, Math.max(0, scroll))})`;
+      }
 
       if (location.pathname === "/") {
         const probe = totalScroll + window.innerHeight * 0.35;
@@ -75,6 +87,10 @@ const Header = () => {
           })
           .filter(Boolean)
           .sort((a, b) => a.element.offsetTop - b.element.offsetTop);
+
+        if (isManualScrolling.current) {
+          return;
+        }
 
         let nextActive = "hero";
         sections.forEach(({ element, nav }) => {
@@ -94,6 +110,22 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [location.pathname]);
 
+  // Update absolute indicator position
+  useEffect(() => {
+    // Small delay to ensure DOM is updated before measuring
+    const timeout = setTimeout(() => {
+      const activeBtn = navRef.current?.querySelector(".nav-item.active");
+      if (activeBtn) {
+        setIndicatorStyle({
+          left: activeBtn.offsetLeft,
+          width: activeBtn.offsetWidth,
+          opacity: 1,
+        });
+      }
+    }, 10);
+    return () => clearTimeout(timeout);
+  }, [location.pathname, activeSection]);
+
   const replaceHomeUrl = (sectionId) => {
     if (typeof window === "undefined" || location.pathname !== "/") {
       return;
@@ -104,6 +136,16 @@ const Header = () => {
   };
 
   const handleHomeSectionNavigation = (sectionId = "hero") => {
+    setActiveSection(sectionId);
+    isManualScrolling.current = true;
+    
+    if (scrollTimeout.current) {
+      clearTimeout(scrollTimeout.current);
+    }
+    scrollTimeout.current = setTimeout(() => {
+      isManualScrolling.current = false;
+    }, 1000);
+
     if (location.pathname !== "/") {
       window.sessionStorage.setItem(
         PENDING_HOME_SECTION_STORAGE_KEY,
@@ -151,8 +193,9 @@ const Header = () => {
     <>
       <header className={`app-header ${isScrolled ? "scrolled" : ""}`}>
         <div
+          ref={progressRef}
           className="header-progress-bar"
-          style={{ transform: `scaleX(${progress})` }}
+          style={{ transform: `scaleX(0)` }}
         />
 
         <div className="container header-container">
@@ -161,16 +204,26 @@ const Header = () => {
             <span className="brand-subtitle">Capital Cycle Study</span>
           </Link>
 
-          <nav className="desktop-nav">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item)}
-                className={`nav-item ${checkIsActive(item) ? "active" : ""}`}
-              >
-                {item.label}
-              </button>
-            ))}
+          <nav className="desktop-nav" ref={navRef} style={{ position: 'relative' }}>
+            <motion.div
+              className="nav-active-indicator"
+              animate={indicatorStyle}
+              initial={false}
+              transition={{ type: "spring", stiffness: 500, damping: 35 }}
+              style={{ top: '0.15rem', bottom: '0.15rem', zIndex: 0 }}
+            />
+            {navItems.map((item) => {
+              const isActive = checkIsActive(item);
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => handleNavClick(item)}
+                  className={`nav-item ${isActive ? "active" : ""}`}
+                >
+                  <span className="nav-label">{item.label}</span>
+                </button>
+              );
+            })}
           </nav>
 
           <button

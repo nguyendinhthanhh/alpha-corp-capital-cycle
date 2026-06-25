@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 import { Bot, Compass, RefreshCcw, Sparkles, Target, Zap } from 'lucide-react';
 import { buildAIContext } from '../../ai/buildAIContext';
 import { useAI } from '../../ai/useAI';
@@ -176,6 +176,7 @@ function buildClientSideQuizInsight({ question, feedback, action, masteryScore }
 }
 
 export default function LearnQuiz() {
+  const location = useLocation();
   const [searchParams] = useSearchParams();
   const targetConceptId = searchParams.get('conceptId') || null;
 
@@ -477,7 +478,7 @@ export default function LearnQuiz() {
                   </div>
 
                   <div className="learn-inline-actions learn-quiz-detail-actions">
-                    <Link to="/story" className="btn btn-secondary">Xem phần lý luận</Link>
+                    <Link to="/story" state={{ from: location.pathname + location.search, fromLabel: "Quiz Arena" }} className="btn btn-secondary">Xem phần lý luận</Link>
                   </div>
                 </div>
               )}

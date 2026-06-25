@@ -120,10 +120,19 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
           </motion.div>
 
           <div className={`capital-flow-track ${isCrisis ? 'crisis-active' : ''}`}>
-            <div className="flow-node node-t active">T</div>
+            <div className="flow-node node-t active">
+              T
+              <motion.div className="layer-card layer-money" initial={{ opacity: 0, y: 10, x: "-50%" }} animate={{ opacity: 1, y: 0, x: "-50%" }} transition={{ duration: 0.35, delay: 0.8 }}>10.000 tỷ đồng</motion.div>
+            </div>
             <div className="flow-node node-h active">H</div>
-            <div className="flow-node node-sx active">SX</div>
-            <div className="flow-node node-hp active">H&apos;</div>
+            <div className="flow-node node-sx active">
+              SX
+              <motion.div className="layer-card layer-assets" initial={{ opacity: 0, y: 10, x: "-50%" }} animate={{ opacity: 1, y: 0, x: "-50%" }} transition={{ duration: 0.35, delay: 1.0 }}>Vật liệu, máy móc, nhân công</motion.div>
+            </div>
+            <div className="flow-node node-hp active">
+              H&apos;
+              <motion.div className="layer-card layer-goods" initial={{ opacity: 0, y: 10, x: "-50%" }} animate={{ opacity: 1, y: 0, x: "-50%" }} transition={{ duration: 0.35, delay: 1.2 }}>3 tòa tháp dở dang</motion.div>
+            </div>
             <div className={`flow-node node-tp ${isCrisis ? 'disabled' : 'active'}`}>T&apos;</div>
 
             <div className="flow-path path-1">
@@ -159,9 +168,7 @@ const HeroSection = ({ isCrisis, onToggleCrisis }) => {
             </div>
           </div>
 
-          <motion.div className="layer-card layer-money" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.8 }}>10.000 tỷ đồng</motion.div>
-          <motion.div className="layer-card layer-assets" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 1.0 }}>Vật liệu, máy móc, nhân công</motion.div>
-          <motion.div className="layer-card layer-goods" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 1.2 }}>3 tòa tháp dở dang</motion.div>
+
 
           {/* Signature Effect 3: Market Shock Transition Sequence */}
           <AnimatePresence>

@@ -189,24 +189,7 @@ export default function LearnProgress() {
           )}
         </div>
 
-        <div className="learn-dashboard-card">
-          <div className="panel-header">
-            <h2>Achievements</h2>
-            <BadgeCheck size={18} className="text-green" />
-          </div>
-          {achievementItems.length ? (
-            <ul className="learn-achievement-list">
-              {achievementItems.map((achievement) => (
-                <li key={achievement.id}>
-                  <strong>{achievement.title}</strong>
-                  <span>{achievement.description}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Chưa mở khóa achievement nào.</p>
-          )}
-        </div>
+
 
         <div className="learn-dashboard-card">
           <div className="panel-header">

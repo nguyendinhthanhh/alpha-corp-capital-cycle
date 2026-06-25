@@ -33,6 +33,12 @@ const CapitalLabPage = () => {
     if (window.innerWidth < 768) {
       setShow2D(true);
     }
+    
+    // Lock scroll for the 3D canvas experience
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, []);
   
   const {

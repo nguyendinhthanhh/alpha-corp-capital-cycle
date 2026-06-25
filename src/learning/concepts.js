@@ -134,15 +134,7 @@ export const learningConcepts = [
     order: 15,
     sourceLabels: ['Session 8', 'Case Alpha Corp'],
   },
-  {
-    id: 'liquidity',
-    label: 'Thanh khoản',
-    shortLabel: 'Thanh khoản',
-    summary: 'Khả năng biến tài sản thành tiền đúng lúc để chi trả nghĩa vụ và tiếp tục chu kỳ.',
-    group: 'Kết quả',
-    order: 16,
-    sourceLabels: ['Case Alpha Corp', 'Capital Lab'],
-  },
+
 ];
 
 export const conceptMapOrder = learningConcepts.map((concept) => concept.id);

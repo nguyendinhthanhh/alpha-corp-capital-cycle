@@ -30,33 +30,33 @@
 
 .video-case-study-bg .capital-formula-line {
   position: absolute;
-  top: 12rem;
-  left: 5%;
-  right: 5%;
+  top: 3.5rem;
+  left: 0;
+  right: 0;
   height: 1px;
+  transform: translateY(-50%);
   opacity: 0.06;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--gold-500) 8%,
-    var(--teal-500) 28%,
-    var(--teal-500) 52%,
-    var(--teal-500) 72%,
-    var(--red-500) 78%,
-    var(--red-500) 82%,
-    transparent 90%
+    var(--gold-500) 14%,
+    var(--teal-500) 34%,
+    var(--teal-500) 74%,
+    var(--red-500) 80%,
+    var(--red-500) 94%,
+    transparent 100%
   );
 }
 
 .video-case-study-bg .formula-node {
   position: absolute;
-  top: 10rem;
+  top: 1.5rem;
   font-family: var(--font-heading);
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   opacity: 0.09;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
 }
 
 .video-case-study-bg .formula-node.node-t {
@@ -82,14 +82,14 @@
 
 .video-case-study-bg .break-marker {
   position: absolute;
-  top: 10rem;
+  top: 3.5rem;
   left: 82%;
   font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 800;
   color: var(--red-500);
   opacity: 0.13;
-  transform: translate(-50%, -48%);
+  transform: translate(-50%, -50%);
 }
 
 .video-case-study-bg .blueprint-grid {

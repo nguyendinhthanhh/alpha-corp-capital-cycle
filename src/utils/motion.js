@@ -91,8 +91,8 @@ export const scrollToY = (top) => {
 
   if (lenis && !prefersReducedMotion()) {
     lenis.scrollTo(target, {
-      duration: 1.05,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: 0.5,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
     });
     return;
   }

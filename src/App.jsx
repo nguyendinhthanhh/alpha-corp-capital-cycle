@@ -8,7 +8,6 @@ import { prefersReducedMotion } from "./utils/motion";
 
 const StoryMode = lazy(() => import("./pages/StoryMode"));
 const Simulators = lazy(() => import("./pages/Simulators"));
-const Appendix = lazy(() => import("./pages/Appendix"));
 const CapitalLabPage = lazy(() => import("./pages/CapitalLabPage"));
 const LearnLayout = lazy(() => import("./pages/learn/LearnLayout"));
 const LearnDashboard = lazy(() => import("./pages/learn/LearnDashboard"));
@@ -150,14 +149,6 @@ function App() {
             }
           />
         </Route>
-        <Route
-          path="appendix"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <Appendix />
-            </Suspense>
-          }
-        />
         <Route
           path="quiz-review"
           element={

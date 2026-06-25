@@ -78,7 +78,7 @@ const Footer = () => {
         </div>
 
         <div className="footer-bottom">
-          <p>&copy; {currentYear} Alpha Corp Capital Cycle Study. Đồ án môn học MLN122.</p>
+          <p>&copy; {currentYear} Alpha Corp Capital Cycle Study.</p>
         </div>
       </div>
     </footer>

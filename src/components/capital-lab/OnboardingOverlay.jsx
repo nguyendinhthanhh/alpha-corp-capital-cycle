@@ -27,7 +27,7 @@ export const OnboardingOverlay = ({ onStart }) => {
   // Auto-focus CTA
   useEffect(() => {
     const timer = setTimeout(() => {
-      btnRef.current?.focus();
+      btnRef.current?.focus({ preventScroll: true });
     }, 600);
     return () => clearTimeout(timer);
   }, []);

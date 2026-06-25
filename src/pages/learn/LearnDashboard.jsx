@@ -143,7 +143,7 @@ export default function LearnDashboard() {
           </Link>
         </section>
 
-        <section className="learn-dashboard-card learn-dashboard-card-wide learn-card-ai">
+        <section className="learn-dashboard-card learn-card-ai">
           <div className="panel-header">
             <h2>AI Tutor Suggestion</h2>
             <Sparkles size={18} className="text-teal" />
@@ -184,27 +184,6 @@ export default function LearnDashboard() {
           </div>
         </section>
 
-        <section className="learn-dashboard-card learn-card-achievements">
-          <div className="panel-header">
-            <h2>Achievements</h2>
-            <BadgeCheck size={18} className="text-green" />
-          </div>
-          {unlockedAchievements.length ? (
-            <ul className="learn-achievement-list">
-              {unlockedAchievements.slice(0, 4).map((item) => (
-                <li key={item.id}>
-                  <strong>{item.title}</strong>
-                  <span>{item.description}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Chưa có achievement nào mở khóa. Chúng chỉ mở khi có hành vi học tập thực sự.</p>
-          )}
-          <Link to="/learn/progress" className="btn btn-secondary">
-            Xem progress map
-          </Link>
-        </section>
       </div>
     </LearningRouteFrame>
   );

@@ -192,19 +192,23 @@ const FormulaAnimation = () => {
   };
 
   const nodeVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
+    hidden: { opacity: 0, scale: 0.5, x: "-50%", y: "-50%" },
     visible: (i) => ({
       opacity: 1,
       scale: 1,
+      x: "-50%",
+      y: "-50%",
       transition: { delay: i * 0.18 + 0.15, duration: 0.35, ease: "easeOut" },
     }),
   };
 
   const breakVariants = {
-    hidden: { opacity: 0, scale: 0 },
+    hidden: { opacity: 0, scale: 0, x: "-50%", y: "-50%" },
     visible: {
       opacity: 1,
       scale: 1,
+      x: "-50%",
+      y: "-50%",
       transition: { delay: 0.95, duration: 0.3, ease: "easeOut" },
     },
   };
@@ -248,19 +252,20 @@ const FormulaAnimation = () => {
       <svg
         style={{
           position: "absolute",
-          top: "12rem",
+          top: "3.5rem",
           left: 0,
           right: 0,
           width: "100%",
           height: "2px",
           pointerEvents: "none",
           opacity: 0.08,
+          transform: "translateY(-50%)",
         }}
         viewBox="0 0 1000 2"
         preserveAspectRatio="none"
       >
         <motion.path
-          d="M 120 1 L 300 1 L 500 1 L 680 1 M 740 1 L 860 1"
+          d="M 100 1 L 800 1 M 840 1 L 950 1"
           stroke="currentColor"
           strokeWidth="1.5"
           fill="none"
